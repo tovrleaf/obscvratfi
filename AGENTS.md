@@ -247,7 +247,7 @@ When an ADR-worthy decision comes up:
 1. **Recognize the need:** Identify that the decision is architecturally significant
 2. **Notify the user:** "This decision should be documented in an ADR. Let me help you with that."
 3. **Follow the decision-making workflow:**
-   - Ask relevant questions based on decision type (see ADR-0002)
+   - Ask relevant questions based on decision type (see ADR-002)
    - Research and present alternatives with pros/cons
    - Use appropriate approach: present options, make recommendation, or ask Socratic questions
    - Help draft the ADR after decision is made
@@ -258,7 +258,7 @@ When an ADR-worthy decision comes up:
 
 - **ADR Directory:** `/docs/adr/`
 - **Template:** `/docs/adr/template.md`
-- **Workflow Guide:** See ADR-0002 for detailed decision-making process
+- **Workflow Guide:** See ADR-002 for detailed decision-making process
 - **Helper Scripts:**
   - `./scripts/new-adr.sh "Title"` - Create new ADR
   - `./scripts/list-adrs.sh [status]` - List all ADRs

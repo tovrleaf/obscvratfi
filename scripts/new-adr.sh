@@ -18,12 +18,12 @@ TEMPLATE="$ADR_DIR/template.md"
 README="$ADR_DIR/README.md"
 
 # Find the next ADR number
-LAST_ADR=$(ls -1 "$ADR_DIR" | grep -E '^[0-9]{4}-.*\.md$' | sort -r | head -n 1)
+LAST_ADR=$(ls -1 "$ADR_DIR" | grep -E '^[0-9]{3}-.*\.md$' | sort -r | head -n 1)
 if [ -z "$LAST_ADR" ]; then
-    NEXT_NUM="0003"  # Start from 0003 since 0000-0002 are the initial ADRs
+    NEXT_NUM="003"  # Start from 003 since 000-002 are the initial ADRs
 else
     LAST_NUM=$(echo "$LAST_ADR" | cut -d'-' -f1)
-    NEXT_NUM=$(printf "%04d" $((10#$LAST_NUM + 1)))
+    NEXT_NUM=$(printf "%03d" $((10#$LAST_NUM + 1)))
 fi
 
 # Convert title to filename (lowercase, replace spaces with hyphens)

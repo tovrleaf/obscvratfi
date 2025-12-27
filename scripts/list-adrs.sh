@@ -19,7 +19,7 @@ echo "================================"
 echo ""
 
 # Find all ADR files (numbered)
-for adr_file in $(ls -1 "$ADR_DIR" | grep -E '^[0-9]{4}-.*\.md$' | sort); do
+for adr_file in $(ls -1 "$ADR_DIR" | grep -E '^[0-9]{3}-.*\.md$' | sort); do
     ADR_PATH="$ADR_DIR/$adr_file"
     
     # Extract status from the file
@@ -63,11 +63,11 @@ for adr_file in $(ls -1 "$ADR_DIR" | grep -E '^[0-9]{4}-.*\.md$' | sort); do
 done
 
 # Summary
-TOTAL=$(ls -1 "$ADR_DIR" | grep -E '^[0-9]{4}-.*\.md$' | wc -l | tr -d ' ')
+TOTAL=$(ls -1 "$ADR_DIR" | grep -E '^[0-9]{3}-.*\.md$' | wc -l | tr -d ' ')
 echo "================================"
 echo "Total ADRs: $TOTAL"
 
 if [ -n "$FILTER_STATUS" ]; then
-    FILTERED=$(ls -1 "$ADR_DIR" | grep -E '^[0-9]{4}-.*\.md$' | while read f; do grep -m 1 "^\*\*Status:\*\*.*$FILTER_STATUS" "$ADR_DIR/$f" > /dev/null && echo "$f"; done | wc -l | tr -d ' ')
+    FILTERED=$(ls -1 "$ADR_DIR" | grep -E '^[0-9]{3}-.*\.md$' | while read f; do grep -m 1 "^\*\*Status:\*\*.*$FILTER_STATUS" "$ADR_DIR/$f" > /dev/null && echo "$f"; done | wc -l | tr -d ' ')
     echo "Filtered ($FILTER_STATUS): $FILTERED"
 fi

@@ -6,7 +6,7 @@
 
 ## Context
 
-Having decided to use ADRs (see ADR-0000), we need a consistent structure
+Having decided to use ADRs (see ADR-000), we need a consistent structure
 to ensure all ADRs contain the necessary information and are easy to read.
 Without a standard template, ADRs might be inconsistent, missing important
 details, or difficult to compare.

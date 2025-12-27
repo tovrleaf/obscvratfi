@@ -6,8 +6,8 @@
 
 ## Context
 
-Having decided to use ADRs with a standard template (see ADR-0000 and
-ADR-0001), we need a clear process for when and how to create them.
+Having decided to use ADRs with a standard template (see ADR-000 and
+ADR-001), we need a clear process for when and how to create them.
 Without a defined workflow, ADRs might be created inconsistently or
 important decisions might go undocumented.
 

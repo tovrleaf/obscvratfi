@@ -32,7 +32,7 @@ An ADR is a short text file describing:
 
 ADRs will be:
 - Stored in `/docs/adr/` directory
-- Numbered sequentially starting from 0000
+- Numbered sequentially starting from 000
 - Written in Markdown format
 - Immutable once accepted (new decisions supersede old ones rather than editing)
 - Created for any decision that affects structure, dependencies, patterns, or long-term maintainability
@@ -93,5 +93,5 @@ ADRs will be:
 
 ## Notes
 
-See ADR-0001 for the template structure and ADR-0002 for the decision-making
+See ADR-001 for the template structure and ADR-002 for the decision-making
 workflow that defines when and how to create ADRs.

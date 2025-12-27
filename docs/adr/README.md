@@ -10,9 +10,9 @@ ADRs document significant architectural and technical decisions made during the 
 
 | ADR | Title | Status | Date |
 |-----|-------|--------|------|
-| [0000](0000-use-adr-for-architecture-decisions.md) | Use Architecture Decision Records | Accepted | 2025-12-27 |
-| [0001](0001-adr-template.md) | ADR Template Structure | Accepted | 2025-12-27 |
-| [0002](0002-decision-making-workflow.md) | Decision-Making Workflow | Accepted | 2025-12-27 |
+| [000](000-use-adr-for-architecture-decisions.md) | Use Architecture Decision Records | Accepted | 2025-12-27 |
+| [001](001-adr-template.md) | ADR Template Structure | Accepted | 2025-12-27 |
+| [002](002-decision-making-workflow.md) | Decision-Making Workflow | Accepted | 2025-12-27 |
 
 ## Creating a New ADR
 
@@ -31,7 +31,7 @@ This will:
 
 Or manually:
 1. Copy `template.md`
-2. Rename to `XXXX-your-decision-title.md` (next sequential number)
+2. Rename to `XXX-your-decision-title.md` (next sequential number)
 3. Fill in all sections
 4. Update this README with a new entry
 
@@ -55,7 +55,7 @@ Use the helper script to list all ADRs:
 - **Proposed:** Under consideration, not yet finalized
 - **Accepted:** Approved and should be followed
 - **Deprecated:** No longer recommended but not formally replaced
-- **Superseded by ADR-XXXX:** Replaced by a newer decision
+- **Superseded by ADR-XXX:** Replaced by a newer decision
 
 ## When to Create an ADR
 
@@ -68,4 +68,4 @@ Create an ADR for decisions that affect:
 - Performance optimization strategies
 - Breaking changes
 
-See [ADR-0002](0002-decision-making-workflow.md) for the complete decision-making workflow.
+See [ADR-002](002-decision-making-workflow.md) for the complete decision-making workflow.
