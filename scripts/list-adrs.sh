@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Script to list all ADRs with their status
 # Usage: ./scripts/list-adrs.sh [status]

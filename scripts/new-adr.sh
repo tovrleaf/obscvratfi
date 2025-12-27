@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Script to create a new ADR from template
 # Usage: ./scripts/new-adr.sh "Decision Title"
