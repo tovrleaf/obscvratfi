@@ -224,10 +224,16 @@ async function fetchUser(userId: string, options?: FetchOptions): Promise<User> 
 
 ## Git Commit Guidelines
 
-- Write clear, concise commit messages
-- Use present tense: "Add feature" not "Added feature"
-- First line under 72 characters
-- Reference issue numbers when applicable
+For detailed commit message guidelines and branch naming conventions, see
+[CONTRIBUTING.md](CONTRIBUTING.md).
+
+**Quick Reference:**
+- Use imperative mood: "Add feature" not "Added feature"
+- Keep header under 72 characters
+- Add body for non-trivial changes (wrap at 72-74 chars)
+- Explain WHY, not just what
+- Reference issues: `Fixes #123`
+- Branch naming: `type/short-description` (e.g., `feature/user-auth`)
 
 ## When Making Changes
 
