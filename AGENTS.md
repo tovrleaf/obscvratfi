@@ -222,6 +222,67 @@ async function fetchUser(userId: string, options?: FetchOptions): Promise<User> 
 - Mock external dependencies
 - Keep tests isolated and independent
 
+## Architecture Decision Records (ADRs)
+
+Significant architectural and technical decisions should be documented in
+Architecture Decision Records (ADRs). This creates a clear history of why
+decisions were made and helps maintain consistency throughout the project.
+
+### When AI Agents Should Prompt for ADRs
+
+As an AI agent working on this codebase, you should suggest creating an ADR when:
+
+- **Technology/Framework Choices:** Selecting libraries, frameworks, or tools that will be core dependencies
+- **Major Dependencies:** Adding significant third-party services or packages
+- **Patterns & Conventions:** Establishing new code patterns, project structure, or naming conventions
+- **Data Modeling:** Database schema design, API structure (REST vs GraphQL), data format decisions
+- **Security Decisions:** Authentication/authorization approaches, encryption strategies
+- **Performance Strategies:** Caching implementations, optimization techniques that affect architecture
+- **Breaking Changes:** Changes that affect public APIs or require migration
+
+### ADR Workflow for Agents
+
+When an ADR-worthy decision comes up:
+
+1. **Recognize the need:** Identify that the decision is architecturally significant
+2. **Notify the user:** "This decision should be documented in an ADR. Let me help you with that."
+3. **Follow the decision-making workflow:**
+   - Ask relevant questions based on decision type (see ADR-0002)
+   - Research and present alternatives with pros/cons
+   - Use appropriate approach: present options, make recommendation, or ask Socratic questions
+   - Help draft the ADR after decision is made
+4. **Create the ADR:** Use `./scripts/new-adr.sh "Decision Title"` or create manually
+5. **Reference the ADR:** In code comments, PR descriptions, and related documentation
+
+### ADR Resources
+
+- **ADR Directory:** `/docs/adr/`
+- **Template:** `/docs/adr/template.md`
+- **Workflow Guide:** See ADR-0002 for detailed decision-making process
+- **Helper Scripts:**
+  - `./scripts/new-adr.sh "Title"` - Create new ADR
+  - `./scripts/list-adrs.sh [status]` - List all ADRs
+
+### Creating ADRs
+
+```bash
+# Create a new ADR
+./scripts/new-adr.sh "Choose frontend framework"
+
+# List all ADRs
+./scripts/list-adrs.sh
+
+# List ADRs by status
+./scripts/list-adrs.sh Accepted
+```
+
+Remember: Not every decision needs an ADR. Focus on decisions that:
+- Have long-term implications
+- Are difficult or expensive to reverse
+- Affect multiple parts of the system
+- Set precedents for future work
+- Involve significant tradeoffs
+
 ## Git Commit Guidelines
 
 For detailed commit message guidelines and branch naming conventions, see
