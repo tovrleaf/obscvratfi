@@ -1,8 +1,8 @@
-{{ define "content" }}
+{{ define "main" }}
 <article class="gig">
     <h1>{{ .Params.venue }}</h1>
     <div class="gig-details">
-        <p><strong>Date:</strong> {{ .Params.date | dateFormat "Monday, January 2, 2006" }}</p>
+         <p><strong>Date:</strong> {{ .Date | dateFormat "Monday, January 2, 2006" }}</p>
         <p><strong>Venue:</strong> {{ .Params.venue }}</p>
         <p><strong>Location:</strong> {{ .Params.location }}</p>
         {{ if .Params.time }}<p><strong>Time:</strong> {{ .Params.time }}</p>{{ end }}

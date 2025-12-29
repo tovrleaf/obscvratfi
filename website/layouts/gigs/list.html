@@ -1,14 +1,15 @@
-{{ define "content" }}
+{{ define "main" }}
 <section class="gigs-list">
     <h1>{{ .Title }}</h1>
     
-    {{ $gigs := where .Pages "Kind" "page" | sort "Date" "desc" }}
-    {{ if $gigs }}
+    {{ $gigs := where .Pages "Kind" "page" }}
+    {{ $sortedGigs := sort $gigs "Date" "desc" }}
+    {{ if $sortedGigs }}
         <ul class="gigs">
-        {{ range $gigs }}
+        {{ range $sortedGigs }}
             <li>
                 <a href="{{ .Permalink }}">
-                    <span class="gig-date">{{ .Params.date | dateFormat "2006-01-02" }}</span>
+                    <span class="gig-date">{{ .Date | dateFormat "2006-01-02" }}</span>
                     <span class="gig-venue">{{ .Params.venue }}</span>
                     <span class="gig-location">{{ .Params.location }}</span>
                 </a>

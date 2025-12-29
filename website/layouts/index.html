@@ -1,4 +1,4 @@
-{{ define "content" }}
+{{ define "main" }}
 <section class="home">
     <h1>{{ .Site.Title }}</h1>
     <p>{{ .Site.Params.description | default "Welcome to the band website" }}</p>
@@ -6,12 +6,14 @@
     {{ if .Site.GetPage "/gigs" }}
     <section class="latest-gigs">
         <h2>Latest Gigs</h2>
-        {{ $gigs := where (where site.Pages "Section" "gigs") "Kind" "page" | sort "Date" "desc" | first 5 }}
-        {{ if $gigs }}
+        {{ $gigs := where .Site.Pages "Section" "gigs" }}
+        {{ $sortedGigs := sort $gigs "Date" "desc" }}
+        {{ $latestGigs := first 5 $sortedGigs }}
+        {{ if $latestGigs }}
             <ul>
-            {{ range $gigs }}
+            {{ range $latestGigs }}
                 <li>
-                    <a href="{{ .Permalink }}">{{ .Params.date | dateFormat "2006-01-02" }} - {{ .Params.venue }}</a>
+                    <a href="{{ .Permalink }}">{{ .Date | dateFormat "2006-01-02" }} - {{ .Params.venue }}</a>
                 </li>
             {{ end }}
             </ul>
