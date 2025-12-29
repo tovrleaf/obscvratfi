@@ -13,6 +13,8 @@ ADRs document significant architectural and technical decisions made during the 
 | [000](000-use-adr-for-architecture-decisions.md) | Use Architecture Decision Records | Accepted | 2025-12-27 |
 | [001](001-adr-template.md) | ADR Template Structure | Accepted | 2025-12-27 |
 | [002](002-decision-making-workflow.md) | Decision-Making Workflow | Accepted | 2025-12-27 |
+| [003](003-website-hosting-static-site-generation-seo-strategy.md) | Website Hosting, Static Site Generation & SEO Strategy | Accepted | 2025-12-27 |
+| [004](004-instagram-feed-integration-dynamic-content-strategy.md) | Instagram Feed Integration & Dynamic Content Strategy | Accepted | 2025-12-27 |
 
 ## Creating a New ADR
 
