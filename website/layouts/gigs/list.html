@@ -1,0 +1,22 @@
+{{ define "content" }}
+<section class="gigs-list">
+    <h1>{{ .Title }}</h1>
+    
+    {{ $gigs := where .Pages "Kind" "page" | sort "Date" "desc" }}
+    {{ if $gigs }}
+        <ul class="gigs">
+        {{ range $gigs }}
+            <li>
+                <a href="{{ .Permalink }}">
+                    <span class="gig-date">{{ .Params.date | dateFormat "2006-01-02" }}</span>
+                    <span class="gig-venue">{{ .Params.venue }}</span>
+                    <span class="gig-location">{{ .Params.location }}</span>
+                </a>
+            </li>
+        {{ end }}
+        </ul>
+    {{ else }}
+        <p>No gigs scheduled yet.</p>
+    {{ end }}
+</section>
+{{ end }}

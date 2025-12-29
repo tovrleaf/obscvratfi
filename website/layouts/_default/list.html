@@ -1,0 +1,19 @@
+{{ define "content" }}
+<section class="list">
+    <h1>{{ .Title }}</h1>
+    {{ if .Content }}<div class="intro">{{ .Content }}</div>{{ end }}
+    
+    {{ if .Pages }}
+    <ul class="page-list">
+        {{ range .Pages }}
+        <li>
+            <a href="{{ .Permalink }}">{{ .Title }}</a>
+            {{ if .Params.date }}<span class="date">{{ .Params.date | dateFormat "2006-01-02" }}</span>{{ end }}
+        </li>
+        {{ end }}
+    </ul>
+    {{ else }}
+    <p>No pages found.</p>
+    {{ end }}
+</section>
+{{ end }}

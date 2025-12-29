@@ -1,0 +1,41 @@
+{{ define "content" }}
+<section class="home">
+    <h1>{{ .Site.Title }}</h1>
+    <p>{{ .Site.Params.description | default "Welcome to the band website" }}</p>
+    
+    {{ if .Site.GetPage "/gigs" }}
+    <section class="latest-gigs">
+        <h2>Latest Gigs</h2>
+        {{ $gigs := where (where site.Pages "Section" "gigs") "Kind" "page" | sort "Date" "desc" | first 5 }}
+        {{ if $gigs }}
+            <ul>
+            {{ range $gigs }}
+                <li>
+                    <a href="{{ .Permalink }}">{{ .Params.date | dateFormat "2006-01-02" }} - {{ .Params.venue }}</a>
+                </li>
+            {{ end }}
+            </ul>
+            <a href="/gigs/">View all gigs</a>
+        {{ else }}
+            <p>No gigs scheduled yet.</p>
+        {{ end }}
+    </section>
+    {{ end }}
+
+    <section class="links">
+        <h2>Find Us</h2>
+        <ul>
+            {{ if .Site.Params.youtube }}<li><a href="{{ .Site.Params.youtube }}" target="_blank">YouTube</a></li>{{ end }}
+            {{ if .Site.Params.instagram }}<li><a href="{{ .Site.Params.instagram }}" target="_blank">Instagram</a></li>{{ end }}
+            {{ if .Site.Params.bandcamp }}<li><a href="{{ .Site.Params.bandcamp }}" target="_blank">Bandcamp</a></li>{{ end }}
+        </ul>
+    </section>
+
+    {{ if .Site.GetPage "/albums" }}
+    <section class="albums-preview">
+        <h2>Music</h2>
+        <p><a href="/albums/">Listen to our music on Bandcamp</a></p>
+    </section>
+    {{ end }}
+</section>
+{{ end }}

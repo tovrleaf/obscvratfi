@@ -1,0 +1,6 @@
+<footer>
+    <p>&copy; {{ now.Year }} {{ .Site.Title }}. All rights reserved.</p>
+    {{ if .Site.Params.youtube }}<a href="{{ .Site.Params.youtube }}" target="_blank">YouTube</a>{{ end }}
+    {{ if .Site.Params.instagram }}<a href="{{ .Site.Params.instagram }}" target="_blank">Instagram</a>{{ end }}
+    {{ if .Site.Params.bandcamp }}<a href="{{ .Site.Params.bandcamp }}" target="_blank">Bandcamp</a>{{ end }}
+</footer>
