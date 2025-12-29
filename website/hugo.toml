@@ -16,13 +16,19 @@ bandcamp = "https://bandcamp.com"
 
 # Output settings
 [outputs]
-home = ["HTML", "JSON", "RSS"]
+home = ["HTML", "JSON", "RSS", "sitemap"]
 section = ["HTML"]
 
 # Output format settings
+[outputFormats]
 [outputFormats.RSS]
 mediatype = "application/rss+xml"
 baseName = "feed"
+
+[outputFormats.sitemap]
+mediatype = "application/xml"
+baseName = "sitemap"
+isPlainText = false
 
 # Build settings
 [build]

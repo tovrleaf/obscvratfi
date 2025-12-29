@@ -1,0 +1,21 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>{{ .Site.Title }}</title>
+    <link>{{ .Site.BaseURL }}</link>
+    <description>{{ .Site.Params.description }}</description>
+    <language>{{ .Site.LanguageCode }}</language>
+    <managingEditor>{{ .Site.Params.author | default "noreply@example.com" }}</managingEditor>
+    <atom:link href="{{ "feed.xml" | absURL }}" rel="self" type="application/rss+xml" />
+    {{ range first 10 .Site.AllPages }}
+    {{ if and (ne .Kind "home") (ne .Section "") }}
+    <item>
+      <title>{{ .Title }}</title>
+      <link>{{ .Permalink }}</link>
+      <guid isPermaLink="true">{{ .Permalink }}</guid>
+      <pubDate>{{ .Date.Format "Mon, 02 Jan 2006 15:04:05 -0700" }}</pubDate>
+      <description>{{ .Summary | html }}</description>
+    </item>
+    {{ end }}
+    {{ end }}
+  </channel>
+</rss>

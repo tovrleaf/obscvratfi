@@ -47,7 +47,7 @@ serve: ## Run Hugo dev server in Docker (http://localhost:1313)
 	docker-compose up hugo
 
 build: ## Build Hugo site for production in Docker
-	docker-compose run --rm hugo hugo
+	docker-compose run --rm hugo --destination=/src/public
 
 clean: ## Remove Docker containers
 	docker-compose down

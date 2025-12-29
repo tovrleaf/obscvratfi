@@ -1,0 +1,9 @@
+{{- $json := dict "siteTitle" .Site.Title "siteDescription" .Site.Params.description "baseURL" .Site.BaseURL "pages" (slice) -}}
+{{- $pages := (slice) -}}
+{{- range .Site.AllPages -}}
+  {{- if not .IsHome -}}
+    {{- $pages = $pages | append (dict "title" .Title "url" .Permalink "date" (.Date.Format "2006-01-02")) -}}
+  {{- end -}}
+{{- end -}}
+{{- $json = merge $json (dict "pages" $pages) -}}
+{{- $json | jsonify (dict "indent" "  ") }}

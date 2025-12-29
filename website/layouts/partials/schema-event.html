@@ -1,0 +1,32 @@
+{{ if and (eq .Section "gigs") .Params.venue .Params.date }}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Event",
+  "name": "{{ .Site.Title }} at {{ .Params.venue }}",
+  "description": "{{ .Description | default (print .Site.Title " performance at " .Params.venue) }}",
+  "startDate": "{{ .Params.date.Format "2006-01-02" }}{{ if .Params.time }}T{{ .Params.time }}{{ else }}T20:00{{ end }}",
+  "endDate": "{{ .Params.date.Format "2006-01-02" }}T23:00",
+  "location": {
+    "@type": "Place",
+    "name": "{{ .Params.venue }}",
+    "address": {
+      "@type": "PostalAddress",
+      "addressRegion": "{{ .Params.location }}"
+    }
+  },
+  "performer": {
+    "@type": "MusicGroup",
+    "name": "{{ .Site.Title }}"
+  }
+  {{ if .Params.ticket_link }},
+  "offers": {
+    "@type": "Offer",
+    "url": "{{ .Params.ticket_link }}",
+    "priceCurrency": "EUR",
+    "availability": "https://schema.org/PreOrder"
+  }
+  {{ end }}
+}
+</script>
+{{ end }}

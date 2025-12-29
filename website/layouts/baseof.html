@@ -6,6 +6,8 @@
     <title>{{ .Title }}{{ if not .IsHome }} - {{ .Site.Title }}{{ end }}</title>
     <meta name="description" content="{{ .Description | default .Site.Params.description }}">
     {{ partial "og-tags.html" . }}
+    {{ if .IsHome }}{{ partial "schema-music-group.html" . }}{{ end }}
+    {{ partial "schema-event.html" . }}
     <style>
         * {
             margin: 0;

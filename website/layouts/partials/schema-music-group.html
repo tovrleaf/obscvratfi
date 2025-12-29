@@ -1,0 +1,14 @@
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "MusicGroup",
+  "name": "{{ .Site.Title }}",
+  "description": "{{ .Site.Params.description }}",
+  "url": "{{ .Site.BaseURL }}",
+  {{ if .Site.Params.youtube }}"video": "{{ .Site.Params.youtube }}",{{ end }}
+  {{ if .Site.Params.bandcamp }}"musicbrainz": "{{ .Site.Params.bandcamp }}",{{ end }}
+  "sameAs": [
+    {{ if .Site.Params.youtube }}"{{ .Site.Params.youtube }}"{{ end }}{{ if and .Site.Params.youtube .Site.Params.instagram }},{{ end }}{{ if .Site.Params.instagram }}"{{ .Site.Params.instagram }}"{{ end }}{{ if and (or .Site.Params.youtube .Site.Params.instagram) .Site.Params.bandcamp }},{{ end }}{{ if .Site.Params.bandcamp }}"{{ .Site.Params.bandcamp }}"{{ end }}
+  ]
+}
+</script>
