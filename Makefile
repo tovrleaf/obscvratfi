@@ -1,5 +1,5 @@
 .DEFAULT_GOAL := help
-.PHONY: help adr-new adr-list adr-help
+.PHONY: help adr-new adr-list adr-help serve build clean build-docker
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":[^#]*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
@@ -40,5 +40,19 @@ adr-help: ## Show ADR help and guidelines
 	@echo "More info:"
 	@echo "  See docs/adr/README.md for complete ADR documentation"
 	@echo "  See AGENTS.md for ADR workflow guidelines"
+
+# Website Tasks
+
+serve: ## Run Hugo dev server in Docker (http://localhost:1313)
+	docker-compose up hugo
+
+build: ## Build Hugo site for production in Docker
+	docker-compose run --rm hugo hugo
+
+clean: ## Remove Docker containers
+	docker-compose down
+
+build-docker: ## Build Docker image locally
+	docker build -t obscvratfi:latest .
 
 # vim: noexpandtab
