@@ -1,0 +1,43 @@
+# Hugo Configuration for obscvratfi Band Website
+
+# Site metadata
+title = "obscvratfi"
+baseURL = "http://localhost:1313"  # Change to obscvrat.fi for production
+languageCode = "en-us"
+defaultContentLanguage = "en"
+
+# Output settings
+[outputs]
+home = ["HTML", "JSON", "RSS"]
+section = ["HTML"]
+
+# Output format settings
+[outputFormats.RSS]
+mediatype = "application/rss+xml"
+baseName = "feed"
+
+# Build settings
+[build]
+noJSConfigInAssets = true
+
+# Taxonomies (for organizing content if needed)
+[taxonomies]
+tag = "tags"
+category = "categories"
+
+# Menu configuration (for navigation)
+[menu]
+[[menu.main]]
+name = "About"
+url = "/about/"
+weight = 1
+
+[[menu.main]]
+name = "Albums"
+url = "/albums/"
+weight = 2
+
+[[menu.main]]
+name = "Gigs"
+url = "/gigs/"
+weight = 3
