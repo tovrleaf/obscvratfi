@@ -1,15 +1,15 @@
-# Hugo Configuration for obscvratfi Band Website
+# Hugo Configuration for Obscvrat Band Website
 
 # Site metadata
-title = "obscvratfi"
-description = "Official band website for obscvratfi"
+title = "Obscvrat"
+description = "Official band website for Obscvrat"
 baseURL = "http://localhost:1313"  # Change to obscvrat.fi for production
 languageCode = "en-us"
 defaultContentLanguage = "en"
 
 # Site parameters
 [params]
-description = "Official band website for obscvratfi showcasing gigs, music, and videos"
+description = "Official band website for Obscvrat showcasing gigs, music, and videos"
 youtube = "https://www.youtube.com"
 instagram = "https://www.instagram.com"
 bandcamp = "https://bandcamp.com"

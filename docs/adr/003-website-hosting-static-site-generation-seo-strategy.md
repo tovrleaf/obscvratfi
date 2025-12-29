@@ -6,7 +6,7 @@
 
 ## Context
 
-Building a band website for obscvratfi with the following requirements:
+Building a band website for Obscvrat with the following requirements:
 - Showcase gigs, music (Bandcamp), videos (YouTube), and basic band info
 - Content managed locally via Markdown files
 - Manual updates and deployments to AWS infrastructure

@@ -6,7 +6,7 @@
 
 ## Context
 
-As we build the obscvratfi band website, we need to make various
+As we build the Obscvrat band website, we need to make various
 architectural and technical decisions. These decisions often have
 long-term implications and need to be:
 

@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: obscvratfi-hugo
+    container_name: obscvrat-hugo
     ports:
       - "1313:1313"
     volumes:

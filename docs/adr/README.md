@@ -1,6 +1,6 @@
 # Architecture Decision Records
 
-This directory contains Architecture Decision Records (ADRs) for the obscvratfi band website project.
+This directory contains Architecture Decision Records (ADRs) for the Obscvrat band website project.
 
 ## What are ADRs?
 

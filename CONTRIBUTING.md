@@ -1,4 +1,4 @@
-# Contributing to obscvratfi
+# Contributing to Obscvrat
 
 Thanks for your interest in contributing! This guide will help you understand our workflow and conventions.
 

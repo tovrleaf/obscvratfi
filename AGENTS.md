@@ -1,10 +1,10 @@
-# Agent Guidelines for obscvratfi
+# Agent Guidelines for Obscvrat
 
 This document provides guidelines for AI coding agents working in this repository.
 
 ## Project Overview
 
-This is the obscvratfi project. As the codebase grows, maintain consistency with the patterns established in the initial implementation.
+This is the Obscvrat project. As the codebase grows, maintain consistency with the patterns established in the initial implementation.
 
 ## Build, Lint, and Test Commands
 
