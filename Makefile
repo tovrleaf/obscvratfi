@@ -1,5 +1,5 @@
 .DEFAULT_GOAL := help
-.PHONY: help adr-new adr-list adr-help serve build clean build-docker
+.PHONY: help adr-new adr-list adr-help serve build clean build-docker build-prod build-staging build-minified serve-prod list-content
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":[^#]*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
@@ -46,13 +46,39 @@ adr-help: ## Show ADR help and guidelines
 serve: ## Run Hugo dev server in Docker (http://localhost:1313)
 	docker-compose up hugo
 
-build: ## Build Hugo site for production in Docker
+build: ## Build Hugo site for development in Docker
 	docker-compose run --rm hugo --destination=/src/public
 
-clean: ## Remove Docker containers
-	docker-compose down
+build-prod: ## Build Hugo site for production (https://obscvrat.fi) with minification
+	docker-compose run --rm hugo --baseURL="https://obscvrat.fi" --minify --destination=/src/public
+
+build-staging: ## Build Hugo site for staging (CloudFront) - requires DISTRIBUTION_ID env var
+	@if [ -z "$(DISTRIBUTION_ID)" ]; then \
+		echo "Error: DISTRIBUTION_ID is required for staging build"; \
+		echo "Usage: make build-staging DISTRIBUTION_ID=d1234abcd.cloudfront.net"; \
+		exit 1; \
+	fi
+	docker-compose run --rm hugo --baseURL="https://$(DISTRIBUTION_ID)" --minify --destination=/src/public
+
+build-minified: ## Build Hugo site with minification enabled (for testing production optimization)
+	docker-compose run --rm hugo --minify --destination=/src/public
 
 build-docker: ## Build Docker image locally
 	docker build -t obscvratfi:latest .
+
+clean: ## Remove Docker containers and cleanup
+	docker-compose down
+	rm -rf website/public
+
+distclean: ## Clean everything including build artifacts
+	docker-compose down
+	rm -rf website/public website/.hugo_build.lock
+
+list-content: ## List all content files in the site
+	@echo "Gigs:"
+	@find website/content/gigs -name "*.md" -type f | sort
+	@echo ""
+	@echo "Albums:"
+	@find website/content/albums -name "*.md" -type f | sort
 
 # vim: noexpandtab
