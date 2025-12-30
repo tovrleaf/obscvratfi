@@ -9,60 +9,272 @@
     {{ if .IsHome }}{{ partial "schema-music-group.html" . }}{{ end }}
     {{ partial "schema-event.html" . }}
     <style>
+        :root {
+            --primary-color: #333;
+            --secondary-color: #666;
+            --accent-color: #0066cc;
+            --border-color: #ddd;
+            --bg-light: #f5f5f5;
+            --spacing-unit: 1rem;
+        }
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
+        
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             line-height: 1.6;
-            color: #333;
+            color: var(--primary-color);
+            background: #fff;
         }
+        
         header {
-            background: #f5f5f5;
-            padding: 2rem;
-            border-bottom: 1px solid #ddd;
+            background: var(--bg-light);
+            padding: 1.5rem 0;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
+        
         nav {
             max-width: 1200px;
             margin: 0 auto;
+            padding: 0 var(--spacing-unit);
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
+        
         nav .logo {
             font-size: 1.5rem;
             font-weight: bold;
+            color: var(--primary-color);
+            text-decoration: none;
         }
+        
         nav ul {
             list-style: none;
             display: flex;
             gap: 2rem;
         }
+        
         nav a {
             text-decoration: none;
-            color: #333;
+            color: var(--primary-color);
             transition: color 0.3s;
         }
+        
         nav a:hover {
-            color: #666;
+            color: var(--accent-color);
         }
+        
         main {
             max-width: 1200px;
-            margin: 2rem auto;
-            padding: 0 1rem;
+            margin: 0 auto;
+            padding: 2rem var(--spacing-unit);
         }
+        
+        .hero {
+            text-align: center;
+            margin-bottom: 4rem;
+            padding: 2rem 0;
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .tagline {
+            font-size: 1.2rem;
+            color: var(--secondary-color);
+            margin: 0;
+        }
+        
+        .featured-section {
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: var(--bg-light);
+            border-radius: 8px;
+        }
+        
+        .featured-section h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+        }
+        
+        .gigs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .gig-card {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 1.5rem;
+            display: flex;
+            gap: 1rem;
+            transition: box-shadow 0.3s;
+        }
+        
+        .gig-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .gig-date {
+            background: var(--primary-color);
+            color: white;
+            padding: 0.75rem 1rem;
+            border-radius: 4px;
+            font-weight: bold;
+            min-width: 70px;
+            text-align: center;
+            height: fit-content;
+        }
+        
+        .gig-info h3 {
+            margin: 0 0 0.25rem 0;
+            font-size: 1.1rem;
+        }
+        
+        .gig-info h3 a {
+            color: var(--accent-color);
+            text-decoration: none;
+        }
+        
+        .gig-info h3 a:hover {
+            text-decoration: underline;
+        }
+        
+        .gig-location {
+            color: var(--secondary-color);
+            font-size: 0.9rem;
+            margin: 0;
+        }
+        
+        .albums-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .album-preview {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 1.5rem;
+            transition: box-shadow 0.3s;
+        }
+        
+        .album-preview:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .album-preview h3 {
+            margin: 0 0 0.75rem 0;
+        }
+        
+        .album-preview h3 a {
+            color: var(--accent-color);
+            text-decoration: none;
+        }
+        
+        .album-preview h3 a:hover {
+            text-decoration: underline;
+        }
+        
+        .album-desc {
+            color: var(--secondary-color);
+            font-style: italic;
+            margin: 0 0 0.5rem 0;
+        }
+        
+        .album-date {
+            color: var(--secondary-color);
+            font-size: 0.9rem;
+            margin: 0;
+        }
+        
+        .section-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+        
+        .view-all, .read-more {
+            display: inline-block;
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            padding: 0.5rem 1rem;
+        }
+        
+        .view-all:hover, .read-more:hover {
+            color: var(--primary-color);
+            background: rgba(0, 102, 204, 0.1);
+            border-radius: 4px;
+        }
+        
+        .about-preview p {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+            color: var(--secondary-color);
+        }
+        
+        .social-list {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .social-list a {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .social-list a:hover {
+            color: var(--primary-color);
+        }
+        
+        .no-content {
+            color: var(--secondary-color);
+            font-style: italic;
+        }
+        
         footer {
-            background: #f5f5f5;
+            background: var(--bg-light);
             padding: 2rem;
             margin-top: 4rem;
             text-align: center;
-            color: #666;
-            border-top: 1px solid #ddd;
+            color: var(--secondary-color);
+            border-top: 1px solid var(--border-color);
         }
-        .content {
-            margin: 2rem 0;
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            nav ul {
+                gap: 1rem;
+            }
+            
+            .gigs-grid, .albums-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>

@@ -1,43 +1,76 @@
 {{ define "main" }}
 <section class="home">
-    <h1>{{ .Site.Title }}</h1>
-    <p>{{ .Site.Params.description | default "Welcome to the band website" }}</p>
+    <div class="hero">
+        <h1>{{ .Site.Title }}</h1>
+        <p class="tagline">{{ .Site.Params.description | default "Welcome to the band website" }}</p>
+    </div>
     
     {{ if .Site.GetPage "/gigs" }}
-    <section class="latest-gigs">
-        <h2>Latest Gigs</h2>
+    <section class="latest-gigs featured-section">
+        <h2>Upcoming Gigs</h2>
         {{ $gigs := where .Site.Pages "Section" "gigs" }}
         {{ $sortedGigs := sort $gigs "Date" "desc" }}
-        {{ $latestGigs := first 5 $sortedGigs }}
+        {{ $latestGigs := first 3 $sortedGigs }}
         {{ if $latestGigs }}
-            <ul>
+            <div class="gigs-grid">
             {{ range $latestGigs }}
-                <li>
-                    <a href="{{ .Permalink }}">{{ .Date | dateFormat "2006-01-02" }} - {{ .Params.venue }}</a>
-                </li>
+                <div class="gig-card">
+                    <div class="gig-date">{{ .Date | dateFormat "Jan 02" }}</div>
+                    <div class="gig-info">
+                        <h3><a href="{{ .Permalink }}">{{ .Params.venue }}</a></h3>
+                        <p class="gig-location">{{ .Params.location }}</p>
+                    </div>
+                </div>
             {{ end }}
-            </ul>
-            <a href="/gigs/">View all gigs</a>
+            </div>
+            <div class="section-footer">
+                <a href="/gigs/" class="view-all">View all gigs →</a>
+            </div>
         {{ else }}
-            <p>No gigs scheduled yet.</p>
+            <p class="no-content">No gigs scheduled yet.</p>
         {{ end }}
     </section>
     {{ end }}
 
-    <section class="links">
-        <h2>Find Us</h2>
-        <ul>
-            {{ if .Site.Params.youtube }}<li><a href="{{ .Site.Params.youtube }}" target="_blank">YouTube</a></li>{{ end }}
-            {{ if .Site.Params.instagram }}<li><a href="{{ .Site.Params.instagram }}" target="_blank">Instagram</a></li>{{ end }}
-            {{ if .Site.Params.bandcamp }}<li><a href="{{ .Site.Params.bandcamp }}" target="_blank">Bandcamp</a></li>{{ end }}
-        </ul>
-    </section>
-
     {{ if .Site.GetPage "/albums" }}
-    <section class="albums-preview">
-        <h2>Music</h2>
-        <p><a href="/albums/">Listen to our music on Bandcamp</a></p>
+    <section class="recent-albums featured-section">
+        <h2>Recent Releases</h2>
+        {{ $albums := where .Site.Pages "Section" "albums" }}
+        {{ $sortedAlbums := sort $albums "Date" "desc" }}
+        {{ $recentAlbums := first 2 $sortedAlbums }}
+        {{ if $recentAlbums }}
+            <div class="albums-grid">
+            {{ range $recentAlbums }}
+                <div class="album-preview">
+                    <h3><a href="{{ .Permalink }}">{{ .Title }}</a></h3>
+                    {{ if .Params.description }}<p class="album-desc">{{ .Params.description }}</p>{{ end }}
+                    {{ if .Date }}<p class="album-date">Released {{ .Date | dateFormat "January 2006" }}</p>{{ end }}
+                </div>
+            {{ end }}
+            </div>
+            <div class="section-footer">
+                <a href="/albums/" class="view-all">Explore all music →</a>
+            </div>
+        {{ end }}
     </section>
     {{ end }}
+
+    <section class="about-preview featured-section">
+        <h2>About Obscvrat</h2>
+        {{ $aboutPage := .Site.GetPage "/about" }}
+        {{ if $aboutPage }}
+            <p>{{ $aboutPage.Summary }}</p>
+            <a href="/about/" class="read-more">Learn more about our sound →</a>
+        {{ end }}
+    </section>
+
+    <section class="social-links featured-section">
+        <h2>Connect</h2>
+        <ul class="social-list">
+            {{ if .Site.Params.youtube }}<li><a href="{{ .Site.Params.youtube }}" target="_blank" rel="noopener noreferrer">YouTube</a></li>{{ end }}
+            {{ if .Site.Params.instagram }}<li><a href="{{ .Site.Params.instagram }}" target="_blank" rel="noopener noreferrer">Instagram</a></li>{{ end }}
+            {{ if .Site.Params.bandcamp }}<li><a href="{{ .Site.Params.bandcamp }}" target="_blank" rel="noopener noreferrer">Bandcamp</a></li>{{ end }}
+        </ul>
+    </section>
 </section>
 {{ end }}
