@@ -1,15 +1,36 @@
 # Hugo Configuration for Obscvrat Noisework Website
+# Documentation: https://gohugo.io/getting-started/configuration/
+#
+# Environment-specific settings:
+# - Development: baseURL = "http://localhost:1313", minify = false
+# - Production: baseURL = "https://obscvrat.fi", minify = true
+#
+# To build for production:
+#   hugo --baseURL="https://obscvrat.fi" --minify
+#
+# To build for staging (with CloudFront):
+#   hugo --baseURL="https://d1234.cloudfront.net" --minify
 
 # Site metadata
 title = "Obscvrat"
 description = "Official noisework website for Obscvrat"
-baseURL = "http://localhost:1313"  # Change to obscvrat.fi for production
+baseURL = "http://localhost:1313"  # Change to https://obscvrat.fi for production
 languageCode = "en-us"
 defaultContentLanguage = "en"
+
+# Enable gzip compression and minification in production
+minify = false  # Set to true in production builds
+
+# Logging
+logLevel = "warn"
 
 # Site parameters
 [params]
 description = "Official noisework website for Obscvrat showcasing gigs, music, and videos"
+author = "Obscvrat"
+year = 2025
+
+# Social media links
 youtube = "https://www.youtube.com"
 instagram = "https://www.instagram.com"
 bandcamp = "https://bandcamp.com"
@@ -18,26 +39,44 @@ bandcamp = "https://bandcamp.com"
 [outputs]
 home = ["HTML", "JSON", "RSS", "sitemap"]
 section = ["HTML"]
+taxonomy = ["HTML"]
+taxonomyTerm = ["HTML"]
 
 # Output format settings
 [outputFormats]
+
 [outputFormats.RSS]
 mediatype = "application/rss+xml"
 baseName = "feed"
+rel = "alternate"
 
 [outputFormats.sitemap]
 mediatype = "application/xml"
 baseName = "sitemap"
 isPlainText = false
 
+[outputFormats.JSON]
+mediatype = "application/json"
+baseName = "index"
+
 # Build settings
 [build]
 noJSConfigInAssets = true
+writeStats = false
 
 # Taxonomies (for organizing content if needed)
 [taxonomies]
 tag = "tags"
 category = "categories"
+
+# Markup settings
+[markup]
+[markup.highlight]
+style = "github"
+noClasses = false
+
+[markup.goldmark.renderer]
+unsafe = false
 
 # Menu configuration (for navigation)
 [menu]
@@ -55,3 +94,19 @@ weight = 2
 name = "Gigs"
 url = "/gigs/"
 weight = 3
+
+# Permalinks configuration
+[permalinks]
+gigs = "/gigs/:filename/"
+albums = "/albums/:filename/"
+about = "/about/"
+
+# Outputs per kind
+[mediaTypes."text/html"]
+suffixes = ["html"]
+
+[mediaTypes."application/json"]
+suffixes = ["json"]
+
+[mediaTypes."application/rss+xml"]
+suffixes = ["xml"]
