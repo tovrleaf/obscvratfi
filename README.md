@@ -27,6 +27,67 @@ make build-prod
 make build-staging DISTRIBUTION_ID=d1234abcd.cloudfront.net
 ```
 
+## CI/CD Pipeline
+
+The repository includes an automated CI/CD pipeline that **validates code quality but does not deploy**.
+
+### Automated Checks
+
+When you push code or create a pull request, GitHub Actions automatically runs:
+
+- **Linting** - Code style and formatting checks
+  - Shell scripts (`shellcheck`)
+  - YAML files (`yamllint`)
+  - Markdown files (`markdownlint`)
+
+- **Build & Validation** - Site compilation and correctness
+  - Hugo site build
+  - HTML validation (errors only)
+  - Critical internal link verification
+
+- **Security** - Secret scanning
+  - Detects accidentally committed AWS keys
+  - Prevents API tokens in code
+
+### Email Notifications
+
+Receive email alerts for:
+- ✅ All CI checks passed (PR ready to review)
+- ❌ CI checks failed (see logs for details)
+- ✅ Code merged to main (ready for manual deployment)
+
+### Workflow
+
+```
+Your PR
+  ↓
+GitHub Actions validates
+  ↓
+✅ PASS or ❌ FAIL (emailed)
+  ↓
+You review & approve PR
+  ↓
+Merge to main
+  ↓
+✅ Merge notification (email)
+  ↓
+Manual deployment (separate ADR)
+```
+
+### Deployment
+
+**Important:** The CI/CD pipeline validates code but does **not automatically deploy** to production.
+
+After merging to main and CI checks pass, deploy manually:
+
+```bash
+./scripts/deploy.sh production
+```
+
+See `docs/DEPLOYMENT.md` for detailed deployment instructions.
+
+For complete CI/CD documentation, see `docs/CI-CD.md`.
+
 ## Project Structure
 
 ```

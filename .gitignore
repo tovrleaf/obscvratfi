@@ -1,0 +1,16 @@
+# Local development
+TODO.md
+.DS_Store
+
+# Pre-commit framework cache (when implemented)
+.pre-commit
+
+# IDE and editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+Thumbs.db

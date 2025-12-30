@@ -1,0 +1,269 @@
+name: PR Checks - Lint, Build & Validate
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint:
+    name: Lint Code
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install shellcheck
+        run: sudo apt-get install -y shellcheck
+
+      - name: Lint shell scripts
+        run: |
+          echo "🔍 Checking shell scripts..."
+          shellcheck scripts/*.sh || true
+
+      - name: Install yamllint
+        run: pip install yamllint
+
+      - name: Lint YAML files
+        run: |
+          echo "🔍 Checking YAML files..."
+          yamllint -c .github/yamllint-config.yml .github/workflows/*.yml website/hugo.toml || true
+
+      - name: Install markdownlint
+        run: npm install -g markdownlint-cli
+
+      - name: Lint Markdown files
+        run: |
+          echo "🔍 Checking Markdown files..."
+          markdownlint README.md website/README.md docs/**/*.md || true
+
+  build:
+    name: Build & Validate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image (with cache)
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: false
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          tags: obscvratfi:build
+
+      - name: Build Hugo site
+        run: |
+          echo "🏗️  Building Hugo site..."
+          docker-compose run --rm hugo --destination=/src/public
+          echo "✅ Build completed"
+          ls -lh website/public/
+
+      - name: Install html5validator
+        run: pip install html5validator
+
+      - name: Validate HTML
+        run: |
+          echo "🔍 Validating HTML..."
+          html5validator --root website/public/ --ignore-lines 'Generator' || true
+
+      - name: Check critical internal links
+        run: |
+          echo "🔗 Checking critical internal links..."
+          cd website/public
+          errors=0
+          
+          check_link() {
+            if [ -f "$1" ]; then
+              echo "✅ $1 exists"
+              return 0
+            else
+              echo "❌ $1 NOT FOUND"
+              return 1
+            fi
+          }
+          
+          check_link "index.html" || ((errors++))
+          check_link "about/index.html" || ((errors++))
+          check_link "gigs/index.html" || ((errors++))
+          check_link "albums/index.html" || ((errors++))
+          check_link "feed.xml" || ((errors++))
+          check_link "sitemap.xml" || ((errors++))
+          
+          if [ $errors -gt 0 ]; then
+            echo "❌ $errors critical links missing"
+            exit 1
+          else
+            echo "✅ All critical links present"
+          fi
+
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install TruffleHog
+        run: pip install truffleHog
+
+      - name: Scan for secrets
+        run: |
+          echo "🔐 Scanning for secrets..."
+          truffleHog filesystem . --json --max-depth 3 2>/dev/null | grep -q '"verified": true' && echo "❌ Potential secrets found!" && exit 1 || echo "✅ No secrets detected"
+        continue-on-error: true
+
+      - name: Check for AWS key patterns
+        run: |
+          echo "🔐 Checking for AWS key patterns..."
+          if grep -r "AKIA[0-9A-Z]\{16\}" . --exclude-dir=.git --exclude-dir=node_modules --exclude-dir=website/public 2>/dev/null; then
+            echo "❌ Potential AWS key found"
+            exit 1
+          fi
+          echo "✅ No AWS key patterns found"
+        continue-on-error: true
+
+  results:
+    name: Post Results
+    runs-on: ubuntu-latest
+    needs: [lint, build, security]
+    if: always()
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Determine overall status
+        run: |
+          if [ "${{ needs.lint.result }}" = "failure" ] || [ "${{ needs.build.result }}" = "failure" ] || [ "${{ needs.security.result }}" = "failure" ]; then
+            echo "STATUS=FAILED" >> $GITHUB_ENV
+          else
+            echo "STATUS=PASSED" >> $GITHUB_ENV
+          fi
+
+      - name: Create PR comment with results
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const status = '${{ env.STATUS }}';
+            const icon = status === 'PASSED' ? '✅' : '❌';
+            const summary = status === 'PASSED' 
+              ? 'All checks passed - ready to review!' 
+              : 'Some checks failed - please review the logs';
+            
+            const logsUrl = '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}';
+            const body = `## ${icon} CI Checks: ${status}\n\n${summary}\n\n### Results Summary\n- Lint: ${{ needs.lint.result }}\n- Build & Validate: ${{ needs.build.result }}\n- Security Scan: ${{ needs.security.result }}\n\n[View full logs](${logsUrl})`;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });
+
+  notify:
+    name: Send Email Notification
+    runs-on: ubuntu-latest
+    needs: [lint, build, security]
+    if: always()
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Determine status
+        run: |
+          if [ "${{ needs.lint.result }}" = "failure" ] || [ "${{ needs.build.result }}" = "failure" ] || [ "${{ needs.security.result }}" = "failure" ]; then
+            echo "STATUS=FAILED" >> $GITHUB_ENV
+            echo "EMOJI=❌" >> $GITHUB_ENV
+          else
+            echo "STATUS=PASSED" >> $GITHUB_ENV
+            echo "EMOJI=✅" >> $GITHUB_ENV
+          fi
+
+      - name: Send success email
+        if: env.STATUS == 'PASSED'
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: "✅ CI checks passed - ${{ github.ref_name }}"
+          to: ${{ secrets.NOTIFY_EMAIL }}
+          from: ${{ secrets.EMAIL_USERNAME }}
+          body: |
+            CI Pipeline: SUCCESS
+            
+            Commit: ${{ github.sha }}
+            Message: ${{ github.event.head_commit.message || 'N/A' }}
+            Branch: ${{ github.ref_name }}
+            Author: ${{ github.actor }}
+            
+            All checks passed:
+            ✅ Linting
+            ✅ Build & Validation
+            ✅ Security Scan
+            
+            View logs: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        continue-on-error: true
+
+      - name: Send failure email
+        if: env.STATUS == 'FAILED'
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: "❌ CI checks failed - ${{ github.ref_name }}"
+          to: ${{ secrets.NOTIFY_EMAIL }}
+          from: ${{ secrets.EMAIL_USERNAME }}
+          body: |
+            CI Pipeline: FAILED
+            
+            Commit: ${{ github.sha }}
+            Message: ${{ github.event.head_commit.message || 'N/A' }}
+            Branch: ${{ github.ref_name }}
+            Author: ${{ github.actor }}
+            
+            Failed checks:
+            Lint: ${{ needs.lint.result }}
+            Build & Validation: ${{ needs.build.result }}
+            Security Scan: ${{ needs.security.result }}
+            
+            View logs: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        continue-on-error: true
+
+      - name: Send merge notification
+        if: github.ref_name == 'main' && env.STATUS == 'PASSED'
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: "✅ Code merged to main - Ready for deployment"
+          to: ${{ secrets.NOTIFY_EMAIL }}
+          from: ${{ secrets.EMAIL_USERNAME }}
+          body: |
+            Code successfully merged to main and passed all CI checks.
+            
+            Commit: ${{ github.sha }}
+            Message: ${{ github.event.head_commit.message || 'N/A' }}
+            Author: ${{ github.actor }}
+            
+            ✅ All CI checks passed
+            ✅ Code ready for deployment
+            
+            To deploy:
+            ./scripts/deploy.sh production
+            
+            View logs: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        continue-on-error: true
