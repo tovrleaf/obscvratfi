@@ -27,6 +27,46 @@ make build-prod
 make build-staging DISTRIBUTION_ID=d1234abcd.cloudfront.net
 ```
 
+## Local Development Setup
+
+To catch validation issues **before** pushing to GitHub, set up local pre-commit hooks:
+
+```bash
+# One-time setup (installs dependencies and git hooks)
+make setup-hooks
+
+# Push normally - hooks run automatically
+git push
+
+# If you need to bypass hooks (emergency only)
+git push --no-verify
+```
+
+### What Local Hooks Check
+
+Local pre-commit hooks automatically validate:
+- ✅ Shell scripts (`shellcheck`)
+- ✅ YAML files (`yamllint`)
+- ✅ Markdown files (`markdownlint`)
+- ✅ Hugo site builds correctly
+- ✅ Generated HTML is valid
+- ✅ Critical internal links exist
+- ✅ No secrets accidentally committed
+
+**Feedback in seconds** instead of waiting 5-15 minutes for GitHub Actions!
+
+### Manual Hook Execution
+
+```bash
+# Run all hooks manually on all files
+make run-hooks
+
+# Uninstall hooks (if needed)
+make uninstall-hooks
+```
+
+See `docs/adr/005-local-pre-commit-hooks-for-development-validation.md` for detailed information about local validation.
+
 ## CI/CD Pipeline
 
 The repository includes an automated CI/CD pipeline that **validates code quality but does not deploy**.

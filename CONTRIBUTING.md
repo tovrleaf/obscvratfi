@@ -4,6 +4,56 @@ Thanks for your interest in contributing! This guide will help you understand ou
 
 For AI coding agent guidelines, see [AGENTS.md](AGENTS.md).
 
+## Getting Started
+
+### Prerequisites
+
+- Git
+- Docker and Docker Compose
+- Python 3.9+ (for pre-commit hooks)
+
+### Local Development Setup
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/tovrleaf/obscvrat.git
+   cd obscvrat
+   ```
+
+2. **Install pre-commit hooks for local validation:**
+   ```bash
+   make setup-hooks
+   ```
+   
+   This installs the pre-commit framework and sets up git hooks that automatically validate your changes before pushing. The hooks will:
+   - Check shell scripts, YAML, Markdown, and TOML files
+   - Validate the Hugo site builds
+   - Verify HTML structure
+   - Check for accidentally committed secrets
+   - Validate critical internal links
+
+3. **Start development:**
+   ```bash
+   make serve
+   ```
+   
+   The site will be available at http://localhost:1313 with hot reload enabled.
+
+### Validation Before Pushing
+
+When you push code, the pre-commit hooks run automatically. If there are any issues:
+
+1. Read the error message carefully
+2. Fix the issues locally
+3. Push again - hooks will run again
+
+If you need to bypass hooks for an emergency (use sparingly):
+```bash
+git push --no-verify
+```
+
+See [ADR-005: Local Pre-Commit Hooks](docs/adr/005-local-pre-commit-hooks-for-development-validation.md) for more details on local validation.
+
 ## Git Commit Guidelines
 
 Good commit messages make it easier to understand the history of the project and why changes were made. We follow a structured approach inspired by best practices from the Linux kernel community.

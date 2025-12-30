@@ -15,6 +15,7 @@ ADRs document significant architectural and technical decisions made during the 
 | [002](002-decision-making-workflow.md) | Decision-Making Workflow | Accepted | 2025-12-27 |
 | [003](003-website-hosting-static-site-generation-seo-strategy.md) | Website Hosting, Static Site Generation & SEO Strategy | Accepted | 2025-12-27 |
 | [004](004-instagram-feed-integration-dynamic-content-strategy.md) | Instagram Feed Integration & Dynamic Content Strategy | Accepted | 2025-12-27 |
+| [005](005-local-pre-commit-hooks-for-development-validation.md) | Local Pre-Commit Hooks for Development Validation | Accepted | 2025-12-30 |
 
 ## Creating a New ADR
 

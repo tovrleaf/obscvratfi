@@ -2,7 +2,7 @@
 TODO.md
 .DS_Store
 
-# Pre-commit framework cache (when implemented)
+# Pre-commit framework cache (ADR-005: Local Pre-Commit Hooks)
 .pre-commit
 
 # IDE and editor

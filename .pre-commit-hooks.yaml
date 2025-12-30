@@ -1,0 +1,30 @@
+# Custom pre-commit hook definitions for this project
+# These hooks are referenced by .pre-commit-config.yaml in the "local" repo section
+# See ADR-005 for rationale: docs/adr/005-local-pre-commit-hooks-for-development-validation.md
+
+- id: hugo-build
+  name: hugo-build
+  description: Validate Hugo site builds successfully without errors
+  entry: bash -c 'docker run --rm -v "$PWD/website:/site" -w /site alpine:3.20.2 sh -c "wget -q -O - https://github.com/gohugoio/hugo/releases/download/v0.128.2/hugo_0.128.2_linux-amd64.tar.gz | tar xz && ./hugo --config hugo.toml -s /site"'
+  language: system
+  pass_filenames: false
+  always_run: true
+  stages: [push]
+
+- id: html-validation
+  name: html-validation
+  description: Validate generated HTML structure for errors (not warnings)
+  entry: bash -c 'if command -v html5validator &> /dev/null; then find website/public -name "*.html" -type f -exec html5validator --show-warnings off {} +; fi'
+  language: system
+  pass_filenames: false
+  always_run: true
+  stages: [push]
+
+- id: critical-links
+  name: critical-links
+  description: Validate critical internal links in generated site
+  entry: scripts/pre-push-link-checker.sh
+  language: script
+  pass_filenames: false
+  always_run: true
+  stages: [push]
