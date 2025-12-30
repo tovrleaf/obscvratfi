@@ -60,7 +60,7 @@ jobs:
       - name: Build Hugo site
         run: |
           echo "🏗️  Building Hugo site..."
-          docker-compose run --rm hugo --destination=/src/public
+          docker run --rm -v "${{ github.workspace }}/website:/src" obscvratfi:build --destination=/src/public
           echo "✅ Build completed"
           ls -lh website/public/
 
