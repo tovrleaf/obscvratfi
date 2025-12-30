@@ -98,37 +98,56 @@ check_existing_ruleset() {
 create_ruleset() {
     log_info "Creating ruleset..."
     
+    # Create a temporary file for the JSON payload
+    local payload_file
+    payload_file=$(mktemp)
+    
+    # Write the ruleset configuration to the payload file
+    cat > "$payload_file" << 'EOF'
+{
+  "name": "Protect Main Branch",
+  "target": "branch",
+  "enforcement": "active",
+  "conditions": {
+    "ref_name": {
+      "include": ["refs/heads/main"],
+      "exclude": []
+    }
+  },
+  "rules": [
+    {
+      "type": "pull_request",
+      "parameters": {
+        "required_approving_review_count": 1,
+        "dismiss_stale_reviews_on_push": true,
+        "require_code_owner_review": false,
+        "require_last_push_approval": false,
+        "required_review_thread_resolution": true,
+        "allowed_merge_methods": ["merge", "squash", "rebase"]
+      }
+    },
+    {
+      "type": "required_status_checks",
+      "parameters": {
+        "strict_required_status_checks_policy": true,
+        "required_status_checks": [
+          {
+            "context": "pr-checks.yml"
+          }
+        ]
+      }
+    }
+  ]
+}
+EOF
+    
     local response
     response=$(gh api repos/"$OWNER"/"$REPO"/rulesets \
         --method POST \
-        -f name="$RULESET_NAME" \
-        -f target='branch' \
-        -f enforcement='active' \
-        -F conditions='{"ref_name":{"include":["refs/heads/main"]}}' \
-        -F rules='[
-            {
-                "type": "pull_request",
-                "parameters": {
-                    "required_approving_review_count": 1,
-                    "dismiss_stale_reviews_on_push": true,
-                    "require_code_owner_review": false,
-                    "require_last_push_approval": false,
-                    "required_review_thread_resolution": true,
-                    "allowed_merge_methods": ["merge", "squash", "rebase"]
-                }
-            },
-            {
-                "type": "required_status_checks",
-                "parameters": {
-                    "strict_required_status_checks_policy": true,
-                    "required_status_checks": [
-                        {
-                            "context": "pr-checks.yml"
-                        }
-                    ]
-                }
-            }
-        ]' 2>&1)
+        --input "$payload_file" 2>&1)
+    
+    # Clean up the temporary file
+    rm -f "$payload_file"
     
     if echo "$response" | grep -q '"id"'; then
         local ruleset_id

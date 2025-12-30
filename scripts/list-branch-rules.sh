@@ -80,10 +80,19 @@ get_repo_info() {
 list_rulesets() {
     log_info "Fetching rulesets for $OWNER/$REPO..."
     
-    local rulesets
-    rulesets=$(gh api repos/"$OWNER"/"$REPO"/rulesets --jq '.[] | {id, name, enforcement, branches: .conditions.ref_name.include}' 2>/dev/null || echo "")
+    local response
+    response=$(gh api repos/"$OWNER"/"$REPO"/rulesets 2>/dev/null || echo "")
     
-    if [ -z "$rulesets" ]; then
+    if [ -z "$response" ]; then
+        log_warning "No rulesets found"
+        echo ""
+        return 1
+    fi
+    
+    local count
+    count=$(echo "$response" | jq 'length' 2>/dev/null || echo "0")
+    
+    if [ "$count" -eq 0 ]; then
         log_warning "No rulesets found"
         echo ""
         return 1
@@ -94,23 +103,9 @@ list_rulesets() {
     echo "=============================="
     echo ""
     
-    # Parse and display rulesets
-    local count=0
-    while IFS= read -r line; do
-        if [[ $line =~ "id" ]]; then
-            count=$((count + 1))
-        fi
-    done <<< "$rulesets"
-    
-    if [ "$count" -eq 0 ]; then
-        log_warning "No rulesets found"
-        echo ""
-        return 1
-    fi
-    
-    # Display using jq for better formatting
-    gh api repos/"$OWNER"/"$REPO"/rulesets --jq '.[] | 
-        "ID: \(.id) | Name: \(.name) | Enforcement: \(.enforcement) | Branches: \(.conditions.ref_name.include | join(\", \"))"' 2>/dev/null || true
+    # Display rulesets with details
+    echo "$response" | jq -r '.[] | 
+        "ID: \(.id) | Name: \(.name) | Target: \(.target) | Enforcement: \(.enforcement)"' 2>/dev/null || true
     
     echo ""
     echo "To remove a ruleset, run:"
