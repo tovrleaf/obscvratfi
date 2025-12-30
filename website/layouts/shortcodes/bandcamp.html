@@ -1,0 +1,6 @@
+{{- $album := .Get "album" -}}
+{{- $size := .Get "size" | default "large" -}}
+{{- $bgcol := .Get "bgcol" | default "ffffff" -}}
+{{- $linkcol := .Get "linkcol" | default "0687f5" -}}
+{{- $minimal := .Get "minimal" | default "true" -}}
+<iframe style="border: solid 1px #ccc;" src="https://bandcamp.com/EmbeddedPlayer/album={{ $album }}/size={{ $size }}/bgcol={{ $bgcol }}/linkcol={{ $linkcol }}/minimal={{ $minimal }}/transparent=true/" seamless><a href="https://obscvrat.bandcamp.com">Obscvrat on Bandcamp</a></iframe>
