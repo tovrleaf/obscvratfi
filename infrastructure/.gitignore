@@ -1,0 +1,6 @@
+# Don't commit real AWS configuration values
+variables.json
+
+# Local environment files
+*.local.json
+*.env
