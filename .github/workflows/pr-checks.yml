@@ -58,6 +58,7 @@ jobs:
         with:
           context: .
           push: false
+          load: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
           tags: obscvratfi:build
@@ -65,7 +66,7 @@ jobs:
       - name: Build Hugo site
         run: |
           echo "🏗️  Building Hugo site..."
-          docker-compose run --rm hugo --destination=/src/public
+          docker run --rm -v "${{ github.workspace }}/website:/src" obscvratfi:build --destination=/src/public
           echo "✅ Build completed"
           ls -lh website/public/
 
@@ -82,7 +83,7 @@ jobs:
           echo "🔗 Checking critical internal links..."
           cd website/public
           errors=0
-          
+
           check_link() {
             if [ -f "$1" ]; then
               echo "✅ $1 exists"
@@ -92,14 +93,14 @@ jobs:
               return 1
             fi
           }
-          
+
           check_link "index.html" || ((errors++))
           check_link "about/index.html" || ((errors++))
           check_link "gigs/index.html" || ((errors++))
           check_link "albums/index.html" || ((errors++))
           check_link "feed.xml" || ((errors++))
           check_link "sitemap.xml" || ((errors++))
-          
+
           if [ $errors -gt 0 ]; then
             echo "❌ $errors critical links missing"
             exit 1
@@ -160,13 +161,13 @@ jobs:
           script: |
             const status = '${{ env.STATUS }}';
             const icon = status === 'PASSED' ? '✅' : '❌';
-            const summary = status === 'PASSED' 
-              ? 'All checks passed - ready to review!' 
+            const summary = status === 'PASSED'
+              ? 'All checks passed - ready to review!'
               : 'Some checks failed - please review the logs';
-            
+
             const logsUrl = '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}';
             const body = `## ${icon} CI Checks: ${status}\n\n${summary}\n\n### Results Summary\n- Lint: ${{ needs.lint.result }}\n- Build & Validate: ${{ needs.build.result }}\n- Security Scan: ${{ needs.security.result }}\n\n[View full logs](${logsUrl})`;
-            
+
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
@@ -206,17 +207,17 @@ jobs:
           from: ${{ secrets.EMAIL_USERNAME }}
           body: |
             CI Pipeline: SUCCESS
-            
+
             Commit: ${{ github.sha }}
             Message: ${{ github.event.head_commit.message || 'N/A' }}
             Branch: ${{ github.ref_name }}
             Author: ${{ github.actor }}
-            
+
             All checks passed:
             ✅ Linting
             ✅ Build & Validation
             ✅ Security Scan
-            
+
             View logs: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         continue-on-error: true
 
@@ -233,17 +234,17 @@ jobs:
           from: ${{ secrets.EMAIL_USERNAME }}
           body: |
             CI Pipeline: FAILED
-            
+
             Commit: ${{ github.sha }}
             Message: ${{ github.event.head_commit.message || 'N/A' }}
             Branch: ${{ github.ref_name }}
             Author: ${{ github.actor }}
-            
+
             Failed checks:
             Lint: ${{ needs.lint.result }}
             Build & Validation: ${{ needs.build.result }}
             Security Scan: ${{ needs.security.result }}
-            
+
             View logs: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         continue-on-error: true
 
@@ -260,16 +261,16 @@ jobs:
           from: ${{ secrets.EMAIL_USERNAME }}
           body: |
             Code successfully merged to main and passed all CI checks.
-            
+
             Commit: ${{ github.sha }}
             Message: ${{ github.event.head_commit.message || 'N/A' }}
             Author: ${{ github.actor }}
-            
+
             ✅ All CI checks passed
             ✅ Code ready for deployment
-            
+
             To deploy:
             ./scripts/deploy.sh production
-            
+
             View logs: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         continue-on-error: true

@@ -426,3 +426,4 @@ For issues or questions:
 **Last Updated:** December 2025
 **Hugo Version:** 0.128.2
 **Site URL:** https://obscvrat.fi
+

@@ -9,8 +9,8 @@ FROM alpine:3.20.2
 
 # Install dependencies for downloading and extracting Hugo
 RUN apk add --no-cache wget ca-certificates && \
-    # Download Hugo binary for Linux aarch64 (Apple Silicon)
-    wget -q https://github.com/gohugoio/hugo/releases/download/v0.128.2/hugo_0.128.2_Linux-arm64.tar.gz -O /tmp/hugo.tar.gz && \
+    # Download Hugo binary for Linux amd64 (x86_64 architecture)
+    wget -q https://github.com/gohugoio/hugo/releases/download/v0.128.2/hugo_0.128.2_linux-amd64.tar.gz -O /tmp/hugo.tar.gz && \
     # Extract to /usr/local/bin
     tar -xzf /tmp/hugo.tar.gz -C /usr/local/bin && \
     # Verify installation

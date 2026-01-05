@@ -54,6 +54,86 @@ git push --no-verify
 
 See [ADR-005: Local Pre-Commit Hooks](docs/adr/005-local-pre-commit-hooks-for-development-validation.md) for more details on local validation.
 
+## Branch Protection & Pull Request Workflow
+
+The `main` branch is protected with GitHub Repository Rulesets to ensure all code changes go through proper code review and CI/CD validation.
+
+### How It Works
+
+1. **Create a feature branch:**
+   ```bash
+   git checkout -b feature/your-feature-name
+   ```
+
+2. **Make changes and commit locally**
+
+3. **Push your branch to GitHub:**
+   ```bash
+   git push origin feature/your-feature-name
+   ```
+
+4. **Create a Pull Request** on GitHub
+   - Click "Compare & pull request" button
+   - Provide a clear description of changes
+   - Link any related issues
+
+5. **Automated checks run** (GitHub Actions CI/CD):
+   - Linting: shell scripts, YAML, Markdown, TOML
+   - Hugo build validation
+   - HTML validation
+   - Link checking
+   - Secret scanning
+
+6. **Review and approve:**
+   - Review your own code (or ask for feedback from others)
+   - Approve the pull request (self-approval allowed)
+
+7. **Resolve conversations:**
+   - Address any review comments or feedback
+   - Mark conversations as resolved
+
+8. **Merge to main:**
+   - All checks passing ✅
+   - Approval received ✅
+   - Conversations resolved ✅
+   - Click "Merge pull request" button on GitHub
+
+### Why This Workflow?
+
+- ✅ **Prevents accidents:** Direct pushes to main are blocked
+- ✅ **Ensures quality:** Code must pass automated checks
+- ✅ **Maintains history:** Clear record of all changes and approvals
+- ✅ **Easy to rollback:** Can revert PR if needed
+- ✅ **Enables review:** Code is reviewed (even self-review is valuable)
+
+### Protected Rules on `main`
+
+- Pull request required (no direct pushes)
+- 1 approval required (can be from the author)
+- All GitHub Actions checks must pass
+- All conversations must be resolved
+- PR must be up-to-date with main before merge
+- Merge, squash, and rebase merge methods allowed
+
+### Trying to Push Directly to Main?
+
+If you accidentally try to push directly to main:
+
+```bash
+$ git push origin main
+! [remote rejected] main -> main (push declined by repository rules)
+```
+
+This is expected! Instead:
+
+1. Create a feature branch: `git checkout -b fix/something`
+2. Make your changes
+3. Push the branch: `git push origin fix/something`
+4. Create a Pull Request on GitHub
+5. Merge via the PR
+
+See [ADR-006: Repository Branch Protection](docs/adr/006-repository-branch-protection-with-github-rulesets.md) for complete details about branch protection configuration.
+
 ## Git Commit Guidelines
 
 Good commit messages make it easier to understand the history of the project and why changes were made. We follow a structured approach inspired by best practices from the Linux kernel community.

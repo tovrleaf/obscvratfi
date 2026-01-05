@@ -1,0 +1,62 @@
+{
+  "CallerReference": "obscvrat-2025",
+  "Comment": "Obscvrat noisework website CDN distribution",
+  "DefaultRootObject": "index.html",
+  "Origins": {
+    "Quantity": 1,
+    "Items": [
+      {
+        "Id": "S3Origin",
+        "DomainName": "obscvrat-website.s3.eu-west-1.amazonaws.com",
+        "S3OriginConfig": {
+          "OriginAccessIdentity": "origin-access-identity/cloudfront/YOUR_OAI_ID"
+        }
+      }
+    ]
+  },
+  "DefaultCacheBehavior": {
+    "TargetOriginId": "S3Origin",
+    "ViewerProtocolPolicy": "redirect-to-https",
+    "AllowedMethods": {
+      "Quantity": 2,
+      "Items": ["GET", "HEAD"]
+    },
+    "CachePolicyId": "658327ea-f89d-4fab-a63d-7e88639e58f6",
+    "ForwardedValues": {
+      "QueryString": false,
+      "Cookies": {
+        "Forward": "none"
+      }
+    },
+    "TrustedSigners": {
+      "Enabled": false,
+      "Quantity": 0
+    }
+  },
+  "CacheBehaviors": [
+    {
+      "PathPattern": "/index.html",
+      "TargetOriginId": "S3Origin",
+      "ViewerProtocolPolicy": "redirect-to-https",
+      "AllowedMethods": {
+        "Quantity": 2,
+        "Items": ["GET", "HEAD"]
+      },
+      "CachePolicyId": "4135ea3d-c35d-46eb-81d7-reeSJsGjpQe",
+      "ForwardedValues": {
+        "QueryString": false,
+        "Cookies": {
+          "Forward": "none"
+        }
+      },
+      "TrustedSigners": {
+        "Enabled": false,
+        "Quantity": 0
+      }
+    }
+  ],
+  "Enabled": true,
+  "HttpVersion": "http2and3",
+  "PriceClass": "PriceClass_100",
+  "WebACLId": ""
+}
