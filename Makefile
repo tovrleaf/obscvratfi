@@ -1,5 +1,5 @@
 .DEFAULT_GOAL := help
-.PHONY: help adr-new adr-list adr-help serve build clean build-docker build-prod build-staging build-minified serve-prod list-content setup-hooks run-hooks uninstall-hooks
+.PHONY: help adr-new adr-list adr-help serve build clean build-docker build-prod build-staging build-minified serve-prod list-content setup-hooks run-hooks uninstall-hooks protect-main show-branch-rules unprotect-main
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":[^#]*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
@@ -72,6 +72,17 @@ uninstall-hooks: ## Remove pre-commit hooks
 	else \
 		echo "Pre-commit hooks are not installed"; \
 	fi
+
+# Branch Protection (Repository Rulesets) - See ADR-006
+
+protect-main: ## Protect main branch with GitHub Rulesets (one-time setup)
+	@./scripts/protect-main-branch.sh
+
+show-branch-rules: ## List current branch protection rules
+	@./scripts/list-branch-rules.sh
+
+unprotect-main: ## Remove branch protection (emergency rollback only)
+	@./scripts/remove-branch-protection.sh
 
 # Website Tasks
 

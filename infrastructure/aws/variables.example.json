@@ -1,0 +1,10 @@
+{
+  "aws_profile": "YOUR_PROFILE",
+  "aws_region": "eu-west-1",
+  "s3_bucket_name": "obscvrat-website",
+  "domain_name": "obscvrat.fi",
+  "oai_id": "YOUR_OAI_ID",
+  "distribution_id": "YOUR_DISTRIBUTION_ID",
+  "hosted_zone_id": "YOUR_ZONE_ID",
+  "cloudfront_domain": "YOUR_DISTRIBUTION_DOMAIN.cloudfront.net"
+}
