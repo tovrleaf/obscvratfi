@@ -171,41 +171,6 @@ aws cloudfront create-cloud-front-origin-access-identity \
 
 ---
 
-### 1.2 Verify AWS Profile and Permissions
-
-Before proceeding, ensure your AWS profile has all necessary permissions.
-
-**Test S3 access:**
-
-```bash
-PROFILE=obscvratfi
-
-aws s3 ls --profile $PROFILE
-# Should list your S3 buckets or be empty (no error)
-
-aws s3api list-buckets --profile $PROFILE
-# Verify you can list buckets
-```
-
-**Test CloudFront access:**
-
-```bash
-aws cloudfront list-distributions --profile $PROFILE
-# Should list distributions or be empty
-
-# If you get "UnauthorizedOperation" error, your IAM user lacks CloudFront permissions
-```
-
-**If you get permission errors**, you need to add more permissions to your IAM user:
-
-1. Log in to AWS Console
-2. Go to IAM → Users → Select your user
-3. Click "Add permissions" → "Attach policies directly"
-4. Add: `CloudFrontFullAccess`, `S3FullAccess`, `Route53FullAccess`, `ACMFullAccess`
-5. Wait 1-2 minutes for permissions to apply
-
----
-
 ## Part 2: Configuration Files and Setup Workflow
 
 ### 2.1 Configuration Files Quick Reference
