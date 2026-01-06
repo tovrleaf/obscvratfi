@@ -108,10 +108,11 @@ sudo dnf install awscli jq
 ### Verify Setup
 
 ```bash
-# Test your AWS profile works
-aws s3 ls --profile obscvratfi
+# Test your AWS profile works by listing CloudFront distributions
+# (This tests the CloudFront permissions from your IAM policy)
+aws cloudfront list-distributions --profile obscvratfi
 
-# Should list your existing S3 buckets (or be empty)
+# Should output JSON with distributions list (even if empty)
 # If error: Check AWS credentials and IAM permissions
 ```
 
