@@ -22,8 +22,8 @@
         "s3:ListAllMyBuckets"
       ],
       "Resource": [
-        "arn:aws:s3:::obscvratfi*",
-        "arn:aws:s3:::obscvratfi*/*"
+        "arn:aws:s3:::obscvrat-website",
+        "arn:aws:s3:::obscvrat-website/*"
       ]
     },
     {
