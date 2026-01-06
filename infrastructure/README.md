@@ -82,11 +82,18 @@ sudo dnf install awscli jq
 ### AWS Account Setup
 
 1. **Create AWS Account** at https://aws.amazon.com if you don't have one
-2. **Create IAM User** with these permissions:
-   - S3: `s3:*` (full S3 access for this bucket)
-   - CloudFront: `cloudfront:*` (full CloudFront access)
-   - Route 53: `route53:ChangeResourceRecordSets` (DNS management)
-   - ACM: `acm:*` (SSL certificate management)
+
+2. **Create IAM User** with infrastructure permissions:
+   - In AWS console: IAM → Users → Create user (e.g., "obscvrat-infrastructure")
+   - Go to Users → Select your user → Add permissions → Paste JSON
+   - Copy the policy from: `infrastructure/aws/iam-policy-infrastructure-management.json`
+   - Or use AWS CLI:
+     ```bash
+     aws iam put-user-policy \
+       --user-name obscvrat-infrastructure \
+       --policy-name infrastructure-management \
+       --policy-document file://infrastructure/aws/iam-policy-infrastructure-management.json
+     ```
 
 3. **Create Access Key** for the IAM user
 4. **Configure AWS CLI Profile**:
@@ -198,9 +205,70 @@ aws cloudfront list-distributions --profile $PROFILE
 
 ---
 
-## Part 2: Setup Configuration Files
+## Part 2: Configuration Files and Setup Workflow
 
-### 2.1 Create Your Variables File
+### 2.1 Configuration Files Quick Reference
+
+The following JSON files in `infrastructure/aws/` are used throughout the setup process:
+
+| File | Purpose | When Used | What to Modify |
+|------|---------|-----------|----------------|
+| `iam-policy-infrastructure-management.json` | IAM permissions policy | When creating IAM user (prerequisite) | Don't modify - use as-is |
+| `variables.example.json` | Template for your AWS configuration | Step 1 (copy to variables.json) | Fill in YOUR AWS values |
+| `s3-bucket-policy.json` | Allows CloudFront to access S3 | Step 4 (apply to bucket) | Replace `YOUR_OAI_ID` |
+| `cloudfront-distribution.json` | CloudFront CDN configuration | Step 5 (create distribution) | Replace `YOUR_OAI_ID` and S3 domain |
+| `route53-dns-changes.json` | DNS A record pointing to CloudFront | Step 7 (create DNS record) | Replace `ZONE_ID` and CloudFront domain |
+
+---
+
+### 2.2 Setup Workflow Diagram
+
+This diagram shows the order in which you'll use each file and what information flows between steps:
+
+```
+Prerequisites:
+  ├─ AWS Account created
+  ├─ IAM user created with iam-policy-infrastructure-management.json ← Use this file!
+  ├─ Access Keys generated
+  └─ AWS CLI configured with profile
+
+Configuration Phase:
+  └─ Copy variables.example.json → variables.json (fill as you complete steps)
+
+Setup Steps (Follow in this order):
+
+  Step 1.1: Create OAI
+  └─ Output: oai_id ──┐
+                      │
+  Step 1-3: Setup S3  │
+  └─ Output: bucket_name
+                      │
+  Step 4: Apply S3 Bucket Policy ◄─┘
+  │ File: s3-bucket-policy.json
+  │ Replace: YOUR_OAI_ID with your oai_id
+  └─ Saves policy to bucket
+                      │
+  Step 5: Create CloudFront Distribution ◄─┘
+  │ File: cloudfront-distribution.json
+  │ Replace: YOUR_OAI_ID and S3 domain
+  └─ Output: distribution_id, cloudfront_domain ──┐
+                                                    │
+  Step 6: Get Route 53 Hosted Zone ID               │
+  └─ Output: hosted_zone_id ──┐                    │
+                               │                    │
+  Step 7: Create DNS Record ◄──┴────────────────────┘
+  │ File: route53-dns-changes.json
+  │ Replace: ZONE_ID and CloudFront domain
+  └─ DNS now points to your CloudFront distribution
+
+  ✅ Infrastructure Ready!
+```
+
+---
+
+### 2.3 Setup Configuration Files
+
+**Create Your Variables File**
 
 This file stores your personal AWS configuration. **Never commit this file to Git** - it contains your AWS resource IDs.
 
@@ -233,7 +301,7 @@ Refer to the sections below to understand what each value means:
 
 ---
 
-### 2.2 Understand the JSON Configuration Files
+### 2.4 Understand the JSON Configuration Files
 
 The JSON files in `aws/` directory are templates that reference your variables.
 
