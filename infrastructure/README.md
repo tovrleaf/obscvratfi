@@ -343,19 +343,29 @@ echo "✅ Public access blocked"
 
 This allows CloudFront (via OAI) to read files from S3.
 
-**First, update the JSON file with your OAI_ID:**
+**Before running:** Make sure you've updated `infrastructure/aws/variables.json` with your `oai_id` (from section 1.1).
+
+**Run the automation script:**
+
+```bash
+./scripts/apply-s3-bucket-policy.sh
+```
+
+This script will:
+- Read your OAI_ID from `variables.json`
+- Generate the S3 bucket policy with your values
+- Apply it to the bucket
+
+If you prefer to do this manually, see the manual section below.
+
+**Manual approach (optional):**
 
 ```bash
 # Edit the file
 nano infrastructure/aws/s3-bucket-policy.json
 
 # Find the line with "YOUR_OAI_ID" and replace with your actual OAI_ID
-# (from section 1.1 above)
-```
-
-**Then apply the policy:**
-
-```bash
+# Then apply:
 PROFILE=obscvratfi
 BUCKET_NAME=obscvratfi
 
@@ -369,7 +379,28 @@ echo "✅ Bucket policy applied"
 
 ### Step 5: Create CloudFront Distribution
 
-**First, prepare the JSON configuration:**
+**Before running:** Make sure you've updated `infrastructure/aws/variables.json` with:
+- `oai_id` (from section 1.1)
+- `aws_region` (should already be set)
+- `s3_bucket_name` (should already be set)
+
+**Run the automation script:**
+
+```bash
+./scripts/create-cloudfront-distribution.sh
+```
+
+This script will:
+- Read your configuration from `variables.json`
+- Generate CloudFront distribution configuration with your values
+- Create the distribution
+- Output the Distribution ID and CloudFront Domain
+
+**Important:** After running the script, update `infrastructure/aws/variables.json` with:
+- `distribution_id` = the ID shown in the output
+- `cloudfront_domain` = the domain shown in the output
+
+**Manual approach (optional):**
 
 ```bash
 # Edit to set your OAI_ID and S3 bucket domain
@@ -378,11 +409,8 @@ nano infrastructure/aws/cloudfront-distribution.json
 # Replace:
 # - "YOUR_OAI_ID" with your actual OAI_ID (from section 1.1)
 # - "obscvratfi.s3.eu-west-1.amazonaws.com" with your S3 domain
-```
 
-**Create the distribution:**
-
-```bash
+# Then create:
 PROFILE=obscvratfi
 
 aws cloudfront create-distribution \
@@ -397,8 +425,6 @@ CLOUDFRONT_DOMAIN=$(jq -r '.Distribution.DomainName' /tmp/cloudfront-response.js
 
 echo "Distribution ID: $DISTRIBUTION_ID"
 echo "CloudFront Domain: $CLOUDFRONT_DOMAIN"
-
-# Save these to your variables.json
 ```
 
 **What to save:**
@@ -459,7 +485,22 @@ aws route53 create-hosted-zone \
 
 ### Step 7: Create DNS Record Pointing to CloudFront
 
-**Prepare the JSON file:**
+**Before running:** Make sure you've updated `infrastructure/aws/variables.json` with:
+- `hosted_zone_id` (from step 6)
+- `cloudfront_domain` (from step 5)
+
+**Run the automation script:**
+
+```bash
+./scripts/create-dns-record.sh
+```
+
+This script will:
+- Read your configuration from `variables.json`
+- Generate Route 53 DNS record configuration with your values
+- Create the A record pointing your domain to CloudFront
+
+**Manual approach (optional):**
 
 ```bash
 # Edit to set your Zone ID and CloudFront domain
@@ -468,11 +509,8 @@ nano infrastructure/aws/route53-dns-changes.json
 # Replace:
 # - "ZONE_ID" with your Hosted Zone ID (from step 6)
 # - "d1234abcd.cloudfront.net" with your CloudFront domain (from step 5)
-```
 
-**Create the DNS record:**
-
-```bash
+# Then create:
 PROFILE=obscvratfi
 ZONE_ID=Z1234567890ABC  # Your Zone ID from step 6
 
