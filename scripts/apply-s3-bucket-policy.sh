@@ -44,6 +44,19 @@ fi
 
 log_info "Creating S3 bucket policy with OAI_ID: $OAI_ID"
 
+# Get the S3 Canonical User ID for the OAI
+log_info "Fetching S3 Canonical User ID for OAI..."
+CANONICAL_USER_ID=$(aws cloudfront get-cloud-front-origin-access-identity \
+  --id "$OAI_ID" \
+  --profile "$PROFILE" | jq -r '.CloudFrontOriginAccessIdentity.S3CanonicalUserId')
+
+if [ -z "$CANONICAL_USER_ID" ] || [ "$CANONICAL_USER_ID" = "null" ]; then
+    log_error "Could not fetch S3 Canonical User ID for OAI: $OAI_ID"
+    exit 1
+fi
+
+log_info "S3 Canonical User ID: $CANONICAL_USER_ID"
+
 # Create temporary policy file with actual values
 TEMP_POLICY=$(mktemp)
 cat > "$TEMP_POLICY" << EOF
@@ -54,7 +67,7 @@ cat > "$TEMP_POLICY" << EOF
       "Sid": "AllowCloudFrontAccess",
       "Effect": "Allow",
       "Principal": {
-        "AWS": "arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity/$OAI_ID"
+        "CanonicalUser": "$CANONICAL_USER_ID"
       },
       "Action": "s3:GetObject",
       "Resource": "arn:aws:s3:::$BUCKET_NAME/*"
@@ -77,3 +90,4 @@ rm -f "$TEMP_POLICY"
 log_success "✅ Bucket policy applied successfully"
 log_info "Bucket: $BUCKET_NAME"
 log_info "OAI ID: $OAI_ID"
+log_info "S3 Canonical User ID: $CANONICAL_USER_ID"
