@@ -33,7 +33,7 @@ This guide walks you through setting up the AWS infrastructure for the Obscvrat 
                              │
                              ▼
                     ┌────────────────┐
-                    │   S3 Bucket    │  (obscvrat-website)
+                    │   S3 Bucket    │  (obscvratfi)
                     │   (Static      │  Stores: HTML, CSS, JS, Images
                     │   Content)     │  Access: via CloudFront OAI
                     └────────────────┘
@@ -258,7 +258,7 @@ Refer to the sections below to understand what each value means:
 |----------|-----------|---------|
 | `aws_profile` | Your AWS CLI profile name | `obscvrat` |
 | `aws_region` | AWS region for S3 | `eu-west-1` |
-| `s3_bucket_name` | Name of S3 bucket to create | `obscvrat-website` |
+| `s3_bucket_name` | Name of S3 bucket to create | `obscvratfi` |
 | `domain_name` | Your custom domain | `obscvrat.fi` |
 | `oai_id` | Origin Access Identity ID (from section 1.1) | `1234567890ABC` |
 | `distribution_id` | CloudFront Distribution ID (created in step 3) | `D1234ABCD` |
@@ -275,7 +275,7 @@ The JSON files in `aws/` directory are templates that reference your variables.
 
 - **`s3-bucket-policy.json`** - Allows CloudFront to access S3 bucket
   - Contains: `YOUR_OAI_ID` placeholder (replace with your OAI_ID)
-  - Contains: Bucket name `obscvrat-website`
+  - Contains: Bucket name `obscvratfi`
 
 - **`cloudfront-distribution.json`** - CloudFront CDN configuration
   - Contains: `YOUR_OAI_ID` placeholder
@@ -295,7 +295,7 @@ The JSON files in `aws/` directory are templates that reference your variables.
 
 ```bash
 PROFILE=obscvratfi
-BUCKET_NAME=obscvrat-website
+BUCKET_NAME=obscvratfi
 REGION=eu-west-1
 
 # Create the bucket
@@ -312,7 +312,7 @@ Versioning allows you to recover previous versions if something goes wrong.
 
 ```bash
 PROFILE=obscvratfi
-BUCKET_NAME=obscvrat-website
+BUCKET_NAME=obscvratfi
 
 aws s3api put-bucket-versioning \
   --bucket $BUCKET_NAME \
@@ -328,7 +328,7 @@ Ensure the bucket is private - only CloudFront can access it.
 
 ```bash
 PROFILE=obscvratfi
-BUCKET_NAME=obscvrat-website
+BUCKET_NAME=obscvratfi
 
 aws s3api put-public-access-block \
   --bucket $BUCKET_NAME \
@@ -357,7 +357,7 @@ nano infrastructure/aws/s3-bucket-policy.json
 
 ```bash
 PROFILE=obscvratfi
-BUCKET_NAME=obscvrat-website
+BUCKET_NAME=obscvratfi
 
 aws s3api put-bucket-policy \
   --bucket $BUCKET_NAME \
@@ -377,7 +377,7 @@ nano infrastructure/aws/cloudfront-distribution.json
 
 # Replace:
 # - "YOUR_OAI_ID" with your actual OAI_ID (from section 1.1)
-# - "obscvrat-website.s3.eu-west-1.amazonaws.com" with your S3 domain
+# - "obscvratfi.s3.eu-west-1.amazonaws.com" with your S3 domain
 ```
 
 **Create the distribution:**
@@ -527,7 +527,7 @@ After completing all steps, verify everything works:
 
 ```bash
 PROFILE=obscvratfi
-BUCKET_NAME=obscvrat-website
+BUCKET_NAME=obscvratfi
 
 # Bucket exists
 aws s3 ls s3://$BUCKET_NAME --profile $PROFILE
@@ -671,12 +671,12 @@ sudo systemctl restart nscd
 **Solution:**
 ```bash
 # Check bucket policy is applied
-aws s3api get-bucket-policy --bucket obscvrat-website
+aws s3api get-bucket-policy --bucket obscvratfi
 
 # Check OAI ID in policy matches your OAI_ID
 
 # Upload test file
-echo "test" | aws s3 cp - s3://obscvrat-website/test.txt
+echo "test" | aws s3 cp - s3://obscvratfi/test.txt
 
 # Try CloudFront domain directly
 curl https://d1234abcd.cloudfront.net/test.txt
