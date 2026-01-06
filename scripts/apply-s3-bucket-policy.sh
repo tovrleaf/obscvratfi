@@ -36,26 +36,37 @@ log_info "Reading variables from infrastructure/aws/variables.json..."
 PROFILE=$(jq -r '.aws_profile' infrastructure/aws/variables.json)
 BUCKET_NAME=$(jq -r '.s3_bucket_name' infrastructure/aws/variables.json)
 OAI_ID=$(jq -r '.oai_id' infrastructure/aws/variables.json)
+S3_CANONICAL_USER_ID=$(jq -r '.s3_canonical_user_id // empty' infrastructure/aws/variables.json)
 
 if [ "$OAI_ID" = "YOUR_OAI_ID" ]; then
     log_error "OAI_ID is still a placeholder. Update infrastructure/aws/variables.json"
+    echo "Run ./scripts/create-oai.sh to create a new OAI"
     exit 1
 fi
 
 log_info "Creating S3 bucket policy with OAI_ID: $OAI_ID"
 
-# Get the S3 Canonical User ID for the OAI
-log_info "Fetching S3 Canonical User ID for OAI..."
-CANONICAL_USER_ID=$(aws cloudfront get-cloud-front-origin-access-identity \
-  --id "$OAI_ID" \
-  --profile "$PROFILE" | jq -r '.CloudFrontOriginAccessIdentity.S3CanonicalUserId')
+# If S3_CANONICAL_USER_ID is not in variables.json, fetch it
+if [ -z "$S3_CANONICAL_USER_ID" ]; then
+    log_info "S3_CANONICAL_USER_ID not in variables.json, fetching from CloudFront..."
+    S3_CANONICAL_USER_ID=$(aws cloudfront get-cloud-front-origin-access-identity \
+      --id "$OAI_ID" \
+      --profile "$PROFILE" 2>&1 | jq -r '.CloudFrontOriginAccessIdentity.S3CanonicalUserId') || true
+fi
 
-if [ -z "$CANONICAL_USER_ID" ] || [ "$CANONICAL_USER_ID" = "null" ]; then
+if [ -z "$S3_CANONICAL_USER_ID" ] || [ "$S3_CANONICAL_USER_ID" = "null" ]; then
     log_error "Could not fetch S3 Canonical User ID for OAI: $OAI_ID"
+    echo ""
+    echo "The OAI might not exist or the ID might be incorrect."
+    echo ""
+    echo "To create a new OAI, run:"
+    echo "  ./scripts/create-oai.sh"
+    echo ""
+    echo "Then update variables.json with the new OAI_ID and s3_canonical_user_id"
     exit 1
 fi
 
-log_info "S3 Canonical User ID: $CANONICAL_USER_ID"
+log_info "S3 Canonical User ID: $S3_CANONICAL_USER_ID"
 
 # Create temporary policy file with actual values
 TEMP_POLICY=$(mktemp)
@@ -67,7 +78,7 @@ cat > "$TEMP_POLICY" << EOF
       "Sid": "AllowCloudFrontAccess",
       "Effect": "Allow",
       "Principal": {
-        "CanonicalUser": "$CANONICAL_USER_ID"
+        "CanonicalUser": "$S3_CANONICAL_USER_ID"
       },
       "Action": "s3:GetObject",
       "Resource": "arn:aws:s3:::$BUCKET_NAME/*"
@@ -90,4 +101,4 @@ rm -f "$TEMP_POLICY"
 log_success "✅ Bucket policy applied successfully"
 log_info "Bucket: $BUCKET_NAME"
 log_info "OAI ID: $OAI_ID"
-log_info "S3 Canonical User ID: $CANONICAL_USER_ID"
+log_info "S3 Canonical User ID: $S3_CANONICAL_USER_ID"
