@@ -98,7 +98,7 @@ sudo dnf install awscli jq
 3. **Create Access Key** for the IAM user
 4. **Configure AWS CLI Profile**:
    ```bash
-   aws configure --profile obscvrat
+   aws configure --profile obscvratfi
    # Enter: AWS Access Key ID
    # Enter: AWS Secret Access Key
    # Enter: Default region: eu-west-1
@@ -109,7 +109,7 @@ sudo dnf install awscli jq
 
 ```bash
 # Test your AWS profile works
-aws s3 ls --profile obscvrat
+aws s3 ls --profile obscvratfi
 
 # Should list your existing S3 buckets (or be empty)
 # If error: Check AWS credentials and IAM permissions
@@ -128,7 +128,7 @@ The OAI allows CloudFront to access S3 securely without making the bucket public
 **Run this command:**
 
 ```bash
-PROFILE=obscvrat  # Change if using different profile name
+PROFILE=obscvratfi  # Change if using different profile name
 
 aws cloudfront create-cloud-front-origin-access-identity \
   --cloud-front-origin-access-identity-config \
@@ -177,7 +177,7 @@ Before proceeding, ensure your AWS profile has all necessary permissions.
 **Test S3 access:**
 
 ```bash
-PROFILE=obscvrat
+PROFILE=obscvratfi
 
 aws s3 ls --profile $PROFILE
 # Should list your S3 buckets or be empty (no error)
@@ -328,7 +328,7 @@ The JSON files in `aws/` directory are templates that reference your variables.
 ### Step 1: Create S3 Bucket
 
 ```bash
-PROFILE=obscvrat
+PROFILE=obscvratfi
 BUCKET_NAME=obscvrat-website
 REGION=eu-west-1
 
@@ -345,7 +345,7 @@ echo "✅ Bucket created: s3://$BUCKET_NAME"
 Versioning allows you to recover previous versions if something goes wrong.
 
 ```bash
-PROFILE=obscvrat
+PROFILE=obscvratfi
 BUCKET_NAME=obscvrat-website
 
 aws s3api put-bucket-versioning \
@@ -361,7 +361,7 @@ echo "✅ Versioning enabled"
 Ensure the bucket is private - only CloudFront can access it.
 
 ```bash
-PROFILE=obscvrat
+PROFILE=obscvratfi
 BUCKET_NAME=obscvrat-website
 
 aws s3api put-public-access-block \
@@ -390,7 +390,7 @@ nano infrastructure/aws/s3-bucket-policy.json
 **Then apply the policy:**
 
 ```bash
-PROFILE=obscvrat
+PROFILE=obscvratfi
 BUCKET_NAME=obscvrat-website
 
 aws s3api put-bucket-policy \
@@ -417,7 +417,7 @@ nano infrastructure/aws/cloudfront-distribution.json
 **Create the distribution:**
 
 ```bash
-PROFILE=obscvrat
+PROFILE=obscvratfi
 
 aws cloudfront create-distribution \
   --distribution-config file://infrastructure/aws/cloudfront-distribution.json \
@@ -447,7 +447,7 @@ echo "CloudFront Domain: $CLOUDFRONT_DOMAIN"
 If your domain is already in Route 53, find its Hosted Zone ID.
 
 ```bash
-PROFILE=obscvrat
+PROFILE=obscvratfi
 DOMAIN_NAME=obscvrat.fi
 
 # List all hosted zones
@@ -461,7 +461,7 @@ aws route53 list-hosted-zones --profile $PROFILE
 **Using jq to extract:**
 
 ```bash
-PROFILE=obscvrat
+PROFILE=obscvratfi
 DOMAIN_NAME=obscvrat.fi
 
 ZONE_ID=$(aws route53 list-hosted-zones \
@@ -477,7 +477,7 @@ echo "Hosted Zone ID: $ZONE_ID"
 **If domain is not in Route 53**, create a hosted zone:
 
 ```bash
-PROFILE=obscvrat
+PROFILE=obscvratfi
 DOMAIN_NAME=obscvrat.fi
 
 aws route53 create-hosted-zone \
@@ -507,7 +507,7 @@ nano infrastructure/aws/route53-dns-changes.json
 **Create the DNS record:**
 
 ```bash
-PROFILE=obscvrat
+PROFILE=obscvratfi
 ZONE_ID=Z1234567890ABC  # Your Zone ID from step 6
 
 aws route53 change-resource-record-sets \
@@ -525,7 +525,7 @@ echo "✅ DNS record created"
 Request a free SSL/TLS certificate for HTTPS.
 
 ```bash
-PROFILE=obscvrat
+PROFILE=obscvratfi
 DOMAIN_NAME=obscvrat.fi
 
 # Request certificate in us-east-1 (required for CloudFront)
@@ -560,7 +560,7 @@ After completing all steps, verify everything works:
 ### ✅ S3 Bucket Exists and is Secure
 
 ```bash
-PROFILE=obscvrat
+PROFILE=obscvratfi
 BUCKET_NAME=obscvrat-website
 
 # Bucket exists
@@ -575,7 +575,7 @@ aws s3api get-public-access-block \
 ### ✅ CloudFront Distribution is Active
 
 ```bash
-PROFILE=obscvrat
+PROFILE=obscvratfi
 DISTRIBUTION_ID=D1234ABCD
 
 # Distribution exists
@@ -649,7 +649,7 @@ curl -I https://$DOMAIN_NAME
 **Solution:**
 ```bash
 # Refresh your AWS credentials
-aws configure --profile obscvrat
+aws configure --profile obscvratfi
 
 # Re-run the failed command
 ```
