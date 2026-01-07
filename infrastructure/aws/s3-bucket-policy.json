@@ -5,10 +5,10 @@
       "Sid": "AllowCloudFrontAccess",
       "Effect": "Allow",
       "Principal": {
-        "AWS": "arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity/YOUR_OAI_ID"
+        "CanonicalUser": "YOUR_S3_CANONICAL_USER_ID"
       },
       "Action": "s3:GetObject",
-      "Resource": "arn:aws:s3:::obscvrat-website/*"
+      "Resource": "arn:aws:s3:::obscvratfi/*"
     }
   ]
 }
