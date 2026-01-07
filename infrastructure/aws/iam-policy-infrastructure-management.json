@@ -40,7 +40,8 @@
         "cloudfront:CreateCloudFrontOriginAccessIdentity",
         "cloudfront:DeleteCloudFrontOriginAccessIdentity",
         "cloudfront:GetCloudFrontOriginAccessIdentity",
-        "cloudfront:ListCloudFrontOriginAccessIdentities"
+        "cloudfront:ListCloudFrontOriginAccessIdentities",
+        "cloudfront:CreateInvalidation"
       ],
       "Resource": "*"
     },
