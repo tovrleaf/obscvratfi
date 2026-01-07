@@ -33,7 +33,7 @@ This guide walks you through setting up the AWS infrastructure for the Obscvrat 
                              │
                              ▼
                     ┌────────────────┐
-                    │   S3 Bucket    │  (obscvrat-website)
+                    │   S3 Bucket    │  (obscvratfi)
                     │   (Static      │  Stores: HTML, CSS, JS, Images
                     │   Content)     │  Access: via CloudFront OAI
                     └────────────────┘
@@ -98,7 +98,7 @@ sudo dnf install awscli jq
 3. **Create Access Key** for the IAM user
 4. **Configure AWS CLI Profile**:
    ```bash
-   aws configure --profile obscvrat
+   aws configure --profile obscvratfi
    # Enter: AWS Access Key ID
    # Enter: AWS Secret Access Key
    # Enter: Default region: eu-west-1
@@ -108,10 +108,11 @@ sudo dnf install awscli jq
 ### Verify Setup
 
 ```bash
-# Test your AWS profile works
-aws s3 ls --profile obscvrat
+# Test your AWS profile works by listing CloudFront distributions
+# (This tests the CloudFront permissions from your IAM policy)
+aws cloudfront list-distributions --profile obscvratfi
 
-# Should list your existing S3 buckets (or be empty)
+# Should output JSON with distributions list (even if empty)
 # If error: Check AWS credentials and IAM permissions
 ```
 
@@ -128,7 +129,7 @@ The OAI allows CloudFront to access S3 securely without making the bucket public
 **Run this command:**
 
 ```bash
-PROFILE=obscvrat  # Change if using different profile name
+PROFILE=obscvratfi  # Change if using different profile name
 
 aws cloudfront create-cloud-front-origin-access-identity \
   --cloud-front-origin-access-identity-config \
@@ -167,41 +168,6 @@ aws cloudfront create-cloud-front-origin-access-identity \
 **Result looks like:** `1234567890ABC`
 
 **Save this value** as `oai_id` in your `aws/variables.json`
-
----
-
-### 1.2 Verify AWS Profile and Permissions
-
-Before proceeding, ensure your AWS profile has all necessary permissions.
-
-**Test S3 access:**
-
-```bash
-PROFILE=obscvrat
-
-aws s3 ls --profile $PROFILE
-# Should list your S3 buckets or be empty (no error)
-
-aws s3api list-buckets --profile $PROFILE
-# Verify you can list buckets
-```
-
-**Test CloudFront access:**
-
-```bash
-aws cloudfront list-distributions --profile $PROFILE
-# Should list distributions or be empty
-
-# If you get "UnauthorizedOperation" error, your IAM user lacks CloudFront permissions
-```
-
-**If you get permission errors**, you need to add more permissions to your IAM user:
-
-1. Log in to AWS Console
-2. Go to IAM → Users → Select your user
-3. Click "Add permissions" → "Attach policies directly"
-4. Add: `CloudFrontFullAccess`, `S3FullAccess`, `Route53FullAccess`, `ACMFullAccess`
-5. Wait 1-2 minutes for permissions to apply
 
 ---
 
@@ -292,7 +258,7 @@ Refer to the sections below to understand what each value means:
 |----------|-----------|---------|
 | `aws_profile` | Your AWS CLI profile name | `obscvrat` |
 | `aws_region` | AWS region for S3 | `eu-west-1` |
-| `s3_bucket_name` | Name of S3 bucket to create | `obscvrat-website` |
+| `s3_bucket_name` | Name of S3 bucket to create | `obscvratfi` |
 | `domain_name` | Your custom domain | `obscvrat.fi` |
 | `oai_id` | Origin Access Identity ID (from section 1.1) | `1234567890ABC` |
 | `distribution_id` | CloudFront Distribution ID (created in step 3) | `D1234ABCD` |
@@ -309,7 +275,7 @@ The JSON files in `aws/` directory are templates that reference your variables.
 
 - **`s3-bucket-policy.json`** - Allows CloudFront to access S3 bucket
   - Contains: `YOUR_OAI_ID` placeholder (replace with your OAI_ID)
-  - Contains: Bucket name `obscvrat-website`
+  - Contains: Bucket name `obscvratfi`
 
 - **`cloudfront-distribution.json`** - CloudFront CDN configuration
   - Contains: `YOUR_OAI_ID` placeholder
@@ -328,8 +294,8 @@ The JSON files in `aws/` directory are templates that reference your variables.
 ### Step 1: Create S3 Bucket
 
 ```bash
-PROFILE=obscvrat
-BUCKET_NAME=obscvrat-website
+PROFILE=obscvratfi
+BUCKET_NAME=obscvratfi
 REGION=eu-west-1
 
 # Create the bucket
@@ -345,8 +311,8 @@ echo "✅ Bucket created: s3://$BUCKET_NAME"
 Versioning allows you to recover previous versions if something goes wrong.
 
 ```bash
-PROFILE=obscvrat
-BUCKET_NAME=obscvrat-website
+PROFILE=obscvratfi
+BUCKET_NAME=obscvratfi
 
 aws s3api put-bucket-versioning \
   --bucket $BUCKET_NAME \
@@ -361,8 +327,8 @@ echo "✅ Versioning enabled"
 Ensure the bucket is private - only CloudFront can access it.
 
 ```bash
-PROFILE=obscvrat
-BUCKET_NAME=obscvrat-website
+PROFILE=obscvratfi
+BUCKET_NAME=obscvratfi
 
 aws s3api put-public-access-block \
   --bucket $BUCKET_NAME \
@@ -377,21 +343,31 @@ echo "✅ Public access blocked"
 
 This allows CloudFront (via OAI) to read files from S3.
 
-**First, update the JSON file with your OAI_ID:**
+**Before running:** Make sure you've updated `infrastructure/aws/variables.json` with your `oai_id` (from section 1.1).
+
+**Run the automation script:**
+
+```bash
+./scripts/apply-s3-bucket-policy.sh
+```
+
+This script will:
+- Read your OAI_ID from `variables.json`
+- Generate the S3 bucket policy with your values
+- Apply it to the bucket
+
+If you prefer to do this manually, see the manual section below.
+
+**Manual approach (optional):**
 
 ```bash
 # Edit the file
 nano infrastructure/aws/s3-bucket-policy.json
 
 # Find the line with "YOUR_OAI_ID" and replace with your actual OAI_ID
-# (from section 1.1 above)
-```
-
-**Then apply the policy:**
-
-```bash
-PROFILE=obscvrat
-BUCKET_NAME=obscvrat-website
+# Then apply:
+PROFILE=obscvratfi
+BUCKET_NAME=obscvratfi
 
 aws s3api put-bucket-policy \
   --bucket $BUCKET_NAME \
@@ -403,7 +379,28 @@ echo "✅ Bucket policy applied"
 
 ### Step 5: Create CloudFront Distribution
 
-**First, prepare the JSON configuration:**
+**Before running:** Make sure you've updated `infrastructure/aws/variables.json` with:
+- `oai_id` (from section 1.1)
+- `aws_region` (should already be set)
+- `s3_bucket_name` (should already be set)
+
+**Run the automation script:**
+
+```bash
+./scripts/create-cloudfront-distribution.sh
+```
+
+This script will:
+- Read your configuration from `variables.json`
+- Generate CloudFront distribution configuration with your values
+- Create the distribution
+- Output the Distribution ID and CloudFront Domain
+
+**Important:** After running the script, update `infrastructure/aws/variables.json` with:
+- `distribution_id` = the ID shown in the output
+- `cloudfront_domain` = the domain shown in the output
+
+**Manual approach (optional):**
 
 ```bash
 # Edit to set your OAI_ID and S3 bucket domain
@@ -411,13 +408,10 @@ nano infrastructure/aws/cloudfront-distribution.json
 
 # Replace:
 # - "YOUR_OAI_ID" with your actual OAI_ID (from section 1.1)
-# - "obscvrat-website.s3.eu-west-1.amazonaws.com" with your S3 domain
-```
+# - "obscvratfi.s3.eu-west-1.amazonaws.com" with your S3 domain
 
-**Create the distribution:**
-
-```bash
-PROFILE=obscvrat
+# Then create:
+PROFILE=obscvratfi
 
 aws cloudfront create-distribution \
   --distribution-config file://infrastructure/aws/cloudfront-distribution.json \
@@ -431,8 +425,6 @@ CLOUDFRONT_DOMAIN=$(jq -r '.Distribution.DomainName' /tmp/cloudfront-response.js
 
 echo "Distribution ID: $DISTRIBUTION_ID"
 echo "CloudFront Domain: $CLOUDFRONT_DOMAIN"
-
-# Save these to your variables.json
 ```
 
 **What to save:**
@@ -447,7 +439,7 @@ echo "CloudFront Domain: $CLOUDFRONT_DOMAIN"
 If your domain is already in Route 53, find its Hosted Zone ID.
 
 ```bash
-PROFILE=obscvrat
+PROFILE=obscvratfi
 DOMAIN_NAME=obscvrat.fi
 
 # List all hosted zones
@@ -461,7 +453,7 @@ aws route53 list-hosted-zones --profile $PROFILE
 **Using jq to extract:**
 
 ```bash
-PROFILE=obscvrat
+PROFILE=obscvratfi
 DOMAIN_NAME=obscvrat.fi
 
 ZONE_ID=$(aws route53 list-hosted-zones \
@@ -477,7 +469,7 @@ echo "Hosted Zone ID: $ZONE_ID"
 **If domain is not in Route 53**, create a hosted zone:
 
 ```bash
-PROFILE=obscvrat
+PROFILE=obscvratfi
 DOMAIN_NAME=obscvrat.fi
 
 aws route53 create-hosted-zone \
@@ -493,7 +485,22 @@ aws route53 create-hosted-zone \
 
 ### Step 7: Create DNS Record Pointing to CloudFront
 
-**Prepare the JSON file:**
+**Before running:** Make sure you've updated `infrastructure/aws/variables.json` with:
+- `hosted_zone_id` (from step 6)
+- `cloudfront_domain` (from step 5)
+
+**Run the automation script:**
+
+```bash
+./scripts/create-dns-record.sh
+```
+
+This script will:
+- Read your configuration from `variables.json`
+- Generate Route 53 DNS record configuration with your values
+- Create the A record pointing your domain to CloudFront
+
+**Manual approach (optional):**
 
 ```bash
 # Edit to set your Zone ID and CloudFront domain
@@ -502,12 +509,9 @@ nano infrastructure/aws/route53-dns-changes.json
 # Replace:
 # - "ZONE_ID" with your Hosted Zone ID (from step 6)
 # - "d1234abcd.cloudfront.net" with your CloudFront domain (from step 5)
-```
 
-**Create the DNS record:**
-
-```bash
-PROFILE=obscvrat
+# Then create:
+PROFILE=obscvratfi
 ZONE_ID=Z1234567890ABC  # Your Zone ID from step 6
 
 aws route53 change-resource-record-sets \
@@ -525,7 +529,7 @@ echo "✅ DNS record created"
 Request a free SSL/TLS certificate for HTTPS.
 
 ```bash
-PROFILE=obscvrat
+PROFILE=obscvratfi
 DOMAIN_NAME=obscvrat.fi
 
 # Request certificate in us-east-1 (required for CloudFront)
@@ -560,8 +564,8 @@ After completing all steps, verify everything works:
 ### ✅ S3 Bucket Exists and is Secure
 
 ```bash
-PROFILE=obscvrat
-BUCKET_NAME=obscvrat-website
+PROFILE=obscvratfi
+BUCKET_NAME=obscvratfi
 
 # Bucket exists
 aws s3 ls s3://$BUCKET_NAME --profile $PROFILE
@@ -575,7 +579,7 @@ aws s3api get-public-access-block \
 ### ✅ CloudFront Distribution is Active
 
 ```bash
-PROFILE=obscvrat
+PROFILE=obscvratfi
 DISTRIBUTION_ID=D1234ABCD
 
 # Distribution exists
@@ -649,7 +653,7 @@ curl -I https://$DOMAIN_NAME
 **Solution:**
 ```bash
 # Refresh your AWS credentials
-aws configure --profile obscvrat
+aws configure --profile obscvratfi
 
 # Re-run the failed command
 ```
@@ -705,12 +709,12 @@ sudo systemctl restart nscd
 **Solution:**
 ```bash
 # Check bucket policy is applied
-aws s3api get-bucket-policy --bucket obscvrat-website
+aws s3api get-bucket-policy --bucket obscvratfi
 
 # Check OAI ID in policy matches your OAI_ID
 
 # Upload test file
-echo "test" | aws s3 cp - s3://obscvrat-website/test.txt
+echo "test" | aws s3 cp - s3://obscvratfi/test.txt
 
 # Try CloudFront domain directly
 curl https://d1234abcd.cloudfront.net/test.txt
