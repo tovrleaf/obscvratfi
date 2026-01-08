@@ -31,18 +31,20 @@ We will implement a comprehensive dark minimal design system for the Obscvrat ho
 This palette creates a dark, minimal aesthetic that reduces eye strain, conveys sophistication, and aligns with experimental/technical design sensibilities.
 
 ### 2. **Typography System**
-- **Sans-Serif (Body/UI)**: Inter
-  - Used for body text, navigation, and general UI elements
-  - Clean, modern, highly legible
-  - Weights: 400 (regular), 500 (medium), 700 (bold)
-
-- **Monospace (Headings/Accents)**: IBM Plex Mono
-  - Used strategically for section headings and visual accents
-  - Conveys technical/experimental aesthetic
-  - Reinforces noisework identity
+- **Body Text (Monospace)**: Courier Prime
+  - Used for body text and general content
+  - Monospace aesthetic reflects technical/experimental nature
+  - Highly legible on dark background
   - Weights: 400 (regular), 700 (bold)
 
-This hybrid approach balances readability with visual experimentation, drawing inspiration from technical design systems.
+- **Display/Structural (Monospace)**: JetBrains Mono
+  - Used for navigation, headings (h1, h2, h3)
+  - Technical, code-like appearance
+  - Reinforces noisework/experimental identity
+  - Creates visual hierarchy alongside Courier Prime
+  - Weights: 400 (regular), 500 (medium), 700 (bold)
+
+This **all-monospace approach** differs from traditional hybrid typography. Both fonts are monospace but serve different purposes: Courier Prime for readability and body content, JetBrains Mono for structure and emphasis. This creates a cohesive, intentional aesthetic inspired by designers like Isabel Moranta who prioritize experimental typography.
 
 ### 3. **Layout & Visual Hierarchy**
 - **Asymmetric Design**: Content sections flow diagonally and unexpectedly rather than in traditional grids
@@ -95,12 +97,13 @@ All text in monospace with vibrant color accents.
   - Maximizes technical/experimental feel
   - Visually cohesive
   - Strong identity
+  - All-monospace approach creates intentional aesthetic (like Isabel Moranta)
 - **Cons:**
-  - Monospace body text reduces readability
-  - Can be fatiguing to read at length
-  - Limits typographic hierarchy options
-  - Less refined than hybrid approach
-- **Why rejected:** Hybrid Inter + IBM Plex Mono approach provides better readability while maintaining experimental aesthetic through strategic monospace use.
+  - Monospace body text can reduce readability at length
+  - Can be fatiguing with poor font choice
+  - Limits typographic hierarchy if not carefully balanced
+- **Why rejected (initially):** Concerns about readability with poor font pairing
+- **Why reconsidered (adopted):** Courier Prime + JetBrains Mono pairing is highly legible and creates intentional, experimental aesthetic aligned with noisework brand. Both are monospace but serve distinct purposes.
 
 ### Alternative 4: Logo in Top-Right Corner
 Place logo in traditional header/navigation area.
@@ -119,14 +122,16 @@ Place logo in traditional header/navigation area.
 ## Consequences
 
 ### Positive
-- **Strong Visual Identity**: Dark minimal palette + asymmetric layout creates distinctive, memorable brand presence
-- **Experimental Aesthetic**: Design language authentically reflects noisework/experimental nature of the music
+- **Strong Visual Identity**: Dark minimal palette + asymmetric layout + all-monospace typography creates distinctive, memorable brand presence
+- **Experimental Aesthetic**: All-monospace typography authentically reflects noisework/experimental nature; matches contemporary experimental design (e.g., Isabel Moranta)
+- **Intentional Design**: Deliberate choice of two monospace fonts (Courier Prime + JetBrains Mono) creates sophisticated, layered visual hierarchy
 - **Scalability**: Design system provides clear foundation for extending to other pages
-- **Accessibility**: Dark background reduces eye strain; high-contrast text maintains readability
+- **Accessibility**: Dark background reduces eye strain; high-contrast text maintains readability; monospace fonts enhance technical accessibility
 - **Logo Prominence**: Centered placement showcases the intricate organic logo as intended focal point
-- **Contemporary**: Aligns with modern design trends in technical and experimental spaces
+- **Contemporary**: Aligns with modern design trends in experimental and technical spaces
 - **Layout-First Philosophy**: Prioritizes visual hierarchy, creating engaging visual experience
-- **Performance**: SVG logo is lightweight and scalable
+- **Performance**: SVG logo is lightweight; Google Fonts with `font-display: swap` minimizes layout shift
+- **Legibility**: Courier Prime is highly readable for body text; JetBrains Mono provides clear structure
 
 ### Negative
 - **Scannability**: Asymmetric layout may reduce initial scannability for first-time visitors unfamiliar with experimental design
@@ -135,17 +140,21 @@ Place logo in traditional header/navigation area.
 - **Browser Compatibility**: Some advanced CSS features may need fallbacks for older browsers
 - **Dark Mode Limitations**: Dark theme complicates printing; may need print stylesheet
 - **Accessibility Considerations**: Must ensure sufficient color contrast and focus states for keyboard navigation
+- **Monospace Typography**: All-monospace approach may feel unfamiliar to some users; requires careful font selection to avoid readability issues (mitigated by Courier Prime choice)
 
 ### Neutral
-- **Font Loading**: External font imports (Inter, IBM Plex Mono) add slight performance overhead; mitigation includes font-display strategy and preloading
-- **Iteration**: Design may evolve as homepage is used; flexibility to refine asymmetry as user feedback arrives
+- **Font Loading**: Google Fonts imports add slight performance overhead; mitigation includes `font-display: swap` and preconnect links
+- **Iteration**: Design may evolve as homepage is used; flexibility to refine asymmetry and typography as user feedback arrives
 - **Content Sections**: Original "upcoming gigs" focus de-emphasized in favor of layout; may require content strategy adjustment
+- **Monospace Preference**: All-monospace typography is unconventional choice; represents deliberate aesthetic preference rather than universal best practice
 
 ## Notes
 
 ### Implementation Details
 - **Color Variables**: CSS custom properties for all colors enable easy theme adjustments
-- **Font Loading**: Google Fonts or self-hosted fonts with `font-display: swap` for performance
+- **Font Loading**: Google Fonts (Courier Prime, JetBrains Mono) with `font-display: swap` for performance
+  - Courier Prime: Primary body/content font
+  - JetBrains Mono: Navigation, headings, structural elements
 - **Logo Path**: `website/static/logo.svg`
 - **Responsive Breakpoints**:
   - Desktop: 1024px+ (full asymmetric layout)
@@ -164,5 +173,6 @@ Place logo in traditional header/navigation area.
 - **ADR-004**: Instagram Feed Integration - visual integration with new design system should be considered
 
 ### References
-- OpenCode (https://opencode.ai) - inspiration for dark minimal + hybrid typography approach
+- **Isabel Moranta** (https://www.isabelmoranta.com) - Inspiration for dark minimal + all-monospace typography + asymmetric layout approach; demonstrates effectiveness of experimental typography on dark backgrounds
+- OpenCode (https://opencode.ai) - Inspiration for dark minimal + technical design aesthetic
 - Design System principles from contemporary technical brands
