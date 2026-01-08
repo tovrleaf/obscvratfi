@@ -10,12 +10,15 @@
     {{ partial "schema-event.html" . }}
     <style>
         :root {
-            --primary-color: #333;
-            --secondary-color: #666;
-            --accent-color: #0066cc;
-            --border-color: #ddd;
-            --bg-light: #f5f5f5;
+            --primary-color: #e5e5e5;
+            --secondary-color: #b0b0b0;
+            --accent-color: #5a5a5a;
+            --border-color: #3a3a3a;
+            --bg-primary: #1a1a1a;
+            --bg-secondary: #2d2d2d;
             --spacing-unit: 1rem;
+            --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            --font-mono: 'IBM Plex Mono', 'Courier New', monospace;
         }
         
         * {
@@ -25,14 +28,14 @@
         }
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-family: var(--font-sans);
             line-height: 1.6;
             color: var(--primary-color);
-            background: #fff;
+            background: var(--bg-primary);
         }
         
         header {
-            background: var(--bg-light);
+            background: var(--bg-secondary);
             padding: 1.5rem 0;
             border-bottom: 1px solid var(--border-color);
             position: sticky;
@@ -98,7 +101,7 @@
         .featured-section {
             margin-bottom: 3rem;
             padding: 2rem;
-            background: var(--bg-light);
+            background: var(--bg-secondary);
             border-radius: 8px;
         }
         
@@ -116,7 +119,7 @@
         }
         
         .gig-card {
-            background: white;
+            background: var(--bg-primary);
             border: 1px solid var(--border-color);
             border-radius: 6px;
             padding: 1.5rem;
@@ -126,12 +129,12 @@
         }
         
         .gig-card:hover {
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
         }
         
         .gig-date {
-            background: var(--primary-color);
-            color: white;
+            background: var(--accent-color);
+            color: var(--primary-color);
             padding: 0.75rem 1rem;
             border-radius: 4px;
             font-weight: bold;
@@ -168,7 +171,7 @@
         }
         
         .album-preview {
-            background: white;
+            background: var(--bg-primary);
             border: 1px solid var(--border-color);
             border-radius: 6px;
             padding: 1.5rem;
@@ -176,7 +179,7 @@
         }
         
         .album-preview:hover {
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
         }
         
         .album-preview h3 {
@@ -219,8 +222,8 @@
         }
         
         .view-all:hover, .read-more:hover {
-            color: var(--primary-color);
-            background: rgba(0, 102, 204, 0.1);
+            color: var(--bg-primary);
+            background: var(--accent-color);
             border-radius: 4px;
         }
         
@@ -255,7 +258,7 @@
         }
         
         footer {
-            background: var(--bg-light);
+            background: var(--bg-secondary);
             padding: 2rem;
             margin-top: 4rem;
             text-align: center;
