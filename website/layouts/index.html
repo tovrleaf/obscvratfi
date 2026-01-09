@@ -1,8 +1,10 @@
 {{ define "main" }}
 <section class="home">
     <div class="hero">
-        <h1>{{ .Site.Title }}</h1>
-        <p class="tagline">{{ .Site.Params.description | default "Welcome to the band website" }}</p>
+        <div class="hero-label">{{ .Site.Title }}</div>
+        <div class="hero-logo-container">
+            <img src="/logo.svg" alt="{{ .Site.Title }} Logo" class="hero-logo">
+        </div>
     </div>
     
     {{ if .Site.GetPage "/gigs" }}
