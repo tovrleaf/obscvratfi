@@ -55,7 +55,10 @@ This **all-monospace approach** differs from traditional hybrid typography. Both
 - **Layout-First Philosophy**: Emphasize visual hierarchy and layout design over content prominence
 
 ### 4. **Visual Elements**
-- **Logo Asset**: `website/static/logo.svg` (scalable, performant SVG format)
+- **Hero Image**: `website/static/picture.gif` (animated GIF with continuous loop)
+  - Replaces static SVG logo for enhanced visual engagement
+  - Features pulsing blur animation (12-second cycle) for subtle, hypnotic effect
+  - Animated content reinforces experimental/noisework aesthetic
 - **Hover States**: Muted accent color (`#5a5a5a`) for interactive feedback
 - **Spacing**: Generous whitespace to support dark minimal aesthetic
 - **Responsive Design**: Asymmetric layouts gracefully degrade on smaller screens
@@ -130,7 +133,7 @@ Place logo in traditional header/navigation area.
 - **Logo Prominence**: Centered placement showcases the intricate organic logo as intended focal point
 - **Contemporary**: Aligns with modern design trends in experimental and technical spaces
 - **Layout-First Philosophy**: Prioritizes visual hierarchy, creating engaging visual experience
-- **Performance**: SVG logo is lightweight; Google Fonts with `font-display: swap` minimizes layout shift
+- **Performance**: GIF hero image creates visual engagement; CSS optimizations ensure smooth animation playback without performance degradation
 - **Legibility**: Courier Prime is highly readable for body text; JetBrains Mono provides clear structure
 
 ### Negative
@@ -155,7 +158,10 @@ Place logo in traditional header/navigation area.
 - **Font Loading**: Google Fonts (Courier Prime, JetBrains Mono) with `font-display: swap` for performance
   - Courier Prime: Primary body/content font
   - JetBrains Mono: Navigation, headings, structural elements
-- **Logo Path**: `website/static/logo.svg`
+- **Hero Image**: `website/static/picture.gif` (animated GIF)
+  - Includes pulsing blur animation for continuous visual interest
+  - Animation cycle: 12 seconds (ease-in-out timing)
+  - CSS optimizations: `image-rendering: crisp-edges`, `backface-visibility: hidden` for smooth playback
 - **Responsive Breakpoints**:
   - Desktop: 1024px+ (full asymmetric layout)
   - Tablet: 768px-1023px (adapted asymmetry)
