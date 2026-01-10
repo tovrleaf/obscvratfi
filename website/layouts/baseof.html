@@ -581,5 +581,30 @@
         {{ block "main" . }}{{ end }}
     </main>
     {{ partial "footer.html" . }}
+    <script>
+        // Text cycling every 6 seconds
+        const textPairs = [
+            { line1: "HARSH NOISE", line2: "AUDIO RITUAL" },
+            { line1: "CAUSTIC HEMORRHAGING", line2: "ANALOG FILTH" }
+        ];
+
+        const glitchTexts = document.querySelectorAll(".glitch-text");
+        let currentPairIndex = 0;
+
+        function updateTexts() {
+            const currentPair = textPairs[currentPairIndex];
+            
+            glitchTexts[0].textContent = currentPair.line1;
+            glitchTexts[0].setAttribute("title", currentPair.line1);
+            
+            glitchTexts[1].textContent = currentPair.line2;
+            glitchTexts[1].setAttribute("title", currentPair.line2);
+            
+            currentPairIndex = (currentPairIndex + 1) % textPairs.length;
+        }
+
+        // Change texts every 6 seconds
+        setInterval(updateTexts, 6000);
+    </script>
 </body>
 </html>
