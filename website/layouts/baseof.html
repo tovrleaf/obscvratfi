@@ -10,8 +10,14 @@
     {{ partial "schema-event.html" . }}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Fira+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        @font-face {
+            font-family: 'Typo';
+            src: url('/fonts/Typo.ttf') format('truetype');
+        }
+        
         :root {
             --primary-color: #e5e5e5;
             --secondary-color: #b0b0b0;
@@ -20,7 +26,7 @@
             --bg-primary: #1a1a1a;
             --bg-secondary: #2d2d2d;
             --spacing-unit: 1rem;
-            --font-body: 'Courier Prime', 'Courier New', monospace;
+            --font-body: 'Typo', 'Courier Prime', monospace;
             --font-display: 'Fira Mono', 'Courier New', monospace;
             --font-glitch: 'Fira Mono', 'Courier New', monospace;
         }
@@ -33,6 +39,7 @@
         
         body {
             font-family: var(--font-body);
+            font-size: 0.9rem;
             line-height: 1.6;
             color: var(--primary-color);
             background: #000000;
@@ -54,9 +61,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
+            background: transparent;
             border-radius: 8px;
             margin: 0.5rem auto;
         }
@@ -168,7 +173,7 @@
             font-size: clamp(1.8rem, 8vw, 5rem);
             font-weight: 400;
             line-height: 1.2;
-            color: var(--secondary-color);
+            color: var(--primary-color);
             text-align: center;
             margin: 0;
             letter-spacing: 0.05em;
@@ -196,7 +201,7 @@
         .glitch-text {
             position: relative;
             display: inline-block;
-            color: var(--secondary-color);
+            color: var(--primary-color);
         }
         
         .glitch-text.hidden {
@@ -204,7 +209,7 @@
         }
         
         .glitch-text.secondary {
-            color: var(--secondary-color);
+            color: var(--primary-color);
         }
         
         /* Harsh noise - intense glitch */
@@ -245,7 +250,7 @@
         .glitch-text:before {
             clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%);
             -webkit-clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%);
-            color: var(--secondary-color);
+            color: var(--primary-color);
         }
         
         /* Intense glitch before elements */
@@ -262,13 +267,13 @@
         }
         
         .glitch-text.secondary:before {
-            color: var(--secondary-color);
+            color: var(--primary-color);
         }
         
         .glitch-text:after {
             clip-path: polygon(0 67%, 100% 67%, 100% 100%, 0 100%);
             -webkit-clip-path: polygon(0 67%, 100% 67%, 100% 100%, 0 100%);
-            color: var(--secondary-color);
+            color: var(--primary-color);
         }
         
         /* Intense glitch after elements */
@@ -285,7 +290,7 @@
         }
         
         .glitch-text.secondary:after {
-            color: var(--secondary-color);
+            color: var(--primary-color);
         }
         
         /* Glitch keyframes */
@@ -450,6 +455,7 @@
         }
         
         .gig-date {
+            font-family: var(--font-display);
             background: var(--accent-color);
             color: var(--primary-color);
             padding: 0.75rem 1rem;
@@ -531,14 +537,15 @@
             margin-top: 1.5rem;
         }
         
-        .view-all, .read-more {
-            display: inline-block;
-            color: var(--accent-color);
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s;
-            padding: 0.5rem 1rem;
-        }
+         .view-all, .read-more {
+             display: inline-block;
+             font-family: var(--font-display);
+             color: var(--accent-color);
+             text-decoration: none;
+             font-weight: 500;
+             transition: all 0.3s;
+             padding: 0.5rem 1rem;
+         }
         
         .view-all:hover, .read-more:hover {
             color: var(--bg-primary);
@@ -577,12 +584,61 @@
         }
         
         footer {
-            background: var(--bg-secondary);
+            background: transparent;
             padding: 2rem;
             margin-top: 4rem;
             text-align: center;
             color: var(--secondary-color);
-            border-top: 1px solid var(--border-color);
+            border-top: none;
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        
+        .footer-copyright {
+            margin: 0;
+            font-size: 0.9rem;
+        }
+        
+        .footer-social {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .footer-social li {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .footer-social a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 0.5px solid rgba(229, 229, 229, 0.3);
+            color: var(--secondary-color);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+            box-shadow: 0 0 12px 0 rgba(229, 229, 229, 0.6), inset 0 0 8px 0 rgba(229, 229, 229, 0.3);
+        }
+        
+        .footer-social a:hover {
+            border-color: rgba(229, 229, 229, 0.45);
+            color: var(--primary-color);
+            background: rgba(229, 229, 229, 0.1);
+            box-shadow: 0 0 20px 0 rgba(229, 229, 229, 0.9), inset 0 0 12px 0 rgba(229, 229, 229, 0.5);
         }
         
         @media (max-width: 768px) {
