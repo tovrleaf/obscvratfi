@@ -152,6 +152,45 @@
             }
         }
         
+        .scroll-text-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 0;
+            margin: 0;
+            overflow: hidden;
+        }
+        
+        .scroll-text {
+            width: 100%;
+            padding: 2rem;
+        }
+        
+        .scroll-text h2 {
+            font-family: var(--font-display);
+            font-size: clamp(2.5rem, 12vw, 8rem);
+            font-weight: 700;
+            line-height: 1.1;
+            color: var(--primary-color);
+            text-align: center;
+            margin: 0;
+            letter-spacing: -0.02em;
+            opacity: 0;
+            animation: scrollFadeIn 0.8s ease-out forwards;
+        }
+        
+        @keyframes scrollFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
         .featured-section {
             margin-bottom: 3rem;
             padding: 2rem;
