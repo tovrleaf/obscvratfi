@@ -31,20 +31,26 @@ We will implement a comprehensive dark minimal design system for the Obscvrat ho
 This palette creates a dark, minimal aesthetic that reduces eye strain, conveys sophistication, and aligns with experimental/technical design sensibilities.
 
 ### 2. **Typography System**
-- **Body Text (Monospace)**: Courier Prime
+- **Body Text (Monospace)**: Typo
+  - Custom font selected for distinctive, experimental aesthetic
   - Used for body text and general content
   - Monospace aesthetic reflects technical/experimental nature
   - Highly legible on dark background
-  - Weights: 400 (regular), 700 (bold)
+  - Font size: 0.9rem (reduced for refined visual hierarchy)
+  - Fallback chain: Typo → Courier Prime → monospace
 
-- **Display/Structural (Monospace)**: JetBrains Mono
-  - Used for navigation, headings (h1, h2, h3)
+- **Display/Structural (Monospace)**: Fira Mono
+  - Used for navigation, headings (h1, h2, h3), and UI elements
   - Technical, code-like appearance
   - Reinforces noisework/experimental identity
-  - Creates visual hierarchy alongside Courier Prime
-  - Weights: 400 (regular), 500 (medium), 700 (bold)
+  - Creates visual hierarchy alongside Typo body text
+  - Applied to specific UI elements:
+    - Navigation links and logo
+    - "Read more" and "View all" action links
+    - Gig date boxes (featured in separate visual containers)
+  - Weights: 400 (regular), 700 (bold)
 
-This **all-monospace approach** differs from traditional hybrid typography. Both fonts are monospace but serve different purposes: Courier Prime for readability and body content, JetBrains Mono for structure and emphasis. This creates a cohesive, intentional aesthetic inspired by designers like Isabel Moranta who prioritize experimental typography.
+This **monospace approach** uses two carefully selected monospace fonts for distinct purposes: Typo for readability and body content, Fira Mono for structure and emphasis. This creates a cohesive, intentional aesthetic reflecting experimental design principles. The font size reduction (0.9rem) refines the visual hierarchy and improves overall page balance.
 
 ### 3. **Layout & Visual Hierarchy**
 - **Asymmetric Design**: Content sections flow diagonally and unexpectedly rather than in traditional grids
@@ -59,9 +65,40 @@ This **all-monospace approach** differs from traditional hybrid typography. Both
   - Replaces static SVG logo for enhanced visual engagement
   - Features pulsing blur animation (12-second cycle) for subtle, hypnotic effect
   - Animated content reinforces experimental/noisework aesthetic
+- **Text Brightness**: 
+  - Scroll-text section and glitch-text elements use primary-color (#e5e5e5) for enhanced visibility and visual impact
+  - Creates brighter, more prominent hero section that immediately captures attention
+  - Improves readability while maintaining dark aesthetic
+- **Navigation Styling**:
+  - Removed blur effect (backdrop-filter) for cleaner visual appearance
+  - Transparent background (rgba(0, 0, 0, 0)) for seamless integration with content
+  - Maintains structural hierarchy through Fira Mono typography
 - **Hover States**: Muted accent color (`#5a5a5a`) for interactive feedback
 - **Spacing**: Generous whitespace to support dark minimal aesthetic
 - **Responsive Design**: Asymmetric layouts gracefully degrade on smaller screens
+
+#### Footer Redesign
+- **Social Media Integration**: 
+  - Font Awesome icon-based design replaces text links for cleaner, more modern appearance
+  - Icons for Instagram, Bandcamp, and YouTube
+  - Social icons positioned above copyright text for visual hierarchy
+- **Glowing Icon Effect**:
+  - Icons feature a visible glow effect at all times (box-shadow with 0.6 opacity outer glow + 0.3 opacity inset glow)
+  - Glow intensifies significantly on hover (0.9 opacity outer glow + 0.5 opacity inset glow)
+  - Creates elegant, grayscale aesthetic using rgba(229, 229, 229, X) opacity variations
+  - Border: 0.5px solid with 0.3 opacity for subtle definition, increases to 0.45 opacity on hover
+  - Smooth 0.3s ease transitions for all interactive effects
+- **Footer Background & Borders**:
+  - Background: Fully transparent (no secondary background color)
+  - Border: None (removed top border entirely)
+  - Creates seamless integration with dark background
+  - Emphasizes social icons as focal point of footer
+- **Layout**: 
+  - Footer content wrapped in flex container with vertical direction
+  - Centered alignment for social icons
+  - 1.5rem gap between icon group and copyright text
+  - Icons displayed as circular buttons (40px × 40px, border-radius: 50%)
+  - Copyright text: 0.9rem size, secondary-color
 
 ## Alternatives Considered
 
@@ -125,16 +162,22 @@ Place logo in traditional header/navigation area.
 ## Consequences
 
 ### Positive
-- **Strong Visual Identity**: Dark minimal palette + asymmetric layout + all-monospace typography creates distinctive, memorable brand presence
-- **Experimental Aesthetic**: All-monospace typography authentically reflects noisework/experimental nature; matches contemporary experimental design (e.g., Isabel Moranta)
-- **Intentional Design**: Deliberate choice of two monospace fonts (Courier Prime + JetBrains Mono) creates sophisticated, layered visual hierarchy
+- **Strong Visual Identity**: Dark minimal palette + asymmetric layout + monospace typography (Typo + Fira Mono) creates distinctive, memorable brand presence
+- **Experimental Aesthetic**: Monospace typography authentically reflects noisework/experimental nature; matches contemporary experimental design (e.g., Isabel Moranta)
+- **Intentional Design**: Deliberate choice of two monospace fonts (Typo + Fira Mono) creates sophisticated, layered visual hierarchy
+- **Typography Distinctiveness**: Typo font provides unique, custom feel that differentiates Obscvrat from generic monospace websites
+- **Improved Visibility**: Brightened scroll-text and glitch-text (primary-color) creates immediate visual impact and better readability
+- **Clean Navigation**: Removing blur effect and making background transparent creates cleaner, more intentional UI
 - **Scalability**: Design system provides clear foundation for extending to other pages
 - **Accessibility**: Dark background reduces eye strain; high-contrast text maintains readability; monospace fonts enhance technical accessibility
 - **Logo Prominence**: Centered placement showcases the intricate organic logo as intended focal point
 - **Contemporary**: Aligns with modern design trends in experimental and technical spaces
 - **Layout-First Philosophy**: Prioritizes visual hierarchy, creating engaging visual experience
 - **Performance**: GIF hero image creates visual engagement; CSS optimizations ensure smooth animation playback without performance degradation
-- **Legibility**: Courier Prime is highly readable for body text; JetBrains Mono provides clear structure
+- **Legibility**: Typo is highly readable for body text; Fira Mono provides clear structure and emphasis
+- **Footer Redesign**: Icon-based social links with glowing effect creates modern, elegant alternative to text links
+- **Interactive Feedback**: Glow effect on social icons provides clear visual feedback for user interaction
+- **Refined Visual Hierarchy**: Reduced body font size (0.9rem) and strategic font application improves overall page balance and readability
 
 ### Negative
 - **Scannability**: Asymmetric layout may reduce initial scannability for first-time visitors unfamiliar with experimental design
@@ -143,21 +186,41 @@ Place logo in traditional header/navigation area.
 - **Browser Compatibility**: Some advanced CSS features may need fallbacks for older browsers
 - **Dark Mode Limitations**: Dark theme complicates printing; may need print stylesheet
 - **Accessibility Considerations**: Must ensure sufficient color contrast and focus states for keyboard navigation
-- **Monospace Typography**: All-monospace approach may feel unfamiliar to some users; requires careful font selection to avoid readability issues (mitigated by Courier Prime choice)
+- **Monospace Typography**: All-monospace approach may feel unfamiliar to some users; requires careful font selection to avoid readability issues (mitigated by Typo selection)
+- **Custom Font Loading**: Typo font file requires additional HTTP request and local server configuration; requires proper @font-face implementation
+- **Icon Glow Performance**: Box-shadow glow effects with inset shadows may impact performance on low-end devices or browsers; smooth transitions require GPU acceleration
 
 ### Neutral
-- **Font Loading**: Google Fonts imports add slight performance overhead; mitigation includes `font-display: swap` and preconnect links
-- **Iteration**: Design may evolve as homepage is used; flexibility to refine asymmetry and typography as user feedback arrives
+- **Font Loading**: Google Fonts imports (Fira Mono) add slight performance overhead; Typo served locally avoids external CDN dependency
+- **Iteration**: Design may evolve as homepage is used; flexibility to refine asymmetry, typography, and glow effects as user feedback arrives
 - **Content Sections**: Original "upcoming gigs" focus de-emphasized in favor of layout; may require content strategy adjustment
 - **Monospace Preference**: All-monospace typography is unconventional choice; represents deliberate aesthetic preference rather than universal best practice
+- **Social Media Links**: Removal of "Connect" section from homepage means social links now appear only in footer; requires clear discoverability
 
 ## Notes
 
 ### Implementation Details
 - **Color Variables**: CSS custom properties for all colors enable easy theme adjustments
-- **Font Loading**: Google Fonts (Courier Prime, JetBrains Mono) with `font-display: swap` for performance
-  - Courier Prime: Primary body/content font
-  - JetBrains Mono: Navigation, headings, structural elements
+- **Font Loading**: 
+  - Typo: Custom font served locally via @font-face from `/website/static/fonts/Typo.ttf`
+    - Format: TrueType (.ttf)
+    - Loaded immediately without external CDN dependency
+    - Fallback chain: Typo → Courier Prime → monospace
+  - Fira Mono: Google Fonts with `font-display: swap` for performance
+  - Body font size: 0.9rem (reduced for refined visual hierarchy)
+- **Icons Library**: Font Awesome 6.4.0 via CDN for social media icons
+  - Instagram, Bandcamp, YouTube icons
+  - Circular button design: 40px × 40px with 50% border-radius
+- **Footer Social Icons Styling**:
+  - Default glow: `box-shadow: 0 0 12px 0 rgba(229, 229, 229, 0.6), inset 0 0 8px 0 rgba(229, 229, 229, 0.3)`
+  - Hover glow: `box-shadow: 0 0 20px 0 rgba(229, 229, 229, 0.9), inset 0 0 12px 0 rgba(229, 229, 229, 0.5)`
+  - Border: 0.5px solid rgba(229, 229, 229, 0.3) → 0.45 on hover
+  - Transitions: all 0.3s ease
+  - Color on hover: primary-color (#e5e5e5)
+- **Social Media Links**: Configured in `website/hugo.toml`
+  - Instagram: https://www.instagram.com/obscvrat/
+  - Bandcamp: https://iamrat.bandcamp.com/
+  - YouTube: https://www.youtube.com/@iamrat2
 - **Hero Image**: `website/static/picture.gif` (animated GIF)
   - Includes pulsing blur animation for continuous visual interest
   - Animation cycle: 12 seconds (ease-in-out timing)
@@ -173,8 +236,11 @@ Place logo in traditional header/navigation area.
 - Extend design system to subsequent pages (albums, gigs, about)
 - Refine accent color usage based on user interaction patterns
 - Document design system specifications for team consistency
+- Consider extending glow effects to other interactive elements if user feedback is positive
+- Monitor social icon visibility and click-through rates
 
 ### Related Decisions
+- **ADR-008**: Typo Font Typography Decision - decision to use custom Typo font as primary body font
 - **ADR-003**: Website Hosting & Static Site Generation (Hugo) - this design works within existing Hugo architecture
 - **ADR-004**: Instagram Feed Integration - visual integration with new design system should be considered
 
@@ -182,3 +248,4 @@ Place logo in traditional header/navigation area.
 - **Isabel Moranta** (https://www.isabelmoranta.com) - Inspiration for dark minimal + all-monospace typography + asymmetric layout approach; demonstrates effectiveness of experimental typography on dark backgrounds
 - OpenCode (https://opencode.ai) - Inspiration for dark minimal + technical design aesthetic
 - Design System principles from contemporary technical brands
+- Font Awesome Icon Library: https://fontawesome.com
