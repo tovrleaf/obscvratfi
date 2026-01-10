@@ -10,7 +10,7 @@
     {{ partial "schema-event.html" . }}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Fira+Mono:wght@400;700&family=JetBrains+Mono:wght@400;500;700&family=Raleway:wght@900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Fira+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary-color: #e5e5e5;
@@ -21,7 +21,7 @@
             --bg-secondary: #2d2d2d;
             --spacing-unit: 1rem;
             --font-body: 'Courier Prime', 'Courier New', monospace;
-            --font-display: 'JetBrains Mono', 'Courier New', monospace;
+            --font-display: 'Fira Mono', 'Courier New', monospace;
             --font-glitch: 'Fira Mono', 'Courier New', monospace;
         }
         
@@ -39,9 +39,9 @@
         }
         
         header {
-            background: #000000;
+            background: transparent;
             padding: 1.5rem 0;
-            border-bottom: 1px solid var(--border-color);
+            border-bottom: none;
             position: sticky;
             top: 0;
             z-index: 100;
@@ -194,7 +194,7 @@
         
         #part1 {
             min-height: 2.4em;
-            justify-content: center;
+            justify-content: flex-end;
         }
         
         .glitch-text {
