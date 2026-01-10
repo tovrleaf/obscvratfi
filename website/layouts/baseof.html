@@ -159,9 +159,9 @@
         .scroll-text h2 {
             font-family: var(--font-display);
             font-size: clamp(1.8rem, 8vw, 5rem);
-            font-weight: 700;
+            font-weight: 400;
             line-height: 1.2;
-            color: var(--primary-color);
+            color: var(--secondary-color);
             text-align: center;
             margin: 0;
             letter-spacing: 0.05em;
@@ -170,6 +170,7 @@
             flex-wrap: wrap;
             justify-content: center;
             gap: 0;
+            text-transform: uppercase;
         }
         
         .text-part {
@@ -188,7 +189,7 @@
         .glitch-text {
             position: relative;
             display: inline-block;
-            color: var(--primary-color);
+            color: var(--secondary-color);
         }
         
         .glitch-text.hidden {
@@ -237,7 +238,7 @@
         .glitch-text:before {
             clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%);
             -webkit-clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%);
-            color: var(--primary-color);
+            color: var(--secondary-color);
         }
         
         /* Intense glitch before elements */
@@ -260,7 +261,7 @@
         .glitch-text:after {
             clip-path: polygon(0 67%, 100% 67%, 100% 100%, 0 100%);
             -webkit-clip-path: polygon(0 67%, 100% 67%, 100% 100%, 0 100%);
-            color: var(--primary-color);
+            color: var(--secondary-color);
         }
         
         /* Intense glitch after elements */
