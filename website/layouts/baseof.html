@@ -586,7 +586,7 @@
         // Text cycling every 6 seconds
         const textPairs = [
             { line1: "HARSH NOISE", line2: "AUDIO RITUAL" },
-            { line1: "CAUSTIC HEMORRHAGING", line2: "ANALOG FILTH" }
+            { line1: { part1: "CAUSTIC", part2: "HEMORRHAGING" }, line2: "ANALOG FILTH" }
         ];
 
         const glitchTexts = document.querySelectorAll(".glitch-text");
@@ -595,8 +595,17 @@
         function updateTexts() {
             const currentPair = textPairs[currentPairIndex];
             
-            glitchTexts[0].textContent = currentPair.line1;
-            glitchTexts[0].setAttribute("title", currentPair.line1);
+            // Handle line 1 - can have parts split by line break
+            const line1 = currentPair.line1;
+            if (typeof line1 === "object") {
+                // CAUSTIC HEMORRHAGING case with line break
+                glitchTexts[0].innerHTML = `<span class="text-line1">${line1.part1}</span><br><span class="text-line2">${line1.part2}</span>`;
+                glitchTexts[0].setAttribute("title", `${line1.part1} ${line1.part2}`);
+            } else {
+                // HARSH NOISE case - single line
+                glitchTexts[0].textContent = line1;
+                glitchTexts[0].setAttribute("title", line1);
+            }
             
             glitchTexts[1].textContent = currentPair.line2;
             glitchTexts[1].setAttribute("title", currentPair.line2);
