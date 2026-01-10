@@ -184,6 +184,18 @@
             gap: 1em;
         }
         
+        .text-state {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1em;
+            align-items: flex-start;
+        }
+        
+        #state2 {
+            display: none;
+        }
+        
         .glitch-text {
             position: relative;
             display: inline-block;
@@ -582,41 +594,25 @@
     </main>
     {{ partial "footer.html" . }}
     <script>
-        // Text cycling every 6 seconds
-        const textPairs = [
-            { line1: "HARSH NOISE", line2: "AUDIO RITUAL" },
-            { line1: "CAUSTIC\nHEMORRHAGING", line2: "ANALOG FILTH" }
-        ];
+        // Text state toggle every 6 seconds
+        const state1 = document.getElementById("state1");
+        const state2 = document.getElementById("state2");
+        let currentState = 1;
 
-        const glitchTexts = document.querySelectorAll(".glitch-text");
-        let currentPairIndex = 0;
-
-        function updateTexts() {
-            const currentPair = textPairs[currentPairIndex];
-            
-            // Handle line 1 - check for newline
-            const line1 = currentPair.line1;
-            if (line1.includes("\n")) {
-                const parts = line1.split("\n");
-                glitchTexts[0].textContent = parts[0];
-                glitchTexts[0].appendChild(document.createElement("br"));
-                const span = document.createElement("span");
-                span.textContent = parts[1];
-                glitchTexts[0].appendChild(span);
-                glitchTexts[0].setAttribute("title", line1.replace("\n", " "));
+        function toggleTextState() {
+            if (currentState === 1) {
+                state1.style.display = "none";
+                state2.style.display = "flex";
+                currentState = 2;
             } else {
-                glitchTexts[0].textContent = line1;
-                glitchTexts[0].setAttribute("title", line1);
+                state1.style.display = "flex";
+                state2.style.display = "none";
+                currentState = 1;
             }
-            
-            glitchTexts[1].textContent = currentPair.line2;
-            glitchTexts[1].setAttribute("title", currentPair.line2);
-            
-            currentPairIndex = (currentPairIndex + 1) % textPairs.length;
         }
 
-        // Change texts every 6 seconds
-        setInterval(updateTexts, 6000);
+        // Toggle states every 6 seconds
+        setInterval(toggleTextState, 6000);
     </script>
 </body>
 </html>
