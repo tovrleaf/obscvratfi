@@ -169,15 +169,313 @@
         
         .scroll-text h2 {
             font-family: var(--font-display);
-            font-size: clamp(2.5rem, 12vw, 8rem);
+            font-size: clamp(1.8rem, 8vw, 5rem);
             font-weight: 700;
-            line-height: 1.1;
+            line-height: 1.2;
             color: var(--primary-color);
             text-align: center;
             margin: 0;
-            letter-spacing: -0.02em;
+            letter-spacing: 0.05em;
+            word-spacing: 0.2em;
             opacity: 0;
             animation: scrollFadeIn 0.8s ease-out forwards;
+        }
+        
+        .text-primary {
+            color: var(--primary-color);
+        }
+        
+        .text-secondary {
+            color: var(--secondary-color);
+        }
+        
+        .caustic {
+            font-size: 0.55em;
+            letter-spacing: 0.15em;
+            white-space: nowrap;
+        }
+        
+        .glitch-text {
+            position: relative;
+            display: inline-block;
+            color: var(--primary-color);
+        }
+        
+        .glitch-text:nth-child(1) {
+            animation: glitch1 4s linear infinite;
+        }
+        
+        .glitch-text:nth-child(2) {
+            animation: glitch2Original 1.2s linear infinite 0.5s;
+        }
+        
+        .glitch-text:nth-child(3) {
+            animation: glitch3 5s linear infinite 1.5s;
+        }
+        
+        .glitch-text:nth-child(4) {
+            animation: glitch1 4.2s linear infinite 0.5s;
+        }
+        
+        .glitch-text.secondary {
+            color: var(--secondary-color);
+        }
+        
+        .glitch-text:before,
+        .glitch-text:after {
+            content: attr(title);
+            position: absolute;
+            left: 0;
+        }
+        
+        .glitch-text:before {
+            clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%);
+            -webkit-clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%);
+            color: var(--primary-color);
+        }
+        
+        .glitch-text:nth-child(1):before {
+            animation: glitchTop1 4s linear infinite;
+        }
+        
+        .glitch-text:nth-child(2):before {
+            animation: glitchTop2Original 1.2s linear infinite 0.5s;
+        }
+        
+        .glitch-text:nth-child(3):before {
+            animation: glitchTop3 5s linear infinite 1.5s;
+        }
+        
+        .glitch-text:nth-child(4):before {
+            animation: glitchTop1 4.2s linear infinite 0.5s;
+        }
+        
+        .glitch-text.secondary:before {
+            color: var(--secondary-color);
+        }
+        
+        .glitch-text:after {
+            clip-path: polygon(0 67%, 100% 67%, 100% 100%, 0 100%);
+            -webkit-clip-path: polygon(0 67%, 100% 67%, 100% 100%, 0 100%);
+            color: var(--primary-color);
+        }
+        
+        .glitch-text:nth-child(1):after {
+            animation: glitchBotom1 5s linear infinite;
+        }
+        
+        .glitch-text:nth-child(2):after {
+            animation: glitchBotom2Original 1.5s linear infinite 0.5s;
+        }
+        
+        .glitch-text:nth-child(3):after {
+            animation: glitchBotom3 6s linear infinite 1.5s;
+        }
+        
+        .glitch-text:nth-child(4):after {
+            animation: glitchBotom1 5.2s linear infinite 0.5s;
+        }
+        
+        .glitch-text.secondary:after {
+            color: var(--secondary-color);
+        }
+        
+        @keyframes glitch1 {
+            0%,100%{
+                transform: translate(0,0) skew(0deg);
+            }
+            5%,95%{
+                transform: translate(0,0) skew(0deg);
+            }
+            30%{
+                transform: translate(0.5px,0) skew(0deg);
+            }
+            32%{
+                transform: translate(-0.5px,0) skew(0deg);
+            }
+            90%{
+                transform: translate(0,0) skew(1deg);
+            }
+        }
+        
+        @keyframes glitch2 {
+            0%,100%{
+                transform: translate(0,0) skew(0deg);
+            }
+            8%,92%{
+                transform: translate(0,0) skew(0deg);
+            }
+            40%{
+                transform: translate(0.5px,0) skew(0deg);
+            }
+            42%{
+                transform: translate(-0.5px,0) skew(0deg);
+            }
+            85%{
+                transform: translate(0,0) skew(0.5deg);
+            }
+        }
+        
+        @keyframes glitch3 {
+            0%,100%{
+                transform: translate(0,0) skew(0deg);
+            }
+            10%,90%{
+                transform: translate(0,0) skew(0deg);
+            }
+            45%{
+                transform: translate(0.5px,0) skew(0deg);
+            }
+            47%{
+                transform: translate(-0.5px,0) skew(0deg);
+            }
+            80%{
+                transform: translate(0,0) skew(1.5deg);
+            }
+        }
+        
+        @keyframes glitchTop1 {
+            0%,100%{
+                transform: translate(0,0);
+            }
+            5%,95%{
+                transform: translate(0,0);
+            }
+            30%{
+                transform: translate(0.5px,-0.5px);
+            }
+            32%{
+                transform: translate(-0.5px,0.5px);
+            }
+            90%{
+                transform: translate(2px,-0.5px) skew(-2deg);
+            }
+        }
+        
+        @keyframes glitchTop2 {
+            0%,100%{
+                transform: translate(0,0);
+            }
+            8%,92%{
+                transform: translate(0,0);
+            }
+            40%{
+                transform: translate(0.5px,-0.5px);
+            }
+            42%{
+                transform: translate(-0.5px,0.5px);
+            }
+            85%{
+                transform: translate(3px,-0.5px) skew(-3deg);
+            }
+        }
+        
+        @keyframes glitchTop3 {
+            0%,100%{
+                transform: translate(0,0);
+            }
+            10%,90%{
+                transform: translate(0,0);
+            }
+            45%{
+                transform: translate(0.5px,-0.5px);
+            }
+            47%{
+                transform: translate(-0.5px,0.5px);
+            }
+            80%{
+                transform: translate(4px,-0.5px) skew(-3.5deg);
+            }
+        }
+        
+        @keyframes glitchBotom1 {
+            0%,100%{
+                transform: translate(0,0);
+            }
+            5%,95%{
+                transform: translate(0,0);
+            }
+            30%{
+                transform: translate(-0.5px,0);
+            }
+            32%{
+                transform: translate(-0.5px,0);
+            }
+            90%{
+                transform: translate(-3px,1.5px) skew(2deg);
+            }
+        }
+        
+        @keyframes glitchBotom2 {
+            0%,100%{
+                transform: translate(0,0);
+            }
+            8%,92%{
+                transform: translate(0,0);
+            }
+            40%{
+                transform: translate(-0.5px,0);
+            }
+            42%{
+                transform: translate(-0.5px,0);
+            }
+            85%{
+                transform: translate(-5px,2px) skew(3deg);
+            }
+        }
+        
+        @keyframes glitchBotom3 {
+            0%,100%{
+                transform: translate(0,0);
+            }
+            10%,90%{
+                transform: translate(0,0);
+            }
+            45%{
+                transform: translate(-0.5px,0);
+            }
+            47%{
+                transform: translate(-0.5px,0);
+            }
+            80%{
+                transform: translate(-6px,2.5px) skew(4deg);
+            }
+        }
+        
+        @keyframes glitch2Original {
+            2%,64%{
+                transform: translate(2px,0) skew(0deg);
+            }
+            4%,60%{
+                transform: translate(-2px,0) skew(0deg);
+            }
+            62%{
+                transform: translate(0,0) skew(5deg);
+            }
+        }
+        
+        @keyframes glitchTop2Original {
+            2%,64%{
+                transform: translate(2px,-2px);
+            }
+            4%,60%{
+                transform: translate(-2px,2px);
+            }
+            62%{
+                transform: translate(13px,-1px) skew(-13deg);
+            }
+        }
+        
+        @keyframes glitchBotom2Original {
+            2%,64%{
+                transform: translate(-2px,0);
+            }
+            4%,60%{
+                transform: translate(-2px,0);
+            }
+            62%{
+                transform: translate(-22px,5px) skew(21deg);
+            }
         }
         
         @keyframes scrollFadeIn {
