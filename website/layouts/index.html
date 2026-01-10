@@ -8,23 +8,12 @@
     </div>
     
     <section class="scroll-text-section">
-        <div id="morph-container">
-            <span id="morph-text1"></span>
-            <span id="morph-text2"></span>
+        <div class="scroll-text">
+            <h2>
+                <div class="glitch-text" title="HARSH NOISE">HARSH NOISE</div>
+                <div class="glitch-text secondary" title="AUDIO RITUAL">AUDIO RITUAL</div>
+            </h2>
         </div>
-        
-        <svg id="morph-filters">
-            <defs>
-                <filter id="threshold">
-                    <feColorMatrix in="SourceGraphic"
-                            type="matrix"
-                            values="1 0 0 0 0
-                                    0 1 0 0 0
-                                    0 0 1 0 0
-                                    0 0 0 255 -140" />
-                </filter>
-            </defs>
-        </svg>
     </section>
     
     {{ if .Site.GetPage "/gigs" }}

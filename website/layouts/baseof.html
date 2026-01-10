@@ -161,89 +161,89 @@
             padding: 4rem 0;
             margin: 0;
             overflow: hidden;
-            position: relative;
         }
         
-        #morph-container {
-            position: relative;
-            width: 100vw;
-            height: 150pt;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            filter: url(#threshold) blur(0.6px);
-        }
-        
-        #morph-text1, #morph-text2 {
-            position: absolute;
+        .scroll-text {
             width: 100%;
-            display: inline-block;
-            font-family: 'Raleway', sans-serif;
-            font-size: clamp(3rem, 12vw, 150pt);
-            font-weight: 900;
+            padding: 2rem;
+        }
+        
+        .scroll-text h2 {
+            font-family: var(--font-display);
+            font-size: clamp(1.8rem, 8vw, 5rem);
+            font-weight: 700;
+            line-height: 1.2;
+            color: var(--primary-color);
             text-align: center;
-            user-select: none;
             margin: 0;
-            padding: 0;
+            letter-spacing: 0.05em;
+            word-spacing: 0.2em;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.5em;
         }
         
-        #morph-text1 {
-            color: var(--primary-color);
-            animation: glitch1 4s linear infinite;
+        .glitch-text {
             position: relative;
-        }
-        
-        #morph-text1:before,
-        #morph-text1:after {
-            content: attr(data-text);
-            position: absolute;
-            left: 0;
-        }
-        
-        #morph-text1:before {
-            animation: glitchTop1 4s linear infinite;
-            clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%);
-            -webkit-clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%);
+            display: inline-block;
             color: var(--primary-color);
         }
         
-        #morph-text1:after {
-            animation: glitchBotom1 5s linear infinite;
-            clip-path: polygon(0 67%, 100% 67%, 100% 100%, 0 100%);
-            -webkit-clip-path: polygon(0 67%, 100% 67%, 100% 100%, 0 100%);
-            color: var(--primary-color);
-        }
-        
-        #morph-text2 {
-            color: var(--secondary-color);
+        .glitch-text:nth-child(1) {
             animation: glitch2Original 1.2s linear infinite 0.5s;
             font-family: var(--font-glitch);
-            position: relative;
         }
         
-        #morph-text2:before,
-        #morph-text2:after {
-            content: attr(data-text);
+        .glitch-text:nth-child(2) {
+            animation: glitch1 4s linear infinite;
+        }
+        
+        .glitch-text.secondary {
+            color: var(--secondary-color);
+        }
+        
+        .glitch-text:before,
+        .glitch-text:after {
+            content: attr(title);
             position: absolute;
             left: 0;
         }
         
-        #morph-text2:before {
-            animation: glitchTop2Original 1.2s linear infinite 0.5s;
+        .glitch-text:before {
             clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%);
             -webkit-clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%);
+            color: var(--primary-color);
+        }
+        
+        .glitch-text:nth-child(1):before {
+            animation: glitchTop2Original 1.2s linear infinite 0.5s;
+        }
+        
+        .glitch-text:nth-child(2):before {
+            animation: glitchTop1 4s linear infinite;
+        }
+        
+        .glitch-text.secondary:before {
             color: var(--secondary-color);
         }
         
-        #morph-text2:after {
-            animation: glitchBotom2Original 1.5s linear infinite 0.5s;
+        .glitch-text:after {
             clip-path: polygon(0 67%, 100% 67%, 100% 100%, 0 100%);
             -webkit-clip-path: polygon(0 67%, 100% 67%, 100% 100%, 0 100%);
-            color: var(--secondary-color);
+            color: var(--primary-color);
         }
         
-        #morph-filters {
-            display: none;
+        .glitch-text:nth-child(1):after {
+            animation: glitchBotom2Original 1.5s linear infinite 0.5s;
+        }
+        
+        .glitch-text:nth-child(2):after {
+            animation: glitchBotom1 5s linear infinite;
+        }
+        
+        .glitch-text.secondary:after {
+            color: var(--secondary-color);
         }
         
         @keyframes scrollFadeIn {
@@ -490,113 +490,5 @@
         {{ block "main" . }}{{ end }}
     </main>
     {{ partial "footer.html" . }}
-    <script>
-        // Morph effect - Text morphing animation
-        const morphElements = {
-            text1: document.getElementById("morph-text1"),
-            text2: document.getElementById("morph-text2")
-        };
-
-        const morphTexts = [
-            "HARSH NOISE",
-            "CAUSTIC HEMORRHAGING",
-            "AUDIO RITUAL",
-            "ANALOG FILTH"
-        ];
-
-        // Colors: primary (light) and secondary (darker)
-        const textColors = [
-            { text: "HARSH NOISE", color: "primary" },
-            { text: "CAUSTIC HEMORRHAGING", color: "primary" },
-            { text: "AUDIO RITUAL", color: "secondary" },
-            { text: "ANALOG FILTH", color: "secondary" }
-        ];
-
-        const morphTime = 0.25;
-        const cooldownTime = 5;
-
-        let textIndex = 0;
-        let time = new Date();
-        let morph = 0;
-        let cooldown = cooldownTime;
-
-        // Initialize with first text
-        morphElements.text1.textContent = "HARSH NOISE";
-        morphElements.text1.setAttribute("data-text", "HARSH NOISE");
-        morphElements.text1.style.color = "var(--primary-color)";
-        morphElements.text2.textContent = "AUDIO RITUAL";
-        morphElements.text2.setAttribute("data-text", "AUDIO RITUAL");
-        morphElements.text2.style.color = "var(--secondary-color)";
-        morphElements.text2.style.opacity = "0%";
-
-        function doMorph() {
-            morph -= cooldown;
-            cooldown = 0;
-
-            let fraction = morph / morphTime;
-
-            if (fraction > 1) {
-                cooldown = cooldownTime;
-                fraction = 1;
-            }
-
-            setMorph(fraction);
-        }
-
-        function setMorph(fraction) {
-            morphElements.text2.style.filter = `blur(${Math.min(8 / fraction - 8, 100)}px)`;
-            morphElements.text2.style.opacity = `${Math.pow(fraction, 0.4) * 100}%`;
-
-            fraction = 1 - fraction;
-            morphElements.text1.style.filter = `blur(${Math.min(8 / fraction - 8, 100)}px)`;
-            morphElements.text1.style.opacity = `${Math.pow(fraction, 0.4) * 100}%`;
-
-            // Update text content and colors
-            const currentIndex = textIndex % textColors.length;
-            const nextIndex = (textIndex + 1) % textColors.length;
-
-            morphElements.text1.textContent = textColors[currentIndex].text;
-            morphElements.text1.setAttribute("data-text", textColors[currentIndex].text);
-            morphElements.text1.style.color = textColors[currentIndex].color === "primary" ? "var(--primary-color)" : "var(--secondary-color)";
-
-            morphElements.text2.textContent = textColors[nextIndex].text;
-            morphElements.text2.setAttribute("data-text", textColors[nextIndex].text);
-            morphElements.text2.style.color = textColors[nextIndex].color === "primary" ? "var(--primary-color)" : "var(--secondary-color)";
-        }
-
-        function doCooldown() {
-            morph = 0;
-
-            morphElements.text2.style.filter = "";
-            morphElements.text2.style.opacity = "100%";
-
-            morphElements.text1.style.filter = "";
-            morphElements.text1.style.opacity = "0%";
-        }
-
-        function animate() {
-            requestAnimationFrame(animate);
-
-            let newTime = new Date();
-            let shouldIncrementIndex = cooldown > 0;
-            let dt = (newTime - time) / 1000;
-            time = newTime;
-
-            cooldown -= dt;
-
-            if (cooldown <= 0) {
-                if (shouldIncrementIndex) {
-                    textIndex++;
-                }
-
-                doMorph();
-            } else {
-                doCooldown();
-            }
-        }
-
-        // Start animation after 5 seconds
-        setTimeout(animate, 5000);
-    </script>
 </body>
 </html>
