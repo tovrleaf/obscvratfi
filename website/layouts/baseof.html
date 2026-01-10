@@ -184,16 +184,11 @@
             gap: 1em;
         }
         
-        .text-state {
+        .text-part {
             display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 1em;
-            align-items: flex-start;
-        }
-        
-        #state2 {
-            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 0;
         }
         
         .glitch-text {
@@ -202,17 +197,40 @@
             color: var(--primary-color);
         }
         
-        .glitch-text:nth-child(1) {
-            animation: glitch2Original 1.2s linear infinite 0.5s;
-            font-family: var(--font-glitch);
-        }
-        
-        .glitch-text:nth-child(2) {
-            animation: glitch1 4s linear infinite;
+        .glitch-text.hidden {
+            display: none;
         }
         
         .glitch-text.secondary {
             color: var(--secondary-color);
+        }
+        
+        /* Harsh noise - intense glitch */
+        .glitch-text.harsh-noise {
+            animation: glitch2Original 1.2s linear infinite 0.5s;
+            font-family: var(--font-glitch);
+        }
+        
+        /* Caustic - intense glitch */
+        .glitch-text.caustic {
+            animation: glitch2Original 1.2s linear infinite 0.5s;
+            font-family: var(--font-glitch);
+        }
+        
+        /* Hemorrhaging - intense glitch */
+        .glitch-text.hemorrhaging {
+            animation: glitch2Original 1.2s linear infinite 0.5s;
+            font-family: var(--font-glitch);
+        }
+        
+        /* Audio ritual - subtle glitch */
+        .glitch-text.audio-ritual {
+            animation: glitch1 4s linear infinite;
+        }
+        
+        /* Analog filth - subtle glitch */
+        .glitch-text.analog-filth {
+            animation: glitch1 4s linear infinite;
         }
         
         .glitch-text:before,
@@ -228,11 +246,16 @@
             color: var(--primary-color);
         }
         
-        .glitch-text:nth-child(1):before {
+        /* Intense glitch before elements */
+        .glitch-text.harsh-noise:before,
+        .glitch-text.caustic:before,
+        .glitch-text.hemorrhaging:before {
             animation: glitchTop2Original 1.2s linear infinite 0.5s;
         }
         
-        .glitch-text:nth-child(2):before {
+        /* Subtle glitch before elements */
+        .glitch-text.audio-ritual:before,
+        .glitch-text.analog-filth:before {
             animation: glitchTop1 4s linear infinite;
         }
         
@@ -246,11 +269,16 @@
             color: var(--primary-color);
         }
         
-        .glitch-text:nth-child(1):after {
+        /* Intense glitch after elements */
+        .glitch-text.harsh-noise:after,
+        .glitch-text.caustic:after,
+        .glitch-text.hemorrhaging:after {
             animation: glitchBotom2Original 1.5s linear infinite 0.5s;
         }
         
-        .glitch-text:nth-child(2):after {
+        /* Subtle glitch after elements */
+        .glitch-text.audio-ritual:after,
+        .glitch-text.analog-filth:after {
             animation: glitchBotom1 5s linear infinite;
         }
         
@@ -594,19 +622,31 @@
     </main>
     {{ partial "footer.html" . }}
     <script>
-        // Text state toggle every 6 seconds
-        const state1 = document.getElementById("state1");
-        const state2 = document.getElementById("state2");
+        // Text toggle every 6 seconds
+        const harshNoise = document.querySelector(".harsh-noise");
+        const caustic = document.querySelector(".caustic");
+        const hemorrhaging = document.querySelector(".hemorrhaging");
+        const audioRitual = document.querySelector(".audio-ritual");
+        const analogFilth = document.querySelector(".analog-filth");
+        
         let currentState = 1;
 
         function toggleTextState() {
             if (currentState === 1) {
-                state1.style.display = "none";
-                state2.style.display = "flex";
+                // Hide state 1, show state 2
+                harshNoise.classList.add("hidden");
+                audioRitual.classList.add("hidden");
+                caustic.classList.remove("hidden");
+                hemorrhaging.classList.remove("hidden");
+                analogFilth.classList.remove("hidden");
                 currentState = 2;
             } else {
-                state1.style.display = "flex";
-                state2.style.display = "none";
+                // Hide state 2, show state 1
+                harshNoise.classList.remove("hidden");
+                audioRitual.classList.remove("hidden");
+                caustic.classList.add("hidden");
+                hemorrhaging.classList.add("hidden");
+                analogFilth.classList.add("hidden");
                 currentState = 1;
             }
         }
