@@ -1,0 +1,23 @@
+{
+  "name": "plan",
+  "description": "Planning agent for architecture decisions, task breakdown, and design",
+  "prompt": null,
+  "tools": [
+    "read",
+    "introspect",
+    "thinking"
+  ],
+  "allowedTools": ["read"],
+  "resources": [
+    "file://.kiro/agents/plan-instructions.md",
+    "file://README.md",
+    "file://AGENTS.md",
+    "file://CONTRIBUTING.md",
+    "file://docs/adr/"
+  ],
+  "toolsSettings": {
+    "read": {
+      "allowedPaths": ["./**"]
+    }
+  }
+}
