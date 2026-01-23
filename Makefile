@@ -1,5 +1,5 @@
 .DEFAULT_GOAL := help
-.PHONY: help adr-new adr-list adr-help serve build clean build-docker build-prod build-staging build-minified serve-prod list-content setup-hooks run-hooks uninstall-hooks protect-main show-branch-rules unprotect-main deploy-production deploy-staging
+.PHONY: help adr-new adr-list adr-help serve build clean build-docker build-prod build-minified serve-prod list-content setup-hooks run-hooks uninstall-hooks protect-main show-branch-rules unprotect-main deploy-production
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":[^#]*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
@@ -87,10 +87,7 @@ unprotect-main: ## Remove branch protection (emergency rollback only)
 # Deployment Tasks
 
 deploy-production: ## Deploy to production (obscvrat.fi)
-	@./scripts/deploy.sh production
-
-deploy-staging: ## Deploy to staging environment
-	@./scripts/deploy.sh staging
+	@./scripts/deploy.sh
 
 # Website Tasks
 
@@ -102,14 +99,6 @@ build: ## Build Hugo site for development in Docker
 
 build-prod: ## Build Hugo site for production (https://obscvrat.fi) with minification
 	docker-compose run --rm hugo --baseURL="https://obscvrat.fi" --minify --destination=/src/public
-
-build-staging: ## Build Hugo site for staging (CloudFront) - requires DISTRIBUTION_ID env var
-	@if [ -z "$(DISTRIBUTION_ID)" ]; then \
-		echo "Error: DISTRIBUTION_ID is required for staging build"; \
-		echo "Usage: make build-staging DISTRIBUTION_ID=d1234abcd.cloudfront.net"; \
-		exit 1; \
-	fi
-	docker-compose run --rm hugo --baseURL="https://$(DISTRIBUTION_ID)" --minify --destination=/src/public
 
 build-minified: ## Build Hugo site with minification enabled (for testing production optimization)
 	docker-compose run --rm hugo --minify --destination=/src/public

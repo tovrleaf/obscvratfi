@@ -22,9 +22,6 @@ make help
 ```bash
 # Build for production (minified, optimized)
 make build-prod
-
-# Build for CloudFront staging
-make build-staging DISTRIBUTION_ID=d1234abcd.cloudfront.net
 ```
 
 ## Local Development Setup
@@ -335,12 +332,6 @@ make build-prod
 ```
 
 Then deploy `website/public/` to S3.
-
-### Build for CloudFront Staging
-
-```bash
-make build-staging DISTRIBUTION_ID=d1234abcd.cloudfront.net
-```
 
 ## Git Workflow
 

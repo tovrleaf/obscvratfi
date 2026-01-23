@@ -18,9 +18,6 @@ make build
 # Build for production (minified, optimized)
 make build-prod
 
-# Build for CloudFront staging
-make build-staging DISTRIBUTION_ID=d1234abcd.cloudfront.net
-
 # Clean build artifacts
 make clean
 
@@ -142,9 +139,6 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
 ```bash
 # Deploy to production
 make deploy-production
-
-# Deploy to staging
-make deploy-staging
 ```
 
 See `docs/DEPLOYMENT.md` for detailed deployment instructions.
