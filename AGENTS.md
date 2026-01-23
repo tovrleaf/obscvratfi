@@ -158,7 +158,7 @@ See `docs/DEPLOYMENT.md` for detailed deployment instructions.
 - **Deployment:** Manual deployment via scripts (no auto-deploy)
 - **CI/CD:** GitHub Actions validates PRs but doesn't deploy
 - **Branch protection:** Main branch requires PR approval
-- **Pre-commit hooks:** Local validation before push (ADR-005)
+- **Pre-commit hooks:** Local validation before push (ADR-004)
 - **Design system:** Dark minimal aesthetic (ADR-007)
 - **Typography:** Typo font for body, Fira Mono for structure (ADR-008)
 

@@ -6,7 +6,7 @@
 # Run manually: make run-hooks
 # Uninstall: make uninstall-hooks
 #
-# See ADR-005 for decision rationale: docs/adr/005-local-pre-commit-hooks-for-development-validation.md
+# See ADR-004 for decision rationale: docs/adr/004-local-pre-commit-hooks-for-development-validation.md
 
 repos:
   # Shell script linting

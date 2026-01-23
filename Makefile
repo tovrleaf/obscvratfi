@@ -41,7 +41,7 @@ adr-help: ## Show ADR help and guidelines
 	@echo "  See docs/adr/README.md for complete ADR documentation"
 	@echo "  See AGENTS.md for ADR workflow guidelines"
 
-# Pre-Commit Hooks (Local Validation) - See ADR-005
+# Pre-Commit Hooks (Local Validation) - See ADR-004
 
 setup-hooks: ## Install pre-commit hooks for local development validation
 	@command -v pre-commit >/dev/null 2>&1 || { \
