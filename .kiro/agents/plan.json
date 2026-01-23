@@ -19,6 +19,5 @@
     "read": {
       "allowedPaths": ["./**"]
     }
-  },
-  "handoffTo": ["build"]
+  }
 }
