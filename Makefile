@@ -46,7 +46,7 @@ adr-help: ## Show ADR help and guidelines
 setup-hooks: ## Install pre-commit hooks for local development validation
 	@command -v pre-commit >/dev/null 2>&1 || { \
 		echo "Installing pre-commit framework..."; \
-		pip install pre-commit; \
+		pip3 install pre-commit; \
 	}
 	@echo "Setting up pre-commit hooks..."
 	@pre-commit install --hook-type pre-push
