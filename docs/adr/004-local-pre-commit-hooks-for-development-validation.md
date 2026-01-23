@@ -1,4 +1,4 @@
-# 5. Local Pre-Commit Hooks for Development Validation
+# 4. Local Pre-Commit Hooks for Development Validation
 
 **Status:** Accepted
 

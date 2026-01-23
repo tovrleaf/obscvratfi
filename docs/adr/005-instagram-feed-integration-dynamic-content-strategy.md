@@ -1,4 +1,4 @@
-# 4. Instagram Feed Integration & Dynamic Content Strategy
+# 5. Instagram Feed Integration & Dynamic Content Strategy
 
 **Status:** Accepted
 

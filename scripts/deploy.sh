@@ -2,7 +2,7 @@
 
 # Obscvrat Website Deployment Script
 # Automates building and deploying the site to AWS S3 + CloudFront
-# Usage: ./scripts/deploy.sh [environment] [--dry-run]
+# Usage: ./scripts/deploy.sh [--dry-run]
 
 set -e
 
@@ -21,8 +21,7 @@ PUBLIC_DIR="$WEBSITE_DIR/public"
 
 # Load environment configuration
 load_config() {
-    local env=$1
-    CONFIG_FILE="$SCRIPT_DIR/.deploy-config.$env"
+    CONFIG_FILE="$SCRIPT_DIR/.deploy-config.production"
     
     if [ ! -f "$CONFIG_FILE" ]; then
         echo -e "${RED}Error: Config file not found: $CONFIG_FILE${NC}"
@@ -48,34 +47,15 @@ validate_config() {
 
 # Build the site
 build_site() {
-    local env=$1
-    local dry_run=$2
+    local dry_run=$1
     
-    echo -e "${BLUE}Building site for $env environment...${NC}"
+    echo -e "${BLUE}Building site for production...${NC}"
     
     if [ "$dry_run" = "true" ]; then
         echo -e "${YELLOW}(DRY RUN - no changes will be made)${NC}"
     fi
     
-    case $env in
-        production)
-            make -C "$PROJECT_ROOT" build-prod
-            ;;
-        staging)
-            if [ -z "$DISTRIBUTION_ID" ]; then
-                echo -e "${RED}Error: DISTRIBUTION_ID required for staging${NC}"
-                exit 1
-            fi
-            make -C "$PROJECT_ROOT" build-staging DISTRIBUTION_ID="$DISTRIBUTION_ID"
-            ;;
-        development)
-            make -C "$PROJECT_ROOT" build
-            ;;
-        *)
-            echo -e "${RED}Unknown environment: $env${NC}"
-            exit 1
-            ;;
-    esac
+    make -C "$PROJECT_ROOT" build-prod
     
     echo -e "${GREEN}✓ Build complete${NC}"
 }
@@ -162,12 +142,7 @@ show_help() {
     cat << EOF
 ${BLUE}Obscvrat Website Deployment Script${NC}
 
-Usage: $0 [environment] [options]
-
-Environments:
-  production    Deploy to production (obscvrat.fi)
-  staging       Deploy to staging (CloudFront distribution)
-  development   Deploy to development (localhost)
+Usage: $0 [options]
 
 Options:
   --dry-run     Show what would be done without making changes
@@ -176,16 +151,16 @@ Options:
 
 Examples:
   # Deploy to production
-  $0 production
+  $0
 
   # Test deployment without making changes
-  $0 staging --dry-run
+  $0 --dry-run
 
   # Deploy without verification
-  $0 production --no-verify
+  $0 --no-verify
 
 Configuration:
-  Create .deploy-config.ENV files in the scripts directory with:
+  Create .deploy-config.production file in the scripts directory with:
     S3_BUCKET="your-bucket"
     DISTRIBUTION_ID="your-dist-id"
     AWS_PROFILE="your-profile"
@@ -197,36 +172,32 @@ EOF
 
 # Main deployment flow
 deploy() {
-    local env=$1
-    local dry_run=$2
-    local skip_verify=$3
+    local dry_run=$1
+    local skip_verify=$2
     
     echo -e "${BLUE}========================================${NC}"
     echo -e "${BLUE}Obscvrat Website Deployment${NC}"
     echo -e "${BLUE}========================================${NC}"
-    echo "Environment: $env"
     if [ "$dry_run" = "true" ]; then
         echo "Mode: DRY RUN"
     fi
     echo ""
     
     # Load and validate configuration
-    load_config "$env"
+    load_config
     validate_config
     
     # Build
-    build_site "$env" "$dry_run"
+    build_site "$dry_run"
     echo ""
     
     # Sync
     sync_to_s3 "$dry_run"
     echo ""
     
-    # Invalidate cache (only for non-development environments)
-    if [ "$env" != "development" ]; then
-        invalidate_cloudfront "$dry_run"
-        echo ""
-    fi
+    # Invalidate cache
+    invalidate_cloudfront "$dry_run"
+    echo ""
     
     # Verify (unless skipped or dry-run)
     if [ "$skip_verify" != "true" ] && [ "$dry_run" != "true" ]; then
@@ -240,16 +211,15 @@ deploy() {
 }
 
 # Parse arguments
-if [ $# -eq 0 ] || [[ "$1" == "--help" ]] || [[ "$1" == "-h" ]]; then
+if [[ "$1" == "--help" ]] || [[ "$1" == "-h" ]]; then
     show_help
     exit 0
 fi
 
-env=$1
 dry_run=false
 skip_verify=false
 
-for arg in "${@:2}"; do
+for arg in "$@"; do
     case $arg in
         --dry-run)
             dry_run=true
@@ -270,4 +240,4 @@ for arg in "${@:2}"; do
 done
 
 # Run deployment
-deploy "$env" "$dry_run" "$skip_verify"
+deploy "$dry_run" "$skip_verify"

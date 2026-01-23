@@ -1,5 +1,5 @@
 .DEFAULT_GOAL := help
-.PHONY: help adr-new adr-list adr-help serve build clean build-docker build-prod build-staging build-minified serve-prod list-content setup-hooks run-hooks uninstall-hooks protect-main show-branch-rules unprotect-main
+.PHONY: help adr-new adr-list adr-help serve build clean build-docker build-prod build-minified serve-prod list-content setup-hooks run-hooks uninstall-hooks protect-main show-branch-rules unprotect-main deploy-production
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":[^#]*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
@@ -41,12 +41,12 @@ adr-help: ## Show ADR help and guidelines
 	@echo "  See docs/adr/README.md for complete ADR documentation"
 	@echo "  See AGENTS.md for ADR workflow guidelines"
 
-# Pre-Commit Hooks (Local Validation) - See ADR-005
+# Pre-Commit Hooks (Local Validation) - See ADR-004
 
 setup-hooks: ## Install pre-commit hooks for local development validation
 	@command -v pre-commit >/dev/null 2>&1 || { \
 		echo "Installing pre-commit framework..."; \
-		pip install pre-commit; \
+		pip3 install pre-commit; \
 	}
 	@echo "Setting up pre-commit hooks..."
 	@pre-commit install --hook-type pre-push
@@ -84,6 +84,11 @@ show-branch-rules: ## List current branch protection rules
 unprotect-main: ## Remove branch protection (emergency rollback only)
 	@./scripts/remove-branch-protection.sh
 
+# Deployment Tasks
+
+deploy-production: ## Deploy to production (obscvrat.fi)
+	@./scripts/deploy.sh
+
 # Website Tasks
 
 serve: ## Run Hugo dev server in Docker (http://localhost:1313)
@@ -94,14 +99,6 @@ build: ## Build Hugo site for development in Docker
 
 build-prod: ## Build Hugo site for production (https://obscvrat.fi) with minification
 	docker-compose run --rm hugo --baseURL="https://obscvrat.fi" --minify --destination=/src/public
-
-build-staging: ## Build Hugo site for staging (CloudFront) - requires DISTRIBUTION_ID env var
-	@if [ -z "$(DISTRIBUTION_ID)" ]; then \
-		echo "Error: DISTRIBUTION_ID is required for staging build"; \
-		echo "Usage: make build-staging DISTRIBUTION_ID=d1234abcd.cloudfront.net"; \
-		exit 1; \
-	fi
-	docker-compose run --rm hugo --baseURL="https://$(DISTRIBUTION_ID)" --minify --destination=/src/public
 
 build-minified: ## Build Hugo site with minification enabled (for testing production optimization)
 	docker-compose run --rm hugo --minify --destination=/src/public
