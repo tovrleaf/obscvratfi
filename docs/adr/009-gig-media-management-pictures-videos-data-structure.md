@@ -9,12 +9,16 @@
 The Obscvrat website needs to display media (pictures and videos) associated with gigs. Requirements:
 
 - Each gig can have 0 to many pictures and videos
+- Each gig can have an optional poster image (promotional material)
 - Pictures stored locally in S3 (same bucket as site)
 - Videos hosted on YouTube (embedded)
 - Display media on individual gig pages
-- Separate top-level "Media" page listing all media
+- Poster displayed on gig page but NOT included in media page
+- Separate top-level "Media" page listing all media (excluding posters)
 - Pictures: display as thumbnails, click to view full-size in modal, downloadable as originals
 - Videos: display as thumbnails, click to view in modal with embedded player, link to YouTube
+- Poster: display on gig page as promotional image (not in media gallery)
+- Links: support multiple links (event page, ticket sales, etc.)
 - Picture sets have author attribution
 - Media page uses masonry/waterfall grid layout
 - Separate sections for photos and videos with filter/toggle
@@ -43,7 +47,10 @@ date: 2025-03-15
 venue: "Venue"
 location: "City"
 description: "Event description"
+poster: "/media/gigs/2025-03-15-venue-name/poster.jpg"
 links:
+  - url: "https://venue.com/events/obscvrat"
+    text: "Event page"
   - url: "https://tickets.com"
     text: "Buy tickets"
 other_performers: ["Artist 1", "Artist 2"]
@@ -60,15 +67,27 @@ draft: false
 ---
 ```
 
-**File Organization:**
+### File Organization
+
+**Media files:**
 ```
-/static/media/gigs/
-  /2025-03-15-venue-name/
-    pic1.jpg
-    pic2.jpg
-    pic1-thumb.jpg
-    pic2-thumb.jpg
+/static/media/gigs/2025-03-15-venue-name/
+  poster.jpg              # Promotional poster (gig page only)
+  pic1.jpg                # Performance photos (media page)
+  pic2.jpg
+  pic1-thumb.jpg          # Generated thumbnails
+  pic2-thumb.jpg
 ```
+
+**Poster vs Media distinction:**
+- **Poster:** Promotional image for the gig (flyer, event artwork)
+  - Displayed on gig detail page
+  - NOT included in media page gallery
+  - Optional field
+- **Media (pictures/videos):** Performance documentation
+  - Added after the gig happens
+  - Displayed on both gig page and media page
+  - Can be 0 to many items
 
 ### Implementation Components
 
@@ -222,6 +241,7 @@ An interactive CLI tool provides easy gig content management:
 
 **Features:**
 - Interactive prompts for all required fields
+- Optional fields: poster, event page link, ticket link, other performers
 - Automatic filename generation (YYYY-MM-DD-venue-slug.md)
 - List/edit/delete existing gigs
 - Validates date format and required fields

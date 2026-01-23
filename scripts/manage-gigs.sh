@@ -87,6 +87,12 @@ create_gig() {
     # Description
     read -rp "Description: " description
     
+    # Poster
+    read -rp "Poster image path (or press Enter to skip): " poster
+    
+    # Event page link
+    read -rp "Event page link (or press Enter to skip): " event_link
+    
     # Other performers
     echo "Other performers (comma-separated, or press Enter to skip): "
     read -r performers_input
@@ -123,7 +129,28 @@ FRONTMATTER
     sed -i.bak "s/\$venue/$venue/g; s/\$date/$date/g; s/\$city/$city/g; s/\$description/$description/g" "$filepath"
     rm -f "${filepath}.bak"
     
+    # Add poster if provided
+    if [[ -n "$poster" ]]; then
+        echo "poster: \"$poster\"" >> "$filepath"
+    fi
+    
     # Add optional fields
+    if [[ -n "$event_link" ]] || [[ -n "$ticket_link" ]]; then
+        echo "links:" >> "$filepath"
+        if [[ -n "$event_link" ]]; then
+            cat >> "$filepath" << EVENTLINK
+  - url: "$event_link"
+    text: "Event page"
+EVENTLINK
+        fi
+        if [[ -n "$ticket_link" ]]; then
+            cat >> "$filepath" << TICKETLINK
+  - url: "$ticket_link"
+    text: "Buy tickets"
+TICKETLINK
+        fi
+    fi
+    
     if [[ -n "$performers_input" ]]; then
         echo "other_performers:" >> "$filepath"
         IFS=',' read -ra PERFORMERS <<< "$performers_input"
@@ -131,16 +158,6 @@ FRONTMATTER
             performer=$(echo "$performer" | xargs) # trim whitespace
             echo "  - \"$performer\"" >> "$filepath"
         done
-    fi
-    
-    if [[ -n "$ticket_link" ]]; then
-        cat >> "$filepath" << 'LINKS'
-links:
-  - url: "$ticket_link"
-    text: "Buy tickets"
-LINKS
-        sed -i.bak "s|\$ticket_link|$ticket_link|g" "$filepath"
-        rm -f "${filepath}.bak"
     fi
     
     # Close frontmatter and add body
