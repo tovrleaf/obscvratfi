@@ -1,0 +1,30 @@
+{
+  "name": "build",
+  "description": "Builder agent for implementing code, running commands, and making changes",
+  "prompt": "You are a builder specialist. Focus on:\n- Implementing planned features efficiently\n- Running tests and validations\n- Making minimal, focused changes\n- Following established patterns in the codebase\n- Executing build and deployment commands",
+  "tools": [
+    "read",
+    "write",
+    "shell",
+    "introspect"
+  ],
+  "allowedTools": ["read"],
+  "resources": [
+    "file://README.md",
+    "file://AGENTS.md",
+    "file://website/hugo.toml"
+  ],
+  "toolsSettings": {
+    "read": {
+      "allowedPaths": ["./**"]
+    },
+    "write": {
+      "allowedPaths": ["./**"],
+      "deniedPaths": [".git/**"]
+    },
+    "shell": {
+      "autoAllowReadonly": true,
+      "allowedCommands": ["make .*", "hugo .*", "git .*"]
+    }
+  }
+}
