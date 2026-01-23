@@ -26,5 +26,6 @@
       "autoAllowReadonly": true,
       "allowedCommands": ["make .*", "hugo .*", "git .*"]
     }
-  }
+  },
+  "handoffTo": ["plan"]
 }
