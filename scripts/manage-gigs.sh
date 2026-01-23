@@ -177,6 +177,10 @@ list_gigs() {
     for file in "$GIGS_DIR"/*.md; do
         if [[ -f "$file" ]]; then
             filename=$(basename "$file")
+            # Skip _index.md files
+            if [[ "$filename" == "_index.md" ]]; then
+                continue
+            fi
             # Extract date and title from filename
             date_part=$(echo "$filename" | cut -d'-' -f1-3)
             title=$(grep "^title:" "$file" | sed 's/title: "\(.*\)"/\1/')
@@ -209,8 +213,12 @@ edit_gig() {
     local count=1
     for file in "$GIGS_DIR"/*.md; do
         if [[ -f "$file" ]]; then
-            files+=("$file")
             filename=$(basename "$file")
+            # Skip _index.md files
+            if [[ "$filename" == "_index.md" ]]; then
+                continue
+            fi
+            files+=("$file")
             title=$(grep "^title:" "$file" | sed 's/title: "\(.*\)"/\1/')
             echo -e "${GREEN}$count)${NC} $filename - $title"
             ((count++))
@@ -254,6 +262,11 @@ delete_gig() {
     local count=1
     for file in "$GIGS_DIR"/*.md; do
         if [[ -f "$file" ]]; then
+            filename=$(basename "$file")
+            # Skip _index.md files
+            if [[ "$filename" == "_index.md" ]]; then
+                continue
+            fi
             files+=("$file")
             filename=$(basename "$file")
             title=$(grep "^title:" "$file" | sed 's/title: "\(.*\)"/\1/')
