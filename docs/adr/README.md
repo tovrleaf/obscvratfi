@@ -23,7 +23,7 @@ ADRs document significant architectural and technical decisions made during the 
 Use the helper script:
 
 ```bash
-./scripts/new-adr.sh "Your Decision Title"
+make adr-new TITLE="Your Decision Title"
 ```
 
 This will:
@@ -45,13 +45,13 @@ Use the helper script to list all ADRs:
 
 ```bash
 # List all ADRs
-./scripts/list-adrs.sh
+make adr-list
 
 # List only accepted ADRs
-./scripts/list-adrs.sh Accepted
+make adr-list-accepted
 
 # List proposed ADRs
-./scripts/list-adrs.sh Proposed
+make adr-list-proposed
 ```
 
 ## ADR Status

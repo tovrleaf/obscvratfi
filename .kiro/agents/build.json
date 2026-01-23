@@ -24,7 +24,7 @@
     },
     "shell": {
       "autoAllowReadonly": true,
-      "allowedCommands": ["make .*", "hugo .*", "git status", "git diff"]
+      "allowedCommands": ["make .*", "hugo .*", "git .*"]
     }
   }
 }

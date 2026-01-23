@@ -102,7 +102,7 @@ Create an ADR for decisions that:
    - Ask relevant questions (see ADR-002)
    - Research and present alternatives with pros/cons
    - Help draft the ADR after decision is made
-4. **Create the ADR:** Use `./scripts/new-adr.sh "Decision Title"`
+4. **Create the ADR:** Use `make adr-new TITLE="Decision Title"`
 5. **Reference the ADR:** In code comments, PR descriptions, documentation
 
 ### ADR Resources
@@ -111,18 +111,18 @@ Create an ADR for decisions that:
 - **Template:** `/docs/adr/template.md`
 - **Workflow:** See ADR-002 for detailed process
 - **Scripts:**
-  - `./scripts/new-adr.sh "Title"` - Create new ADR
-  - `./scripts/list-adrs.sh [status]` - List ADRs
+  - `make adr-new TITLE="Title"` - Create new ADR
+  - `make adr-list` - List ADRs
 
 ```bash
 # Create a new ADR
-./scripts/new-adr.sh "Choose deployment strategy"
+make adr-new TITLE="Choose deployment strategy"
 
 # List all ADRs
-./scripts/list-adrs.sh
+make adr-list
 
 # List by status
-./scripts/list-adrs.sh Accepted
+make adr-list-accepted
 ```
 
 ## Git Commit Guidelines
@@ -141,10 +141,10 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
 
 ```bash
 # Deploy to production
-./scripts/deploy.sh production
+make deploy-production
 
 # Deploy to staging
-./scripts/deploy.sh staging
+make deploy-staging
 ```
 
 See `docs/DEPLOYMENT.md` for detailed deployment instructions.

@@ -121,7 +121,7 @@ Manual deployment (separate ADR)
 After merging to main and CI checks pass, deploy manually:
 
 ```bash
-./scripts/deploy.sh production
+make deploy-production
 ```
 
 See `docs/DEPLOYMENT.md` for detailed deployment instructions.
