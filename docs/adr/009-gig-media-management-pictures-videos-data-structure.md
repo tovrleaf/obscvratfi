@@ -42,7 +42,7 @@ We will implement the following data structure, display strategy, and content ma
 **Gig Frontmatter:**
 ```yaml
 ---
-title: "Venue Name"
+title: "Gig Name"
 date: 2025-03-15
 venue: "Venue"
 location: "City"

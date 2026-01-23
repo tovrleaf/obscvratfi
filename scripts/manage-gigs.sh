@@ -60,6 +60,14 @@ show_menu() {
 create_gig() {
     print_header "Create New Gig"
     
+    # Gig name
+    read -rp "Gig name: " gig_name
+    if [[ -z "$gig_name" ]]; then
+        print_error "Gig name is required"
+        show_menu
+        return
+    fi
+    
     # Date
     read -rp "Date (YYYY-MM-DD): " date
     if [[ ! $date =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]]; then
@@ -118,7 +126,7 @@ create_gig() {
     # Build frontmatter
     cat > "$filepath" << 'FRONTMATTER'
 ---
-title: "$venue"
+title: "$gig_name"
 date: $date
 venue: "$venue"
 location: "$city"
@@ -126,7 +134,7 @@ description: "$description"
 FRONTMATTER
     
     # Replace variables in frontmatter
-    sed -i.bak "s/\$venue/$venue/g; s/\$date/$date/g; s/\$city/$city/g; s/\$description/$description/g" "$filepath"
+    sed -i.bak "s/\$gig_name/$gig_name/g; s/\$venue/$venue/g; s/\$date/$date/g; s/\$city/$city/g; s/\$description/$description/g" "$filepath"
     rm -f "${filepath}.bak"
     
     # Add poster if provided
