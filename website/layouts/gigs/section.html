@@ -25,9 +25,7 @@
                 {{ range .Pages }}
                     <li>
                         <a href="{{ .Permalink }}">
-                            <span class="gig-date">{{ .Date | dateFormat "Jan 02" }}</span>
-                            <span class="gig-title">{{ .Title }}</span>
-                            <span class="gig-venue">{{ .Params.venue }}, {{ .Params.location }}</span>
+                            {{ .Date | dateFormat "Jan 02" }}: {{ .Title }} @ {{ .Params.venue }}, {{ .Params.location }}
                         </a>
                     </li>
                 {{ end }}
