@@ -86,50 +86,25 @@
         {{ if .Params.media.videos }}
         <section class="media-section">
             <h2>Videos</h2>
-            {{ if .Params.media.videos.author }}
-            <p class="media-credit">
-                Videos by 
-                {{ if .Params.media.videos.author_url }}
-                    <a href="{{ .Params.media.videos.author_url }}" target="_blank">{{ .Params.media.videos.author }}</a>
-                {{ else }}
-                    {{ .Params.media.videos.author }}
-                {{ end }}
-            </p>
-            {{ end }}
             <div class="media-gallery">
-                {{ $gigSlug := path.Base .File.Dir }}
-                {{ range .Params.media.videos.files }}
+                {{ range .Params.media.videos }}
                     <div class="media-item video-item">
-                        {{ if .file }}
-                            {{ $videoPath := printf "media/gigs/%s/%s" $gigSlug .file }}
-                            <a href="/{{ $videoPath }}" data-type="video">
-                                <video preload="metadata">
-                                    <source src="/{{ $videoPath }}#t=0.5" type="video/mp4">
-                                </video>
-                                <span class="play-icon">▶</span>
-                            </a>
-                            {{ if .credits }}
-                            <div class="video-credits">
-                                {{ range .credits }}
-                                    <p class="credit-item">
-                                        <strong>{{ .type }} by:</strong>
-                                        {{ if .url }}
-                                            <a href="{{ .url }}" target="_blank">{{ .name }}</a>
-                                        {{ else }}
-                                            {{ .name }}
-                                        {{ end }}
-                                    </p>
-                                {{ end }}
-                            </div>
+                        {{ if .youtube_id }}
+                            <iframe width="100%" height="400" src="https://www.youtube.com/embed/{{ .youtube_id }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        {{ end }}
+                        {{ if .credits }}
+                        <div class="video-credits">
+                            {{ range .credits }}
+                                <p class="credit-item">
+                                    <strong>{{ .type }} by:</strong>
+                                    {{ if .url }}
+                                        <a href="{{ .url }}" target="_blank">{{ .name }}</a>
+                                    {{ else }}
+                                        {{ .name }}
+                                    {{ end }}
+                                </p>
                             {{ end }}
-                        {{ else }}
-                            {{ $videoPath := printf "media/gigs/%s/%s" $gigSlug . }}
-                            <a href="/{{ $videoPath }}" data-type="video">
-                                <video preload="metadata">
-                                    <source src="/{{ $videoPath }}#t=0.5" type="video/mp4">
-                                </video>
-                                <span class="play-icon">▶</span>
-                            </a>
+                        </div>
                         {{ end }}
                     </div>
                 {{ end }}

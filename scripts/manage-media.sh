@@ -263,21 +263,21 @@ add_video() {
     fi
     
     selected_file="${files[$((selection-1))]}"
-    gig_slug=$(basename "$selected_file" .md)
-    media_dir="$MEDIA_DIR/gigs/$gig_slug"
-    mkdir -p "$media_dir"
     
-    # Get video file
-    read -rp "Video file path: " video_path
-    if [[ ! -f "$video_path" ]]; then
-        print_error "File not found: $video_path"
+    # Get YouTube URL
+    read -rp "YouTube URL: " youtube_url
+    
+    # Extract YouTube ID
+    youtube_id=""
+    if [[ "$youtube_url" =~ youtube\.com/watch\?v=([^&]+) ]]; then
+        youtube_id="${BASH_REMATCH[1]}"
+    elif [[ "$youtube_url" =~ youtu\.be/([^?]+) ]]; then
+        youtube_id="${BASH_REMATCH[1]}"
+    else
+        print_error "Invalid YouTube URL"
         show_menu
         return
     fi
-    
-    video_filename=$(basename "$video_path")
-    cp "$video_path" "$media_dir/$video_filename"
-    print_success "Copied video to $media_dir/$video_filename"
     
     # Collect credits
     echo ""
@@ -302,7 +302,7 @@ add_video() {
     # Update gig frontmatter
     if grep -q "^media:" "$selected_file"; then
         print_warning "Media section already exists. Manual edit required."
-        echo "Video file: $video_filename"
+        echo "YouTube ID: $youtube_id"
         if [[ ${#credits[@]} -gt 0 ]]; then
             echo "Credits:"
             for credit in "${credits[@]}"; do
@@ -318,16 +318,16 @@ add_video() {
             done
         fi
     else
-        # Build media section with video
-        media_section="media:\n  videos:\n    files:\n      - file: \"$video_filename\""
+        # Build media section with YouTube video
+        media_section="media:\n  videos:\n    - youtube_id: \"$youtube_id\""
         
         if [[ ${#credits[@]} -gt 0 ]]; then
-            media_section="$media_section\n        credits:"
+            media_section="$media_section\n      credits:"
             for credit in "${credits[@]}"; do
                 IFS='|' read -r type name url <<< "$credit"
-                media_section="$media_section\n          - type: \"$type\"\n            name: \"$name\""
+                media_section="$media_section\n        - type: \"$type\"\n          name: \"$name\""
                 if [[ -n "$url" ]]; then
-                    media_section="$media_section\n            url: \"$url\""
+                    media_section="$media_section\n          url: \"$url\""
                 fi
             done
         fi
@@ -335,7 +335,7 @@ add_video() {
         # Insert before draft line using awk
         awk -v media="$media_section" '/^draft:/ {printf "%s\n", media} {print}' "$selected_file" > "${selected_file}.tmp"
         mv "${selected_file}.tmp" "$selected_file"
-        print_success "Added video to gig"
+        print_success "Added YouTube video to gig"
     fi
     
     show_menu

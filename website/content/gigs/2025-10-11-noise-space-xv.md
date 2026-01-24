@@ -22,18 +22,14 @@ media:
       - DSC_9465.jpg
       - DSC_9476.jpg
   videos:
-    author: "Roman Odjinud"
-    author_url: "https://www.instagram.com/er_odjinud"
-    files:
-      # Add your video files here
-      # Example:
-      # - file: video1.mp4
-      #   credits:
-      #     - type: "Recorded"
-      #       name: "John Doe"
-      #       url: "https://example.com"
-      #     - type: "Mastered"
-      #       name: "Jane Smith"
+    # Example YouTube video with credits:
+    # - youtube_id: "dQw4w9WgXcQ"
+    #   credits:
+    #     - type: "Recorded"
+    #       name: "John Doe"
+    #       url: "https://example.com"
+    #     - type: "Mastered"
+    #       name: "Jane Smith"
 draft: false
 ---
 

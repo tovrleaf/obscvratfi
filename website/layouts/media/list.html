@@ -77,67 +77,30 @@
                 {{ if .Params.media.videos }}
                     {{ $gigTitle := .Title }}
                     {{ $gigPermalink := .Permalink }}
-                    {{ $gigSlug := strings.TrimSuffix "/" (strings.TrimPrefix "/gigs/" .RelPermalink) }}
-                    {{ $author := .Params.media.videos.author }}
-                    {{ $authorUrl := .Params.media.videos.author_url }}
-                    {{ if .Params.media.videos.files }}
-                        {{ range .Params.media.videos.files }}
-                            <div class="media-item video-item">
-                                {{ if .file }}
-                                    <a href="{{ $gigPermalink }}">
-                                        <video preload="metadata" style="width: 100%; height: auto;">
-                                            <source src="/media/gigs/{{ $gigSlug }}/{{ .file }}#t=0.5" type="video/mp4">
-                                        </video>
-                                        <div class="play-icon">▶</div>
-                                    </a>
-                                    <div class="media-info">
-                                        <p class="media-gig"><a href="{{ $gigPermalink }}">{{ $gigTitle }}</a></p>
-                                        {{ if $author }}
-                                        <p class="media-author">
-                                            {{ if $authorUrl }}
-                                                Video by <a href="{{ $authorUrl }}" target="_blank">{{ $author }}</a>
+                    {{ range .Params.media.videos }}
+                        <div class="media-item video-item">
+                            <a href="{{ $gigPermalink }}">
+                                <img src="https://img.youtube.com/vi/{{ .youtube_id }}/mqdefault.jpg" alt="{{ $gigTitle }}">
+                                <div class="play-icon">▶</div>
+                            </a>
+                            <div class="media-info">
+                                <p class="media-gig"><a href="{{ $gigPermalink }}">{{ $gigTitle }}</a></p>
+                                {{ if .credits }}
+                                <div class="video-credits">
+                                    {{ range .credits }}
+                                        <p class="credit-item">
+                                            <strong>{{ .type }}:</strong>
+                                            {{ if .url }}
+                                                <a href="{{ .url }}" target="_blank">{{ .name }}</a>
                                             {{ else }}
-                                                Video by {{ $author }}
+                                                {{ .name }}
                                             {{ end }}
                                         </p>
-                                        {{ end }}
-                                        {{ if .credits }}
-                                        <div class="video-credits">
-                                            {{ range .credits }}
-                                                <p class="credit-item">
-                                                    <strong>{{ .type }}:</strong>
-                                                    {{ if .url }}
-                                                        <a href="{{ .url }}" target="_blank">{{ .name }}</a>
-                                                    {{ else }}
-                                                        {{ .name }}
-                                                    {{ end }}
-                                                </p>
-                                            {{ end }}
-                                        </div>
-                                        {{ end }}
-                                    </div>
-                                {{ else }}
-                                    <a href="{{ $gigPermalink }}">
-                                        <video preload="metadata" style="width: 100%; height: auto;">
-                                            <source src="/media/gigs/{{ $gigSlug }}/{{ . }}#t=0.5" type="video/mp4">
-                                        </video>
-                                        <div class="play-icon">▶</div>
-                                    </a>
-                                    <div class="media-info">
-                                        <p class="media-gig"><a href="{{ $gigPermalink }}">{{ $gigTitle }}</a></p>
-                                        {{ if $author }}
-                                        <p class="media-author">
-                                            {{ if $authorUrl }}
-                                                Video by <a href="{{ $authorUrl }}" target="_blank">{{ $author }}</a>
-                                            {{ else }}
-                                                Video by {{ $author }}
-                                            {{ end }}
-                                        </p>
-                                        {{ end }}
-                                    </div>
+                                    {{ end }}
+                                </div>
                                 {{ end }}
                             </div>
-                        {{ end }}
+                        </div>
                     {{ end }}
                 {{ end }}
             {{ end }}
