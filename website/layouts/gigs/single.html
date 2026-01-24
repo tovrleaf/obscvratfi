@@ -1,70 +1,55 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ .Title }} - {{ .Site.Title }}</title>
-    <meta name="description" content="{{ .Description | default (print .Title " at " .Params.venue) }}">
-    <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        main { max-width: 1200px; margin: 2rem auto; padding: 0 1rem; }
-    </style>
-</head>
-<body>
-    <main>
-        <article class="gig">
-            <h1>{{ .Title }}</h1>
-            <div class="gig-details">
-                <p><strong>Date:</strong> {{ .Date | dateFormat "Monday, January 2, 2006" }}</p>
-                <p><strong>Venue:</strong> {{ .Params.venue }}</p>
-                <p><strong>Location:</strong> {{ .Params.location }}</p>
-                {{ if .Params.event_link }}<p><strong>Event:</strong> <a href="{{ .Params.event_link }}" target="_blank">View event page</a></p>{{ end }}
-                {{ if .Params.other_performers }}
-                <p><strong>Also performing:</strong></p>
-                <ul>
-                {{ range .Params.other_performers }}
-                    <li>
-                    {{ if .url }}
-                        <a href="{{ .url }}" target="_blank">{{ .name }}</a>
-                    {{ else }}
-                        {{ .name }}
-                    {{ end }}
-                    </li>
-                {{ end }}
-                </ul>
-                {{ end }}
-                {{ if .Params.time }}<p><strong>Time:</strong> {{ .Params.time }}</p>{{ end }}
-                {{ if .Params.ticket_link }}<p><a href="{{ .Params.ticket_link }}" target="_blank">Get Tickets</a></p>{{ end }}
-            </div>
-            
-            {{ if .Params.youtube }}
-            <div class="gig-video">
-                <h2>Performance Video</h2>
-                {{ $url := .Params.youtube }}
-                {{ if strings.Contains $url "youtube.com" }}
-                    {{ $parts := strings.Split $url "v=" }}
-                    {{ if gt (len $parts) 1 }}
-                        {{ $qpart := index $parts 1 }}
-                        {{ $vid := index (strings.Split $qpart "?") 0 }}
-                        <iframe width="100%" height="400" src="https://www.youtube.com/embed/{{ $vid }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                    {{ end }}
-                {{ else if strings.Contains $url "youtu.be" }}
-                    {{ $parts := strings.Split $url "youtu.be/" }}
-                    {{ if gt (len $parts) 1 }}
-                        {{ $qpart := index $parts 1 }}
-                        {{ $vid := index (strings.Split $qpart "?") 0 }}
-                        <iframe width="100%" height="400" src="https://www.youtube.com/embed/{{ $vid }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                    {{ end }}
-                {{ end }}
-            </div>
+{{ define "main" }}
+<article class="gig-detail">
+    <h1>{{ .Title }}</h1>
+    <div class="gig-details">
+        <p><strong>Date:</strong> {{ .Date | dateFormat "Monday, January 2, 2006" }}</p>
+        <p><strong>Venue:</strong> {{ .Params.venue }}</p>
+        <p><strong>Location:</strong> {{ .Params.location }}</p>
+        {{ if .Params.event_link }}<p><strong>Event:</strong> <a href="{{ .Params.event_link }}" target="_blank">View event page</a></p>{{ end }}
+        {{ if .Params.other_performers }}
+        <p><strong>Also performing:</strong></p>
+        <ul>
+        {{ range .Params.other_performers }}
+            <li>
+            {{ if .url }}
+                <a href="{{ .url }}" target="_blank">{{ .name }}</a>
+            {{ else }}
+                {{ .name }}
             {{ end }}
-            
-            {{ if .Content }}
-            <div class="gig-description">
-                {{ .Content }}
-            </div>
+            </li>
+        {{ end }}
+        </ul>
+        {{ end }}
+        {{ if .Params.time }}<p><strong>Time:</strong> {{ .Params.time }}</p>{{ end }}
+        {{ if .Params.ticket_link }}<p><a href="{{ .Params.ticket_link }}" target="_blank">Get Tickets</a></p>{{ end }}
+    </div>
+    
+    {{ if .Params.youtube }}
+    <div class="gig-video">
+        <h2>Performance Video</h2>
+        {{ $url := .Params.youtube }}
+        {{ if strings.Contains $url "youtube.com" }}
+            {{ $parts := strings.Split $url "v=" }}
+            {{ if gt (len $parts) 1 }}
+                {{ $qpart := index $parts 1 }}
+                {{ $vid := index (strings.Split $qpart "?") 0 }}
+                <iframe width="100%" height="400" src="https://www.youtube.com/embed/{{ $vid }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             {{ end }}
-        </article>
-    </main>
-</body>
-</html>
+        {{ else if strings.Contains $url "youtu.be" }}
+            {{ $parts := strings.Split $url "youtu.be/" }}
+            {{ if gt (len $parts) 1 }}
+                {{ $qpart := index $parts 1 }}
+                {{ $vid := index (strings.Split $qpart "?") 0 }}
+                <iframe width="100%" height="400" src="https://www.youtube.com/embed/{{ $vid }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            {{ end }}
+        {{ end }}
+    </div>
+    {{ end }}
+    
+    {{ if .Content }}
+    <div class="gig-description">
+        {{ .Content }}
+    </div>
+    {{ end }}
+</article>
+{{ end }}
