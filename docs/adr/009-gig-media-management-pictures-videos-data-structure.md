@@ -43,12 +43,12 @@ We will implement the following data structure, display strategy, and content ma
 **Gig Frontmatter:**
 ```yaml
 ---
-title: "Gig Name"
+title: "Event Name"
 date: 2025-03-15
 venue: "Venue"
 location: "City"
 description: "Event description"
-poster: "/media/gigs/2025-03-15-venue-name/poster.jpg"
+poster: "/media/gigs/2025-03-15-event-name/poster.jpg"
 event_link:
   url: "https://venue.com/events/obscvrat"
   title: "Noise Festival 2025"
@@ -73,13 +73,17 @@ draft: false
 
 **Media files:**
 ```
-/static/media/gigs/2025-03-15-venue-name/
+/static/media/gigs/2025-03-15-event-name/
   poster.jpg              # Promotional poster (gig page only)
   pic1.jpg                # Performance photos (media page)
   pic2.jpg
   pic1-thumb.jpg          # Generated thumbnails
   pic2-thumb.jpg
 ```
+
+**URL slug generation:**
+- Uses event name (title) if provided: `YYYY-MM-DD-event-name`
+- Falls back to venue name if event name is empty: `YYYY-MM-DD-venue-name`
 
 **Poster vs Media distinction:**
 - **Poster:** Promotional image for the gig (flyer, event artwork)

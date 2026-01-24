@@ -78,13 +78,8 @@ show_menu() {
 create_gig() {
     print_header "Create New Gig"
     
-    # Gig name
-    read -rp "Gig name: " gig_name
-    if [[ -z "$gig_name" ]]; then
-        print_error "Gig name is required"
-        show_menu
-        return
-    fi
+    # Event name
+    read -rp "Event name (or press Enter to use venue name): " event_name
     
     # Date
     read -rp "Date (YYYY-MM-DD): " date
@@ -100,6 +95,14 @@ create_gig() {
         print_error "Venue name is required"
         show_menu
         return
+    fi
+    
+    # Use event name for slug, fallback to venue
+    if [[ -z "$event_name" ]]; then
+        event_name="$venue"
+        slug_base="$venue"
+    else
+        slug_base="$event_name"
     fi
     
     # City
@@ -121,12 +124,12 @@ create_gig() {
     if [[ -n "$poster_input" ]]; then
         if [[ "$poster_input" =~ ^https?:// ]]; then
             # It's a URL, download it
-            venue_slug=$(echo "$venue" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | tr -cd '[:alnum:]-')
-            poster_dir="website/static/media/gigs/${date}-${venue_slug}"
+            slug=$(echo "$slug_base" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | tr -cd '[:alnum:]-')
+            poster_dir="website/static/media/gigs/${date}-${slug}"
             poster_path="$poster_dir/poster.jpg"
             
             if download_poster "$poster_input" "$poster_path"; then
-                poster="/media/gigs/${date}-${venue_slug}/poster.jpg"
+                poster="/media/gigs/${date}-${slug}/poster.jpg"
             fi
         else
             # It's a local path, use as-is
@@ -153,8 +156,8 @@ create_gig() {
     done
     
     # Generate filename
-    venue_slug=$(echo "$venue" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | tr -cd '[:alnum:]-')
-    filename="${date}-${venue_slug}.md"
+    slug=$(echo "$slug_base" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | tr -cd '[:alnum:]-')
+    filename="${date}-${slug}.md"
     filepath="$GIGS_DIR/$filename"
     
     # Check if file exists
@@ -170,7 +173,7 @@ create_gig() {
     # Build frontmatter
     cat > "$filepath" << 'FRONTMATTER'
 ---
-title: "$gig_name"
+title: "$event_name"
 date: $date
 venue: "$venue"
 location: "$city"
@@ -178,7 +181,7 @@ description: "$description"
 FRONTMATTER
     
     # Replace variables in frontmatter
-    sed -i.bak "s/\$gig_name/$gig_name/g; s/\$venue/$venue/g; s/\$date/$date/g; s/\$city/$city/g; s/\$description/$description/g" "$filepath"
+    sed -i.bak "s/\$event_name/$event_name/g; s/\$venue/$venue/g; s/\$date/$date/g; s/\$city/$city/g; s/\$description/$description/g" "$filepath"
     rm -f "${filepath}.bak"
     
     # Add poster if provided
@@ -322,8 +325,8 @@ edit_gig() {
     print_header "Edit Gig: $old_title"
     echo ""
     
-    read -rp "Gig name [$old_title]: " gig_name
-    gig_name=${gig_name:-$old_title}
+    read -rp "Event name [$old_title]: " event_name
+    event_name=${event_name:-$old_title}
     
     read -rp "Date [$old_date]: " date
     date=${date:-$old_date}
@@ -335,6 +338,13 @@ edit_gig() {
     
     read -rp "Venue [$old_venue]: " venue
     venue=${venue:-$old_venue}
+    
+    # Use event name for slug, fallback to venue
+    if [[ -z "$event_name" ]] || [[ "$event_name" == "$venue" ]]; then
+        slug_base="$venue"
+    else
+        slug_base="$event_name"
+    fi
     
     read -rp "City [$old_location]: " city
     city=${city:-$old_location}
@@ -350,12 +360,12 @@ edit_gig() {
     if [[ -n "$poster_input" ]]; then
         if [[ "$poster_input" =~ ^https?:// ]]; then
             # It's a URL, download it
-            venue_slug=$(echo "$venue" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | tr -cd '[:alnum:]-')
-            poster_dir="website/static/media/gigs/${date}-${venue_slug}"
+            slug=$(echo "$slug_base" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | tr -cd '[:alnum:]-')
+            poster_dir="website/static/media/gigs/${date}-${slug}"
             poster_path="$poster_dir/poster.jpg"
             
             if download_poster "$poster_input" "$poster_path"; then
-                poster="/media/gigs/${date}-${venue_slug}/poster.jpg"
+                poster="/media/gigs/${date}-${slug}/poster.jpg"
             fi
         else
             # It's a local path, use as-is
@@ -382,14 +392,14 @@ edit_gig() {
     done
     
     # Generate filename
-    venue_slug=$(echo "$venue" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | tr -cd '[:alnum:]-')
-    filename="${date}-${venue_slug}.md"
+    slug=$(echo "$slug_base" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | tr -cd '[:alnum:]-')
+    filename="${date}-${slug}.md"
     filepath="$GIGS_DIR/$filename"
     
     # Build updated frontmatter
     cat > "$filepath" << 'FRONTMATTER'
 ---
-title: "$gig_name"
+title: "$event_name"
 date: $date
 venue: "$venue"
 location: "$city"
@@ -397,7 +407,7 @@ description: "$description"
 FRONTMATTER
     
     # Replace variables
-    sed -i.bak "s/\$gig_name/$gig_name/g; s/\$venue/$venue/g; s/\$date/$date/g; s/\$city/$city/g; s/\$description/$description/g" "$filepath"
+    sed -i.bak "s/\$event_name/$event_name/g; s/\$venue/$venue/g; s/\$date/$date/g; s/\$city/$city/g; s/\$description/$description/g" "$filepath"
     rm -f "${filepath}.bak"
     
     # Add poster if provided

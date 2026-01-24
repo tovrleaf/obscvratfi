@@ -1,14 +1,10 @@
 ---
-title: "Kalasataman Vapaakaupunki"
+title: "Noise Space XV"
 date: 2025-10-11
 venue: "Kalasataman Vapaakaupunki"
 location: "Helsinki"
 description: ""
-other_performers:
-  - "Bryskt"
-  - "Dystopian Control"
-  - "Rautakymi"
-  - "Ironstar"
+poster: "/media/gigs/2025-10-11-kalasataman-vapaakaupunki/poster.jpg"
 draft: false
 ---
 
