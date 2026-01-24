@@ -95,6 +95,11 @@ name = "Gigs"
 url = "/gigs/"
 weight = 3
 
+[[menu.main]]
+name = "Media"
+url = "/media/"
+weight = 4
+
 # Permalinks configuration
 [permalinks]
 gigs = "/gigs/:filename/"

@@ -29,6 +29,7 @@
     <section class="latest-gigs featured-section">
         <h2>Upcoming Gigs</h2>
         {{ $gigs := where .Site.Pages "Section" "gigs" }}
+        {{ $gigs := where $gigs "Kind" "page" }}
         {{ $sortedGigs := sort $gigs "Date" "desc" }}
         {{ $latestGigs := first 3 $sortedGigs }}
         {{ if $latestGigs }}
@@ -37,8 +38,8 @@
                 <div class="gig-card">
                     <div class="gig-date">{{ .Date | dateFormat "Jan 02" }}</div>
                     <div class="gig-info">
-                        <h3><a href="{{ .Permalink }}">{{ .Params.venue }}</a></h3>
-                        <p class="gig-location">{{ .Params.location }}</p>
+                        <h3><a href="{{ .Permalink }}">{{ .Title }}</a></h3>
+                        <p class="gig-location">{{ .Params.venue }}, {{ .Params.location }}</p>
                     </div>
                 </div>
             {{ end }}

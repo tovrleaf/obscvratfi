@@ -1,0 +1,454 @@
+# 9. Media Management - Pictures, Videos, and Other Content
+
+**Status:** Proposed
+
+**Date:** 2026-01-24
+
+## Context
+
+The Obscvrat website needs to display media (pictures and videos) associated with gigs, as well as other media like interviews and mentions. Requirements:
+
+- Each gig can have 0 to many pictures and videos
+- Each gig can have an optional poster image (promotional material)
+- Pictures stored locally in S3 (same bucket as site)
+- Videos hosted on YouTube (embedded)
+- Display media on individual gig pages
+- Poster displayed on gig page but NOT included in media page
+- Separate top-level "Media" page listing all media (excluding posters)
+- Media page has three sections: Photos, Videos, and Others
+- Others section includes: interviews, mentions, reviews, etc.
+- Pictures: display as thumbnails, click to view full-size in modal, downloadable as originals
+- Videos: display as thumbnails, click to view in modal with embedded player, link to YouTube
+- Others: display as links with title and optional description
+- Poster: display on gig page as promotional image (not in media gallery)
+- Event link: single URL to event page
+- Other performers: list with optional links to their pages/socials
+- Picture sets have author attribution
+- Media page uses masonry/waterfall grid layout for photos/videos
+- Separate sections for photos, videos, and others with filter/toggle
+- Each media set links back to its gig (if applicable)
+- Need easy content management for creating and editing gigs
+
+Technical considerations:
+- Hugo static site generator
+- Need thumbnail generation at build time
+- Modal/lightbox functionality for viewing
+- Responsive design for mobile
+- Maintain aspect ratios in masonry layout
+- Simplify gig creation workflow
+
+## Decision
+
+We will implement the following data structure, display strategy, and content management tools:
+
+### Data Structure
+
+**Two types of media:**
+
+1. **Embedded media** (in gig files) - Current approach, backward compatible
+2. **Standalone media** (separate files) - Can optionally link to gigs
+
+**Gig Frontmatter (Embedded Media):**
+```yaml
+---
+title: "Event Name"
+date: 2025-03-15
+venue: "Venue"
+location: "City"
+description: "Event description"
+poster: "/media/gigs/2025-03-15-event-name/poster.jpg"
+event_link: "https://venue.com/events/obscvrat"
+other_performers:
+  - name: "Artist 1"
+    url: "https://artist1.com"
+  - name: "Artist 2"
+media:
+  pictures:
+    author: "Photographer Name"
+    author_url: "https://photographer.com"  # Optional
+    images:
+      - pic1.jpg
+      - pic2.jpg
+  videos:
+    - youtube_id: "dQw4w9WgXcQ"
+      title: "Full Performance"
+draft: false
+---
+```
+
+**Standalone Picture (Separate File):**
+```yaml
+# /content/media/pictures/2025-01-15-noise-space-photo.md
+---
+title: "Noise Space XV Performance"
+date: 2025-01-15
+type: "picture"
+image: "/media/standalone/2025-01-15-noise-space.jpg"
+author: "Photographer Name"
+author_url: "https://photographer.com"  # Optional
+gig: "2025-10-11-noise-space-xv"  # Optional: links to gig
+description: "Crowd shot during performance"
+draft: false
+---
+```
+
+**Standalone Video (Separate File):**
+```yaml
+# /content/media/videos/2025-01-15-full-set.md
+---
+title: "Full Set Recording"
+date: 2025-01-15
+type: "video"
+youtube_id: "dQw4w9WgXcQ"
+gig: "2025-10-11-noise-space-xv"  # Optional: links to gig
+description: "Complete performance"
+draft: false
+---
+```
+
+**Field Descriptions:**
+
+*Required fields:*
+- `title`: Event name (used for page title and URL slug if provided)
+- `date`: Event date (YYYY-MM-DD format)
+- `venue`: Venue name (used for URL slug if title is empty)
+- `location`: City/location
+
+*Optional fields:*
+- `description`: Event description
+- `poster`: Path to promotional poster image
+- `event_link`: URL to event page (where tickets can be found)
+- `other_performers`: List of other artists (with optional URLs)
+- `media`: Pictures and videos added after the event
+
+### File Organization
+
+**Media files:**
+```
+# Gig-embedded media
+/static/media/gigs/2025-03-15-event-name/
+  poster.jpg              # Promotional poster (gig page only)
+  pic1.jpg                # Performance photos (media page)
+  pic2.jpg
+  pic1-thumb.jpg          # Generated thumbnails
+  pic2-thumb.jpg
+
+# Standalone media
+/static/media/standalone/
+  2025-01-15-noise-space.jpg
+  2025-02-20-crowd-shot.jpg
+```
+
+**Content structure:**
+```
+/content/media/
+  pictures/
+    2025-01-15-noise-space-photo.md
+    2025-02-20-crowd-shot.md
+  videos/
+    2025-01-15-full-set.md
+  others.md
+```
+
+**URL slug generation:**
+- Uses event name (title) if provided: `YYYY-MM-DD-event-name`
+- Falls back to venue name if event name is empty: `YYYY-MM-DD-venue-name`
+
+**Poster vs Media distinction:**
+- **Poster:** Promotional image for the gig (flyer, event artwork)
+  - Displayed on gig detail page
+  - NOT included in media page gallery
+  - Optional field
+- **Media (pictures/videos):** Performance documentation
+  - Added after the gig happens
+  - Displayed on both gig page and media page
+  - Can be 0 to many items
+
+### Implementation Components
+
+1. **Thumbnail Generation:** Hugo image processing (build-time)
+   - Generate thumbnails automatically during build
+   - Maintain aspect ratios
+   - Optimize file sizes
+
+2. **Modal/Gallery:** SwiperJS
+   - Swipe between media items
+   - Touch/gesture support
+   - Navigation arrows + pagination
+   - Works for both pictures and videos
+
+3. **Media Page Layout:** CSS Grid Masonry
+   - Waterfall/Pinterest-style grid
+   - Maintain aspect ratios based on dominant ratio
+   - Separate sections: "Photos" and "Videos"
+   - Filter/toggle between types (default: show all)
+   - Each media set grouped by gig with link to gig page
+
+4. **Video Display:**
+   - YouTube thumbnail as preview
+   - Click opens modal with embedded player
+   - Link to original YouTube video
+
+5. **Content Management Tool:** Interactive CLI tool
+   - Create new gigs with interactive prompts
+   - List all existing gigs
+   - Edit existing gigs in $EDITOR
+   - Delete gigs with confirmation
+   - Validates required fields (date, venue, city)
+   - Generates proper filename slugs
+   - Accessible via `make gigs` command
+
+## Alternatives Considered
+
+### Alternative 1: External Image Hosting (Cloudinary/imgix)
+- **Pros:**
+  - Automatic thumbnail generation and optimization
+  - CDN delivery
+  - Dynamic image transformations
+  - Reduces build time
+- **Cons:**
+  - External dependency
+  - Additional cost
+  - Less control over files
+  - Requires API integration
+- **Why rejected:** Keeping media in same S3 bucket simplifies architecture and avoids external dependencies
+
+### Alternative 2: Self-Hosted Videos
+- **Pros:**
+  - Full control over video files
+  - No YouTube dependency
+  - Custom player styling
+- **Cons:**
+  - Large file sizes
+  - Bandwidth costs
+  - Need video encoding/optimization
+  - Streaming infrastructure complexity
+- **Why rejected:** YouTube provides free hosting, encoding, and streaming; videos already on YouTube
+
+### Alternative 3: PhotoSwipe for Modal
+- **Pros:**
+  - Popular, mature library
+  - Excellent mobile support
+  - Lightweight
+- **Cons:**
+  - Less flexible than Swiper
+  - Primarily for images (videos require workarounds)
+  - Less modern API
+- **Why rejected:** SwiperJS handles both images and videos elegantly with consistent UX
+
+### Alternative 4: Masonry.js Library
+- **Pros:**
+  - Better browser support than CSS Grid masonry
+  - More control over layout
+  - Proven solution
+- **Cons:**
+  - JavaScript dependency
+  - Performance overhead
+  - CSS Grid masonry is native and faster
+- **Why rejected:** CSS Grid masonry is modern, performant, and reduces JavaScript dependencies
+
+### Alternative 5: Flat Media Structure (No Gig Grouping)
+```
+/static/media/
+  pic1.jpg
+  pic2.jpg
+```
+- **Pros:**
+  - Simpler file structure
+  - Easier to manage
+- **Cons:**
+  - Hard to organize as media grows
+  - No clear association with gigs
+  - Naming conflicts likely
+- **Why rejected:** Grouping by gig provides clear organization and scalability
+
+### Alternative 6: Manual Gig Creation (No Tool)
+- **Pros:**
+  - No additional tooling needed
+  - Direct file editing
+  - More control
+- **Cons:**
+  - Error-prone (typos, wrong format)
+  - Inconsistent frontmatter structure
+  - Slow workflow
+  - Need to remember all fields
+  - Manual filename generation
+- **Why rejected:** Interactive tool ensures consistency and speeds up workflow
+
+## Consequences
+
+### Positive
+- **Clear data structure:** Frontmatter clearly defines media relationships
+- **Organized files:** Gig-based folders keep media organized
+- **Build-time optimization:** Hugo generates thumbnails automatically
+- **Modern UX:** SwiperJS provides smooth, touch-friendly gallery experience
+- **Responsive layout:** Masonry grid adapts to different screen sizes
+- **Scalable:** Structure supports unlimited gigs and media
+- **SEO-friendly:** Static HTML with proper image alt tags
+- **No external dependencies:** All media in same S3 bucket
+- **Flexible filtering:** Media page supports multiple view modes (Photos, Videos, Others)
+- **Easy content management:** Interactive tool simplifies gig creation
+- **Consistent structure:** Tool enforces proper frontmatter format
+- **Fast workflow:** Create gigs in seconds with prompts
+- **Centralized media:** All media types accessible from single page
+
+### Negative
+- **Build time increase:** Thumbnail generation adds to Hugo build time
+- **Manual media management:** Must manually add media to frontmatter after gigs
+- **Storage costs:** Original + thumbnail images increase S3 storage
+- **Browser support:** CSS Grid masonry requires modern browsers (fallback needed)
+- **SwiperJS dependency:** Adds ~50KB JavaScript library
+- **YouTube dependency:** Videos unavailable if YouTube is blocked/down
+- **Tool dependency:** Requires bash shell (not Windows-native)
+- **Editor requirement:** Edit functionality needs $EDITOR set
+
+### Neutral
+- **Author per picture set:** One author attribution per gig's pictures (not per individual image)
+- **YouTube IDs only:** Store just video IDs, not full URLs (cleaner, but requires URL construction)
+- **Aspect ratio handling:** Dominant ratio maintained, but some cropping may occur in masonry layout
+- **Filter default:** Shows all media initially, user can filter to photos or videos
+- **Tool is optional:** Can still create gigs manually if preferred
+
+## Notes
+
+### Gig Management Tool
+
+An interactive CLI tool provides easy gig content management:
+
+**Features:**
+- Interactive prompts for all required fields
+- Optional fields: poster, event link with title, linkable performers
+- Automatic filename generation (YYYY-MM-DD-venue-slug.md)
+- List/edit/delete existing gigs
+- Validates date format and required fields
+- Opens editor after creation (optional)
+- Color-coded output for better UX
+
+**Usage:**
+```bash
+make gigs
+```
+
+**Menu Options:**
+1. Create new gig - Interactive prompts for all fields
+2. List all gigs - Shows date, venue, location
+3. Edit existing gig - Select from numbered list
+4. Delete gig - Select and confirm deletion
+5. Exit
+
+This tool simplifies content management and ensures consistent frontmatter structure.
+
+### Implementation Checklist
+
+**Completed:**
+- [x] Create gig management tool
+- [x] Add `make gigs` target to Makefile
+- [x] Create gig list page template (grouped by year)
+- [x] Create gig detail page template
+- [x] Display event link and linkable performers
+- [x] Auto-download posters from URLs
+- [x] Interactive edit with prefilled values
+- [x] Apply site-wide design system to gig pages
+- [x] Update README.md with gig management instructions (if needed)
+- [x] Create media management tool (`make media`)
+- [x] Support for standalone media items
+
+**Pending (Media features):**
+- [ ] Update media tool to create standalone picture/video files
+- [ ] Display standalone media on gig pages (if linked)
+- [ ] Create Hugo shortcode for media gallery
+- [ ] Implement Hugo image processing for thumbnails
+- [ ] Add SwiperJS library and configuration
+- [ ] Create media page template with masonry layout
+- [ ] Add filter/toggle functionality (JavaScript) for Photos/Videos/Others
+- [ ] Add CSS for responsive masonry grid
+- [ ] Implement modal for full-size viewing
+- [ ] Add download links for original images
+- [ ] Add YouTube embed support in modal
+- [ ] Create Others content management (interviews, mentions, reviews)
+- [ ] Add Others section to media page
+- [ ] Test on mobile devices
+- [ ] Add fallback for browsers without CSS Grid masonry support
+
+### Hugo Image Processing Example
+```go-html-template
+{{ $image := resources.Get .path }}
+{{ $thumb := $image.Resize "400x" }}
+<img src="{{ $thumb.RelPermalink }}" alt="{{ .title }}">
+```
+
+### SwiperJS Configuration
+```javascript
+const swiper = new Swiper('.swiper', {
+  navigation: true,
+  pagination: { clickable: true },
+  keyboard: true,
+  loop: true
+});
+```
+
+### Gig Management Example
+```bash
+# Create/manage gigs interactively
+make gigs
+```
+
+### Others Content Structure
+
+Others content (interviews, mentions, reviews) can be managed as a simple markdown file:
+
+```markdown
+# website/content/media/others.md
+---
+title: "Others"
+---
+
+## Interviews
+- [Interview with Noise Magazine](https://example.com) - Discussion about experimental sound (2025-01-15)
+- [Podcast: Sound Experiments](https://example.com) - 45-minute conversation about process (2024-12-10)
+
+## Reviews
+- [Album Review - Sound Journal](https://example.com) - "Challenging and rewarding" (2024-11-20)
+- [Live Performance Review](https://example.com) - Noise Space XIV coverage (2024-10-15)
+
+## Mentions
+- [Best of 2024 - Experimental Music Blog](https://example.com) - Featured in year-end list
+- [Festival Lineup Announcement](https://example.com) - Confirmed for 2025 tour
+```
+
+Or as structured frontmatter for more control:
+
+```yaml
+---
+title: "Others"
+items:
+  - type: "interview"
+    title: "Interview with Noise Magazine"
+    url: "https://example.com"
+    description: "Discussion about experimental sound"
+    date: 2025-01-15
+  - type: "review"
+    title: "Album Review - Sound Journal"
+    url: "https://example.com"
+    description: "Challenging and rewarding"
+    date: 2024-11-20
+---
+```
+
+### Related Decisions
+- **ADR-003:** Website hosting and static site generation (Hugo + S3)
+- **ADR-007:** Homepage design system (dark minimal aesthetic applies to media page)
+
+### Future Considerations
+- Add lazy loading for images on media page
+- Consider progressive image loading (blur-up technique)
+- Add image captions/descriptions if needed
+- Implement search functionality on media page
+- Add EXIF data display for photos
+- Consider video thumbnails with play button overlay
+- Add batch media upload functionality to script
+- Support for other video platforms (Vimeo, etc.)
+- Automatic Instagram integration for photos
+- RSS feed for Others section (interviews, mentions)
+- Tagging system for Others content (interview, review, mention, etc.)
+- Date-based filtering for Others content

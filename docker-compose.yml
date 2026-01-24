@@ -9,5 +9,6 @@ services:
     volumes:
       - ./website:/src
     working_dir: /src
+    command: server --bind 0.0.0.0 --poll 3s
     environment:
       - HUGO_ENV=development

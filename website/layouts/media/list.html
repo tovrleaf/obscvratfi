@@ -1,0 +1,584 @@
+{{ define "main" }}
+<section class="media-page">
+    <h1>{{ .Title }}</h1>
+    {{ if .Content }}<div class="intro">{{ .Content }}</div>{{ end }}
+    
+    <!-- Filter buttons -->
+    <div class="media-filters">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="photos">Photos</button>
+        <button class="filter-btn" data-filter="videos">Videos</button>
+        <button class="filter-btn" data-filter="others">Others</button>
+    </div>
+    
+    <!-- Photos Section -->
+    <section class="media-section photos-section" data-type="photos">
+        <h2>Photos</h2>
+        <div class="media-grid">
+            {{ $gigs := where .Site.Pages "Section" "gigs" }}
+            {{ range $gigs }}
+                {{ if .Params.media.pictures }}
+                    {{ $gigTitle := .Title }}
+                    {{ $gigPermalink := .Permalink }}
+                    {{ $gigSlug := strings.TrimSuffix "/" (strings.TrimPrefix "/gigs/" .RelPermalink) }}
+                    {{ $author := .Params.media.pictures.author }}
+                    {{ $authorUrl := .Params.media.pictures.author_url }}
+                    {{ range $index, $image := .Params.media.pictures.images }}
+                        <div class="media-item photo-item">
+                            <a href="#" class="open-lightbox" 
+                               data-gig="{{ $gigSlug }}" 
+                               data-image="{{ $image }}"
+                               data-gig-title="{{ $gigTitle }}"
+                               data-gig-link="{{ $gigPermalink }}"
+                               data-author="{{ $author }}"
+                               data-author-url="{{ $authorUrl }}">
+                                <img src="/media/gigs/{{ $gigSlug }}/{{ $image }}" alt="{{ $gigTitle }}">
+                            </a>
+                            <div class="media-info">
+                                <p class="media-gig"><a href="{{ $gigPermalink }}">{{ $gigTitle }}</a></p>
+                                <p class="media-author">
+                                    {{ if $authorUrl }}
+                                        Photo by <a href="{{ $authorUrl }}" target="_blank">{{ $author }}</a>
+                                    {{ else }}
+                                        Photo by {{ $author }}
+                                    {{ end }}
+                                </p>
+                            </div>
+                        </div>
+                    {{ end }}
+                {{ end }}
+            {{ end }}
+            
+            {{ $standalonePics := where .Site.Pages "Section" "media" }}
+            {{ $standalonePics := where $standalonePics "Params.type" "picture" }}
+            {{ range $standalonePics }}
+                <div class="media-item photo-item">
+                    <img src="{{ .Params.image }}" alt="{{ .Title }}">
+                    <div class="media-info">
+                        <p class="media-title">{{ .Title }}</p>
+                        {{ if .Params.gig }}
+                            {{ $gigPage := $.Site.GetPage (printf "/gigs/%s" .Params.gig) }}
+                            {{ if $gigPage }}
+                                <p class="media-gig"><a href="{{ $gigPage.Permalink }}">{{ $gigPage.Title }}</a></p>
+                            {{ end }}
+                        {{ end }}
+                        <p class="media-author">
+                            {{ if .Params.author_url }}
+                                Photo by <a href="{{ .Params.author_url }}" target="_blank">{{ .Params.author }}</a>
+                            {{ else }}
+                                Photo by {{ .Params.author }}
+                            {{ end }}
+                        </p>
+                    </div>
+                </div>
+            {{ end }}
+        </div>
+    </section>
+    
+    <!-- Videos Section -->
+    <section class="media-section videos-section" data-type="videos">
+        <h2>Videos</h2>
+        <div class="media-grid">
+            {{ range $gigs }}
+                {{ if .Params.media.videos }}
+                    {{ $gigTitle := .Title }}
+                    {{ $gigPermalink := .Permalink }}
+                    {{ range .Params.media.videos }}
+                        <div class="media-item video-item">
+                            <a href="#" class="open-video-lightbox"
+                               data-youtube-id="{{ .youtube_id }}"
+                               data-title="{{ .title }}"
+                               data-gig-title="{{ $gigTitle }}"
+                               data-gig-link="{{ $gigPermalink }}"
+                               {{ if .credits }}
+                               data-credits='{{ .credits | jsonify }}'
+                               {{ end }}>
+                                <img src="https://img.youtube.com/vi/{{ .youtube_id }}/mqdefault.jpg" alt="{{ .title }}">
+                                <div class="play-icon">▶</div>
+                            </a>
+                            <div class="media-info">
+                                {{ if .title }}<p class="media-title">{{ .title }}</p>{{ end }}
+                                <p class="media-gig"><a href="{{ $gigPermalink }}">{{ $gigTitle }}</a></p>
+                                {{ if .credits }}
+                                <div class="video-credits">
+                                    {{ range .credits }}
+                                        <p class="credit-item">
+                                            {{ .type }} by
+                                            {{ if .url }}
+                                                <a href="{{ .url }}" target="_blank">{{ .name }}</a>
+                                            {{ else }}
+                                                {{ .name }}
+                                            {{ end }}
+                                        </p>
+                                    {{ end }}
+                                </div>
+                                {{ end }}
+                            </div>
+                        </div>
+                    {{ end }}
+                {{ end }}
+            {{ end }}
+            
+            {{ $standaloneVids := where .Site.Pages "Section" "media" }}
+            {{ $standaloneVids := where $standaloneVids "Params.type" "video" }}
+            {{ range $standaloneVids }}
+                <div class="media-item video-item">
+                    <img src="https://img.youtube.com/vi/{{ .Params.youtube_id }}/mqdefault.jpg" alt="{{ .Title }}">
+                    <div class="play-icon">▶</div>
+                    <div class="media-info">
+                        <p class="media-title">{{ .Title }}</p>
+                        {{ if .Params.gig }}
+                            {{ $gigPage := $.Site.GetPage (printf "/gigs/%s" .Params.gig) }}
+                            {{ if $gigPage }}
+                                <p class="media-gig"><a href="{{ $gigPage.Permalink }}">{{ $gigPage.Title }}</a></p>
+                            {{ end }}
+                        {{ end }}
+                    </div>
+                </div>
+            {{ end }}
+        </div>
+    </section>
+    
+    <!-- Others Section -->
+    <section class="media-section others-section" data-type="others">
+        <h2>Others</h2>
+        {{ $othersPage := .Site.GetPage "/media/others" }}
+        {{ if $othersPage }}
+            <div class="others-content">
+                {{ $othersPage.Content }}
+            </div>
+        {{ else }}
+            <p>No interviews, mentions, or reviews yet.</p>
+        {{ end }}
+    </section>
+</section>
+
+<style>
+.media-filters {
+    margin: 2rem 0;
+    display: flex;
+    gap: 1rem;
+}
+
+.filter-btn {
+    background: var(--bg-secondary);
+    color: var(--primary-color);
+    border: 1px solid var(--border-color);
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    font-family: var(--font-display);
+    transition: all 0.3s;
+}
+
+.filter-btn:hover {
+    background: var(--accent-color);
+}
+
+.filter-btn.active {
+    background: var(--accent-color);
+    border-color: var(--primary-color);
+}
+
+.media-section {
+    margin: 3rem 0;
+}
+
+.media-section.hidden {
+    display: none;
+}
+
+.media-grid {
+    column-count: 4;
+    column-gap: 1rem;
+    margin-top: 2rem;
+}
+
+.media-item {
+    position: relative;
+    break-inside: avoid;
+    margin-bottom: 1rem;
+}
+
+.media-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid var(--border-color);
+}
+
+.media-item video {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid var(--border-color);
+}
+
+.media-item a {
+    display: block;
+    position: relative;
+}
+
+.play-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 3rem;
+    color: white;
+    text-shadow: 0 0 10px rgba(0,0,0,0.8);
+    pointer-events: none;
+}
+
+.media-info {
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+}
+
+.media-title {
+    font-weight: bold;
+    margin-bottom: 0.25rem;
+}
+
+.media-gig {
+    color: var(--secondary-color);
+    margin-bottom: 0.25rem;
+}
+
+.media-author {
+    color: var(--secondary-color);
+    font-style: italic;
+}
+
+.others-content {
+    max-width: 800px;
+}
+
+.others-content h2 {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+}
+
+.others-content ul {
+    list-style: none;
+    padding: 0;
+}
+
+.others-content li {
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+    position: relative;
+}
+
+.others-content li:before {
+    content: "→";
+    position: absolute;
+    left: 0;
+}
+
+/* Swiper Modal */
+.swiper-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 2rem;
+}
+
+.swiper-modal-content {
+    position: relative;
+    max-width: 1200px;
+    width: 100%;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    padding: 2rem;
+}
+
+.swiper-modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    color: var(--primary-color);
+    font-size: 2rem;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.swiper-modal-close:hover {
+    color: var(--accent-color);
+}
+
+.swiper-modal-content img {
+    width: 100%;
+    max-height: 80vh;
+    object-fit: contain;
+    display: block;
+    margin-bottom: 1rem;
+}
+
+.swiper-modal-content iframe {
+    width: 100%;
+    max-height: 80vh;
+    margin-bottom: 1rem;
+}
+
+.swiper-modal-info {
+    color: var(--primary-color);
+    font-size: 0.9rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.swiper-modal-info-left {
+    flex: 1;
+}
+
+.swiper-modal-info p {
+    margin: 0.5rem 0;
+}
+
+.swiper-modal-info a {
+    color: var(--primary-color);
+    text-decoration: underline;
+}
+
+.swiper-modal-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--border-color);
+    color: var(--primary-color);
+    font-size: 3rem;
+    width: 60px;
+    height: 60px;
+    cursor: pointer;
+    z-index: 10;
+    transition: background 0.3s;
+}
+
+.swiper-modal-nav:hover {
+    background: rgba(0, 0, 0, 0.8);
+}
+
+.swiper-modal-prev {
+    left: 1rem;
+}
+
+.swiper-modal-next {
+    right: 1rem;
+}
+
+.download-btn {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: var(--accent-color);
+    color: var(--primary-color);
+    text-decoration: none;
+    border: 1px solid var(--border-color);
+    transition: background 0.3s;
+    white-space: nowrap;
+}
+
+.download-btn:hover {
+    background: var(--primary-color);
+    color: var(--bg-primary);
+}
+
+.video-credits {
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--secondary-color);
+}
+
+.video-credits p {
+    margin: 0.25rem 0;
+}
+
+/* Responsive masonry columns */
+@media (max-width: 1200px) {
+    .media-grid {
+        column-count: 3;
+    }
+}
+
+@media (max-width: 768px) {
+    .media-grid {
+        column-count: 2;
+    }
+    
+    .swiper-modal {
+        padding: 1rem;
+    }
+    
+    .swiper-modal-content {
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .media-grid {
+        column-count: 1;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const sections = document.querySelectorAll('.media-section');
+    
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const filter = this.dataset.filter;
+            
+            // Update active button
+            filterBtns.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Show/hide sections
+            sections.forEach(section => {
+                if (filter === 'all') {
+                    section.classList.remove('hidden');
+                } else {
+                    if (section.dataset.type === filter) {
+                        section.classList.remove('hidden');
+                    } else {
+                        section.classList.add('hidden');
+                    }
+                }
+            });
+        });
+    });
+
+    // Image Lightbox
+    const imageLightboxLinks = document.querySelectorAll('.open-lightbox');
+    imageLightboxLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const gig = this.dataset.gig;
+            const image = this.dataset.image;
+            const gigTitle = this.dataset.gigTitle;
+            const gigLink = this.dataset.gigLink;
+            const author = this.dataset.author;
+            const authorUrl = this.dataset.authorUrl;
+            
+            const modal = document.createElement('div');
+            modal.className = 'swiper-modal';
+            modal.innerHTML = `
+                <div class="swiper-modal-content">
+                    <button class="swiper-modal-close">&times;</button>
+                    <button class="swiper-modal-nav swiper-modal-prev">‹</button>
+                    <button class="swiper-modal-nav swiper-modal-next">›</button>
+                    <img src="/media/gigs/${gig}/${image}" alt="${gigTitle}">
+                    <div class="swiper-modal-info">
+                        <div class="swiper-modal-info-left">
+                            <p><strong>Gig:</strong> <a href="${gigLink}">${gigTitle}</a></p>
+                            <p><strong>Photo by:</strong> ${authorUrl ? `<a href="${authorUrl}" target="_blank">${author}</a>` : author}</p>
+                        </div>
+                        <a href="/media/gigs/${gig}/${image}" download class="download-btn">Download</a>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            
+            // Navigation
+            const allImages = Array.from(imageLightboxLinks);
+            const currentIndex = allImages.indexOf(this);
+            
+            modal.querySelector('.swiper-modal-prev').addEventListener('click', () => {
+                const prevIndex = (currentIndex - 1 + allImages.length) % allImages.length;
+                modal.remove();
+                allImages[prevIndex].click();
+            });
+            
+            modal.querySelector('.swiper-modal-next').addEventListener('click', () => {
+                const nextIndex = (currentIndex + 1) % allImages.length;
+                modal.remove();
+                allImages[nextIndex].click();
+            });
+            
+            modal.querySelector('.swiper-modal-close').addEventListener('click', () => {
+                modal.remove();
+            });
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) modal.remove();
+            });
+        });
+    });
+
+    // Video Lightbox
+    const videoLightboxLinks = document.querySelectorAll('.open-video-lightbox');
+    videoLightboxLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const youtubeId = this.dataset.youtubeId;
+            const title = this.dataset.title;
+            const gigTitle = this.dataset.gigTitle;
+            const gigLink = this.dataset.gigLink;
+            const credits = this.dataset.credits ? JSON.parse(this.dataset.credits) : [];
+            
+            let creditsHtml = '';
+            if (credits.length > 0) {
+                creditsHtml = '<div class="video-credits">';
+                credits.forEach(credit => {
+                    creditsHtml += `<p>${credit.type} by ${credit.url ? `<a href="${credit.url}" target="_blank">${credit.name}</a>` : credit.name}</p>`;
+                });
+                creditsHtml += '</div>';
+            }
+            
+            const modal = document.createElement('div');
+            modal.className = 'swiper-modal';
+            modal.innerHTML = `
+                <div class="swiper-modal-content">
+                    <button class="swiper-modal-close">&times;</button>
+                    <button class="swiper-modal-nav swiper-modal-prev">‹</button>
+                    <button class="swiper-modal-nav swiper-modal-next">›</button>
+                    <iframe width="100%" height="500" src="https://www.youtube.com/embed/${youtubeId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    <div class="swiper-modal-info">
+                        <div class="swiper-modal-info-left">
+                            ${title ? `<p><strong>Title:</strong> ${title}</p>` : ''}
+                            <p><strong>Gig:</strong> <a href="${gigLink}">${gigTitle}</a></p>
+                            ${creditsHtml}
+                        </div>
+                        <a href="https://www.youtube.com/watch?v=${youtubeId}" target="_blank" class="download-btn">Open</a>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            
+            // Navigation
+            const allVideos = Array.from(videoLightboxLinks);
+            const currentIndex = allVideos.indexOf(this);
+            
+            modal.querySelector('.swiper-modal-prev').addEventListener('click', () => {
+                const prevIndex = (currentIndex - 1 + allVideos.length) % allVideos.length;
+                modal.remove();
+                allVideos[prevIndex].click();
+            });
+            
+            modal.querySelector('.swiper-modal-next').addEventListener('click', () => {
+                const nextIndex = (currentIndex + 1) % allVideos.length;
+                modal.remove();
+                allVideos[nextIndex].click();
+            });
+            
+            modal.querySelector('.swiper-modal-close').addEventListener('click', () => {
+                modal.remove();
+            });
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) modal.remove();
+            });
+        });
+    });
+});
+</script>
+{{ end }}

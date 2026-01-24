@@ -1,5 +1,5 @@
 .DEFAULT_GOAL := help
-.PHONY: help adr-new adr-list adr-help serve build clean build-docker build-prod build-minified serve-prod list-content setup-hooks run-hooks uninstall-hooks protect-main show-branch-rules unprotect-main deploy-production
+.PHONY: help adr-new adr-list adr-help gigs media serve build clean build-docker build-prod build-minified serve-prod list-content setup-hooks run-hooks uninstall-hooks protect-main show-branch-rules unprotect-main deploy-production
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":[^#]*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
@@ -89,6 +89,18 @@ unprotect-main: ## Remove branch protection (emergency rollback only)
 deploy-production: ## Deploy to production (obscvrat.fi)
 	@./scripts/deploy.sh
 
+<<<<<<< HEAD
+# Content Management Tasks
+
+gigs: ## Manage gigs (create, list, edit, delete)
+	@./scripts/manage-gigs.sh
+
+media: ## Manage media (add pictures, videos, others)
+	@./scripts/manage-media.sh
+
+||||||| 4d2e4a1
+=======
+>>>>>>> origin/main
 # Website Tasks
 
 serve: ## Run Hugo dev server in Docker (http://localhost:1313)
