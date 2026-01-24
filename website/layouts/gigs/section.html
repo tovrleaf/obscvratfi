@@ -23,8 +23,8 @@
                 <li>
                     <a href="{{ .Permalink }}">
                         <span class="gig-date">{{ .Date | dateFormat "2006-01-02" }}</span>
-                        <span class="gig-venue">{{ .Params.venue }}</span>
-                        <span class="gig-location">{{ .Params.location }}</span>
+                        <span class="gig-title">{{ .Title }}</span>
+                        <span class="gig-venue">{{ .Params.venue }}, {{ .Params.location }}</span>
                     </a>
                 </li>
             {{ end }}
