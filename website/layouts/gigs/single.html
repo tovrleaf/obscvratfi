@@ -18,8 +18,22 @@
                 <p><strong>Date:</strong> {{ .Date | dateFormat "Monday, January 2, 2006" }}</p>
                 <p><strong>Venue:</strong> {{ .Params.venue }}</p>
                 <p><strong>Location:</strong> {{ .Params.location }}</p>
+                {{ if .Params.event_link }}<p><strong>Event:</strong> <a href="{{ .Params.event_link }}" target="_blank">View event page</a></p>{{ end }}
+                {{ if .Params.other_performers }}
+                <p><strong>Also performing:</strong></p>
+                <ul>
+                {{ range .Params.other_performers }}
+                    <li>
+                    {{ if .url }}
+                        <a href="{{ .url }}" target="_blank">{{ .name }}</a>
+                    {{ else }}
+                        {{ .name }}
+                    {{ end }}
+                    </li>
+                {{ end }}
+                </ul>
+                {{ end }}
                 {{ if .Params.time }}<p><strong>Time:</strong> {{ .Params.time }}</p>{{ end }}
-                {{ if .Params.other_performers }}<p><strong>Also performing:</strong> {{ delimit .Params.other_performers ", " }}</p>{{ end }}
                 {{ if .Params.ticket_link }}<p><a href="{{ .Params.ticket_link }}" target="_blank">Get Tickets</a></p>{{ end }}
             </div>
             
