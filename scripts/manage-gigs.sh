@@ -416,6 +416,7 @@ FRONTMATTER
         for performer in "${performers[@]}"; do
             IFS='|' read -r name url <<< "$performer"
             if [[ -n "$url" ]]; then
+                cat >> "$filepath" << PERFORMER
   - name: "$name"
     url: "$url"
 PERFORMER
