@@ -51,5 +51,66 @@
         {{ .Content }}
     </div>
     {{ end }}
+
+    {{ if .Params.media }}
+    <div class="gig-media">
+        {{ if .Params.media.pictures }}
+        <section class="media-section">
+            <h2>Photos</h2>
+            {{ if .Params.media.pictures.author }}
+            <p class="media-credit">
+                Photos by 
+                {{ if .Params.media.pictures.author_url }}
+                    <a href="{{ .Params.media.pictures.author_url }}" target="_blank">{{ .Params.media.pictures.author }}</a>
+                {{ else }}
+                    {{ .Params.media.pictures.author }}
+                {{ end }}
+            </p>
+            {{ end }}
+            <div class="media-gallery">
+                {{ $gigSlug := path.Base .File.Dir }}
+                {{ range .Params.media.pictures.images }}
+                    {{ $imagePath := printf "media/gigs/%s/%s" $gigSlug . }}
+                    {{ with resources.Get $imagePath }}
+                        {{ $thumb := .Resize "400x q75" }}
+                        {{ $display := .Resize "1200x q75" }}
+                        <a href="{{ $display.RelPermalink }}" class="media-item" data-type="image">
+                            <img src="{{ $thumb.RelPermalink }}" alt="Photo from {{ $.Title }}" loading="lazy">
+                        </a>
+                    {{ end }}
+                {{ end }}
+            </div>
+        </section>
+        {{ end }}
+
+        {{ if .Params.media.videos }}
+        <section class="media-section">
+            <h2>Videos</h2>
+            {{ if .Params.media.videos.author }}
+            <p class="media-credit">
+                Videos by 
+                {{ if .Params.media.videos.author_url }}
+                    <a href="{{ .Params.media.videos.author_url }}" target="_blank">{{ .Params.media.videos.author }}</a>
+                {{ else }}
+                    {{ .Params.media.videos.author }}
+                {{ end }}
+            </p>
+            {{ end }}
+            <div class="media-gallery">
+                {{ $gigSlug := path.Base .File.Dir }}
+                {{ range .Params.media.videos.files }}
+                    {{ $videoPath := printf "media/gigs/%s/%s" $gigSlug . }}
+                    <a href="/{{ $videoPath }}" class="media-item" data-type="video">
+                        <video preload="metadata">
+                            <source src="/{{ $videoPath }}#t=0.5" type="video/mp4">
+                        </video>
+                        <span class="play-icon">▶</span>
+                    </a>
+                {{ end }}
+            </div>
+        </section>
+        {{ end }}
+    </div>
+    {{ end }}
 </article>
 {{ end }}
