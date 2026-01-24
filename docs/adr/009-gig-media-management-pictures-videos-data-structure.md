@@ -18,7 +18,7 @@ The Obscvrat website needs to display media (pictures and videos) associated wit
 - Pictures: display as thumbnails, click to view full-size in modal, downloadable as originals
 - Videos: display as thumbnails, click to view in modal with embedded player, link to YouTube
 - Poster: display on gig page as promotional image (not in media gallery)
-- Event link: single link to event page with custom title
+- Event link: single URL to event page
 - Other performers: list with optional links to their pages/socials
 - Picture sets have author attribution
 - Media page uses masonry/waterfall grid layout
@@ -49,9 +49,7 @@ venue: "Venue"
 location: "City"
 description: "Event description"
 poster: "/media/gigs/2025-03-15-event-name/poster.jpg"
-event_link:
-  url: "https://venue.com/events/obscvrat"
-  title: "Noise Festival 2025"
+event_link: "https://venue.com/events/obscvrat"
 other_performers:
   - name: "Artist 1"
     url: "https://artist1.com"

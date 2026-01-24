@@ -139,9 +139,6 @@ create_gig() {
     
     # Event link
     read -rp "Event link URL (or press Enter to skip): " event_url
-    if [[ -n "$event_url" ]]; then
-        read -rp "Event title: " event_title
-    fi
     
     # Other performers
     echo "Other performers (press Enter when done):"
@@ -191,11 +188,7 @@ FRONTMATTER
     
     # Add event link if provided
     if [[ -n "$event_url" ]]; then
-        cat >> "$filepath" << EVENTLINK
-event_link:
-  url: "$event_url"
-  title: "$event_title"
-EVENTLINK
+        echo "event_link: \"$event_url\"" >> "$filepath"
     fi
     
     # Add performers if provided
@@ -375,9 +368,6 @@ edit_gig() {
     
     # Event link
     read -rp "Event link URL (or press Enter to skip): " event_url
-    if [[ -n "$event_url" ]]; then
-        read -rp "Event title: " event_title
-    fi
     
     # Other performers
     echo "Other performers (press Enter when done):"
@@ -417,11 +407,7 @@ FRONTMATTER
     
     # Add event link if provided
     if [[ -n "$event_url" ]]; then
-        cat >> "$filepath" << EVENTLINK
-event_link:
-  url: "$event_url"
-  title: "$event_title"
-EVENTLINK
+        echo "event_link: \"$event_url\"" >> "$filepath"
     fi
     
     # Add performers if provided
@@ -430,7 +416,6 @@ EVENTLINK
         for performer in "${performers[@]}"; do
             IFS='|' read -r name url <<< "$performer"
             if [[ -n "$url" ]]; then
-                cat >> "$filepath" << PERFORMER
   - name: "$name"
     url: "$url"
 PERFORMER
