@@ -33,6 +33,24 @@ print_warning() {
     echo -e "${YELLOW}⚠ $1${NC}"
 }
 
+# Download poster from URL
+download_poster() {
+    local url="$1"
+    local output_path="$2"
+    
+    # Create directory if it doesn't exist
+    mkdir -p "$(dirname "$output_path")"
+    
+    # Download using curl
+    if curl -sL "$url" -o "$output_path"; then
+        print_success "Downloaded poster to $output_path"
+        return 0
+    else
+        print_error "Failed to download poster from $url"
+        return 1
+    fi
+}
+
 # Main menu
 show_menu() {
     echo ""
@@ -96,7 +114,25 @@ create_gig() {
     read -rp "Description: " description
     
     # Poster
-    read -rp "Poster image path (or press Enter to skip): " poster
+    read -rp "Poster image URL or path (or press Enter to skip): " poster_input
+    
+    # Handle poster download if URL provided
+    poster=""
+    if [[ -n "$poster_input" ]]; then
+        if [[ "$poster_input" =~ ^https?:// ]]; then
+            # It's a URL, download it
+            venue_slug=$(echo "$venue" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | tr -cd '[:alnum:]-')
+            poster_dir="website/static/media/gigs/${date}-${venue_slug}"
+            poster_path="$poster_dir/poster.jpg"
+            
+            if download_poster "$poster_input" "$poster_path"; then
+                poster="/media/gigs/${date}-${venue_slug}/poster.jpg"
+            fi
+        else
+            # It's a local path, use as-is
+            poster="$poster_input"
+        fi
+    fi
     
     # Event link
     read -rp "Event link URL (or press Enter to skip): " event_url
@@ -306,8 +342,26 @@ edit_gig() {
     read -rp "Description [$old_description]: " description
     description=${description:-$old_description}
     
-    read -rp "Poster [$old_poster]: " poster
-    poster=${poster:-$old_poster}
+    read -rp "Poster [$old_poster]: " poster_input
+    poster_input=${poster_input:-$old_poster}
+    
+    # Handle poster download if URL provided
+    poster=""
+    if [[ -n "$poster_input" ]]; then
+        if [[ "$poster_input" =~ ^https?:// ]]; then
+            # It's a URL, download it
+            venue_slug=$(echo "$venue" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | tr -cd '[:alnum:]-')
+            poster_dir="website/static/media/gigs/${date}-${venue_slug}"
+            poster_path="$poster_dir/poster.jpg"
+            
+            if download_poster "$poster_input" "$poster_path"; then
+                poster="/media/gigs/${date}-${venue_slug}/poster.jpg"
+            fi
+        else
+            # It's a local path, use as-is
+            poster="$poster_input"
+        fi
+    fi
     
     # Event link
     read -rp "Event link URL (or press Enter to skip): " event_url
