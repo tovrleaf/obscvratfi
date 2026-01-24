@@ -1,4 +1,4 @@
-# 9. Gig Media Management - Pictures and Videos Data Structure
+# 9. Media Management - Pictures, Videos, and Other Content
 
 **Status:** Proposed
 
@@ -6,7 +6,7 @@
 
 ## Context
 
-The Obscvrat website needs to display media (pictures and videos) associated with gigs. Requirements:
+The Obscvrat website needs to display media (pictures and videos) associated with gigs, as well as other media like interviews and mentions. Requirements:
 
 - Each gig can have 0 to many pictures and videos
 - Each gig can have an optional poster image (promotional material)
@@ -15,15 +15,18 @@ The Obscvrat website needs to display media (pictures and videos) associated wit
 - Display media on individual gig pages
 - Poster displayed on gig page but NOT included in media page
 - Separate top-level "Media" page listing all media (excluding posters)
+- Media page has three sections: Photos, Videos, and Others
+- Others section includes: interviews, mentions, reviews, etc.
 - Pictures: display as thumbnails, click to view full-size in modal, downloadable as originals
 - Videos: display as thumbnails, click to view in modal with embedded player, link to YouTube
+- Others: display as links with title and optional description
 - Poster: display on gig page as promotional image (not in media gallery)
 - Event link: single URL to event page
 - Other performers: list with optional links to their pages/socials
 - Picture sets have author attribution
-- Media page uses masonry/waterfall grid layout
-- Separate sections for photos and videos with filter/toggle
-- Each media set links back to its gig
+- Media page uses masonry/waterfall grid layout for photos/videos
+- Separate sections for photos, videos, and others with filter/toggle
+- Each media set links back to its gig (if applicable)
 - Need easy content management for creating and editing gigs
 
 Technical considerations:
@@ -230,10 +233,11 @@ draft: false
 - **Scalable:** Structure supports unlimited gigs and media
 - **SEO-friendly:** Static HTML with proper image alt tags
 - **No external dependencies:** All media in same S3 bucket
-- **Flexible filtering:** Media page supports multiple view modes
+- **Flexible filtering:** Media page supports multiple view modes (Photos, Videos, Others)
 - **Easy content management:** Interactive tool simplifies gig creation
 - **Consistent structure:** Tool enforces proper frontmatter format
 - **Fast workflow:** Create gigs in seconds with prompts
+- **Centralized media:** All media types accessible from single page
 
 ### Negative
 - **Build time increase:** Thumbnail generation adds to Hugo build time
@@ -282,21 +286,32 @@ make gigs
 This tool simplifies content management and ensures consistent frontmatter structure.
 
 ### Implementation Checklist
-- [ ] Create gig management tool
-- [ ] Add `make gigs` target to Makefile
+
+**Completed:**
+- [x] Create gig management tool
+- [x] Add `make gigs` target to Makefile
+- [x] Create gig list page template (grouped by year)
+- [x] Create gig detail page template
+- [x] Display event link and linkable performers
+- [x] Auto-download posters from URLs
+- [x] Interactive edit with prefilled values
+- [x] Apply site-wide design system to gig pages
+- [x] Update README.md with gig management instructions (if needed)
+
+**Pending (Media features):**
 - [ ] Create Hugo shortcode for media gallery
 - [ ] Implement Hugo image processing for thumbnails
 - [ ] Add SwiperJS library and configuration
 - [ ] Create media page template with masonry layout
-- [ ] Add filter/toggle functionality (JavaScript)
-- [ ] Create gig page template with media display
+- [ ] Add filter/toggle functionality (JavaScript) for Photos/Videos/Others
 - [ ] Add CSS for responsive masonry grid
 - [ ] Implement modal for full-size viewing
 - [ ] Add download links for original images
 - [ ] Add YouTube embed support in modal
+- [ ] Create Others content management (interviews, mentions, reviews)
+- [ ] Add Others section to media page
 - [ ] Test on mobile devices
 - [ ] Add fallback for browsers without CSS Grid masonry support
-- [ ] Update README.md with gig management instructions
 
 ### Hugo Image Processing Example
 ```go-html-template
@@ -321,6 +336,48 @@ const swiper = new Swiper('.swiper', {
 make gigs
 ```
 
+### Others Content Structure
+
+Others content (interviews, mentions, reviews) can be managed as a simple markdown file:
+
+```markdown
+# website/content/media/others.md
+---
+title: "Others"
+---
+
+## Interviews
+- [Interview with Noise Magazine](https://example.com) - Discussion about experimental sound (2025-01-15)
+- [Podcast: Sound Experiments](https://example.com) - 45-minute conversation about process (2024-12-10)
+
+## Reviews
+- [Album Review - Sound Journal](https://example.com) - "Challenging and rewarding" (2024-11-20)
+- [Live Performance Review](https://example.com) - Noise Space XIV coverage (2024-10-15)
+
+## Mentions
+- [Best of 2024 - Experimental Music Blog](https://example.com) - Featured in year-end list
+- [Festival Lineup Announcement](https://example.com) - Confirmed for 2025 tour
+```
+
+Or as structured frontmatter for more control:
+
+```yaml
+---
+title: "Others"
+items:
+  - type: "interview"
+    title: "Interview with Noise Magazine"
+    url: "https://example.com"
+    description: "Discussion about experimental sound"
+    date: 2025-01-15
+  - type: "review"
+    title: "Album Review - Sound Journal"
+    url: "https://example.com"
+    description: "Challenging and rewarding"
+    date: 2024-11-20
+---
+```
+
 ### Related Decisions
 - **ADR-003:** Website hosting and static site generation (Hugo + S3)
 - **ADR-007:** Homepage design system (dark minimal aesthetic applies to media page)
@@ -335,3 +392,6 @@ make gigs
 - Add batch media upload functionality to script
 - Support for other video platforms (Vimeo, etc.)
 - Automatic Instagram integration for photos
+- RSS feed for Others section (interviews, mentions)
+- Tagging system for Others content (interview, review, mention, etc.)
+- Date-based filtering for Others content
