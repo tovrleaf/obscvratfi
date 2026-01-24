@@ -21,6 +21,18 @@ media:
     images:
       - DSC_9465.jpg
       - DSC_9476.jpg
+  videos:
+    - youtube_id: "UbFoX9VjzX4"
+      title: "Obscvrat - Live at Noise Space XV | October 11, 2025"
+      credits:
+        - type: "Audio recorded"
+          name: "Gray Ritual"
+          url: "http://youtube.com/@GrayRitual"
+        - type: "Live footage recorded"
+          name: "Bryskt"
+          url: "https://bryskt.org/"
+        - type: "Background video, composition and audio mastering"
+          name: "Obscvrat"
 draft: false
 ---
 
