@@ -67,17 +67,24 @@
                 {{ end }}
             </p>
             {{ end }}
-            <div class="media-gallery">
+            <div class="media-grid">
                 {{ $gigSlug := path.Base .File.Dir }}
+                {{ $gigTitle := .Title }}
+                {{ $gigPermalink := .Permalink }}
+                {{ $author := .Params.media.pictures.author }}
+                {{ $authorUrl := .Params.media.pictures.author_url }}
                 {{ range .Params.media.pictures.images }}
-                    {{ $imagePath := printf "media/gigs/%s/%s" $gigSlug . }}
-                    {{ with resources.Get $imagePath }}
-                        {{ $thumb := .Resize "400x q75" }}
-                        {{ $display := .Resize "1200x q75" }}
-                        <a href="{{ $display.RelPermalink }}" class="media-item" data-type="image">
-                            <img src="{{ $thumb.RelPermalink }}" alt="Photo from {{ $.Title }}" loading="lazy">
+                    <div class="media-item photo-item">
+                        <a href="#" class="open-lightbox" 
+                           data-gig="{{ $gigSlug }}" 
+                           data-image="{{ . }}"
+                           data-gig-title="{{ $gigTitle }}"
+                           data-gig-link="{{ $gigPermalink }}"
+                           data-author="{{ $author }}"
+                           data-author-url="{{ $authorUrl }}">
+                            <img src="/media/gigs/{{ $gigSlug }}/{{ . }}" alt="{{ $gigTitle }}">
                         </a>
-                    {{ end }}
+                    </div>
                 {{ end }}
             </div>
         </section>
@@ -86,27 +93,25 @@
         {{ if .Params.media.videos }}
         <section class="media-section">
             <h2>Videos</h2>
-            <div class="media-gallery">
+            <div class="media-grid">
+                {{ $gigTitle := .Title }}
+                {{ $gigPermalink := .Permalink }}
                 {{ range .Params.media.videos }}
                     <div class="media-item video-item">
-                        {{ if .title }}<h3>{{ .title }}</h3>{{ end }}
-                        {{ if .youtube_id }}
-                            <iframe width="100%" height="400" src="https://www.youtube.com/embed/{{ .youtube_id }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        {{ end }}
-                        {{ if .credits }}
-                        <div class="video-credits">
-                            {{ range .credits }}
-                                <p class="credit-item">
-                                    {{ .type }} by
-                                    {{ if .url }}
-                                        <a href="{{ .url }}" target="_blank">{{ .name }}</a>
-                                    {{ else }}
-                                        {{ .name }}
-                                    {{ end }}
-                                </p>
-                            {{ end }}
+                        <a href="#" class="open-video-lightbox"
+                           data-youtube-id="{{ .youtube_id }}"
+                           data-title="{{ .title }}"
+                           data-gig-title="{{ $gigTitle }}"
+                           data-gig-link="{{ $gigPermalink }}"
+                           {{ if .credits }}
+                           data-credits='{{ .credits | jsonify }}'
+                           {{ end }}>
+                            <img src="https://img.youtube.com/vi/{{ .youtube_id }}/mqdefault.jpg" alt="{{ .title }}">
+                            <div class="play-icon">▶</div>
+                        </a>
+                        <div class="media-info">
+                            {{ if .title }}<p class="media-title">{{ .title }}</p>{{ end }}
                         </div>
-                        {{ end }}
                     </div>
                 {{ end }}
             </div>
@@ -115,4 +120,310 @@
     </div>
     {{ end }}
 </article>
+
+<style>
+.media-grid {
+    column-count: 4;
+    column-gap: 1rem;
+    margin-top: 2rem;
+}
+
+.media-item {
+    position: relative;
+    break-inside: avoid;
+    margin-bottom: 1rem;
+}
+
+.media-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+}
+
+.media-item a {
+    display: block;
+    position: relative;
+}
+
+.play-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 3rem;
+    color: white;
+    text-shadow: 0 0 10px rgba(0,0,0,0.8);
+    pointer-events: none;
+}
+
+.swiper-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 2rem;
+}
+
+.swiper-modal-content {
+    position: relative;
+    max-width: 1200px;
+    width: 100%;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    padding: 2rem;
+}
+
+.swiper-modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    color: var(--primary-color);
+    font-size: 2rem;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.swiper-modal-close:hover {
+    color: var(--accent-color);
+}
+
+.swiper-modal-content img {
+    width: 100%;
+    max-height: 80vh;
+    object-fit: contain;
+    display: block;
+    margin-bottom: 1rem;
+}
+
+.swiper-modal-content iframe {
+    width: 100%;
+    max-height: 80vh;
+    margin-bottom: 1rem;
+}
+
+.swiper-modal-info {
+    color: var(--primary-color);
+    font-size: 0.9rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.swiper-modal-info-left {
+    flex: 1;
+}
+
+.swiper-modal-info p {
+    margin: 0.5rem 0;
+}
+
+.swiper-modal-info a {
+    color: var(--primary-color);
+    text-decoration: underline;
+}
+
+.swiper-modal-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--border-color);
+    color: var(--primary-color);
+    font-size: 3rem;
+    width: 60px;
+    height: 60px;
+    cursor: pointer;
+    z-index: 10;
+    transition: background 0.3s;
+}
+
+.swiper-modal-nav:hover {
+    background: rgba(0, 0, 0, 0.8);
+}
+
+.swiper-modal-prev {
+    left: 1rem;
+}
+
+.swiper-modal-next {
+    right: 1rem;
+}
+
+.download-btn {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: var(--accent-color);
+    color: var(--primary-color);
+    text-decoration: none;
+    border: 1px solid var(--border-color);
+    transition: background 0.3s;
+    white-space: nowrap;
+}
+
+.download-btn:hover {
+    background: var(--primary-color);
+    color: var(--bg-primary);
+}
+
+.video-credits {
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--secondary-color);
+}
+
+.video-credits p {
+    margin: 0.25rem 0;
+}
+
+@media (max-width: 1200px) {
+    .media-grid {
+        column-count: 3;
+    }
+}
+
+@media (max-width: 768px) {
+    .media-grid {
+        column-count: 2;
+    }
+}
+
+@media (max-width: 480px) {
+    .media-grid {
+        column-count: 1;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Image Lightbox
+    const imageLightboxLinks = document.querySelectorAll('.open-lightbox');
+    imageLightboxLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const gig = this.dataset.gig;
+            const image = this.dataset.image;
+            const gigTitle = this.dataset.gigTitle;
+            const gigLink = this.dataset.gigLink;
+            const author = this.dataset.author;
+            const authorUrl = this.dataset.authorUrl;
+            
+            const modal = document.createElement('div');
+            modal.className = 'swiper-modal';
+            modal.innerHTML = `
+                <div class="swiper-modal-content">
+                    <button class="swiper-modal-close">&times;</button>
+                    <button class="swiper-modal-nav swiper-modal-prev">‹</button>
+                    <button class="swiper-modal-nav swiper-modal-next">›</button>
+                    <img src="/media/gigs/${gig}/${image}" alt="${gigTitle}">
+                    <div class="swiper-modal-info">
+                        <div class="swiper-modal-info-left">
+                            <p><strong>Gig:</strong> <a href="${gigLink}">${gigTitle}</a></p>
+                            <p><strong>Photo by:</strong> ${authorUrl ? `<a href="${authorUrl}" target="_blank">${author}</a>` : author}</p>
+                        </div>
+                        <a href="/media/gigs/${gig}/${image}" download class="download-btn">Download</a>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            
+            const allImages = Array.from(imageLightboxLinks);
+            const currentIndex = allImages.indexOf(this);
+            
+            modal.querySelector('.swiper-modal-prev').addEventListener('click', () => {
+                const prevIndex = (currentIndex - 1 + allImages.length) % allImages.length;
+                modal.remove();
+                allImages[prevIndex].click();
+            });
+            
+            modal.querySelector('.swiper-modal-next').addEventListener('click', () => {
+                const nextIndex = (currentIndex + 1) % allImages.length;
+                modal.remove();
+                allImages[nextIndex].click();
+            });
+            
+            modal.querySelector('.swiper-modal-close').addEventListener('click', () => {
+                modal.remove();
+            });
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) modal.remove();
+            });
+        });
+    });
+
+    // Video Lightbox
+    const videoLightboxLinks = document.querySelectorAll('.open-video-lightbox');
+    videoLightboxLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const youtubeId = this.dataset.youtubeId;
+            const title = this.dataset.title;
+            const gigTitle = this.dataset.gigTitle;
+            const gigLink = this.dataset.gigLink;
+            const credits = this.dataset.credits ? JSON.parse(this.dataset.credits) : [];
+            
+            let creditsHtml = '';
+            if (credits.length > 0) {
+                creditsHtml = '<div class="video-credits">';
+                credits.forEach(credit => {
+                    creditsHtml += `<p>${credit.type} by ${credit.url ? `<a href="${credit.url}" target="_blank">${credit.name}</a>` : credit.name}</p>`;
+                });
+                creditsHtml += '</div>';
+            }
+            
+            const modal = document.createElement('div');
+            modal.className = 'swiper-modal';
+            modal.innerHTML = `
+                <div class="swiper-modal-content">
+                    <button class="swiper-modal-close">&times;</button>
+                    <button class="swiper-modal-nav swiper-modal-prev">‹</button>
+                    <button class="swiper-modal-nav swiper-modal-next">›</button>
+                    <iframe width="100%" height="500" src="https://www.youtube.com/embed/${youtubeId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    <div class="swiper-modal-info">
+                        <div class="swiper-modal-info-left">
+                            ${title ? `<p><strong>Title:</strong> ${title}</p>` : ''}
+                            <p><strong>Gig:</strong> <a href="${gigLink}">${gigTitle}</a></p>
+                            ${creditsHtml}
+                        </div>
+                        <a href="https://www.youtube.com/watch?v=${youtubeId}" target="_blank" class="download-btn">Open</a>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            
+            const allVideos = Array.from(videoLightboxLinks);
+            const currentIndex = allVideos.indexOf(this);
+            
+            modal.querySelector('.swiper-modal-prev').addEventListener('click', () => {
+                const prevIndex = (currentIndex - 1 + allVideos.length) % allVideos.length;
+                modal.remove();
+                allVideos[prevIndex].click();
+            });
+            
+            modal.querySelector('.swiper-modal-next').addEventListener('click', () => {
+                const nextIndex = (currentIndex + 1) % allVideos.length;
+                modal.remove();
+                allVideos[nextIndex].click();
+            });
+            
+            modal.querySelector('.swiper-modal-close').addEventListener('click', () => {
+                modal.remove();
+            });
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) modal.remove();
+            });
+        });
+    });
+});
+</script>
 {{ end }}
