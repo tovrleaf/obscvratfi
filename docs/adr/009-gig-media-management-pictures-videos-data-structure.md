@@ -67,6 +67,21 @@ draft: false
 ---
 ```
 
+**Field Descriptions:**
+
+*Required fields:*
+- `title`: Event name (used for page title and URL slug if provided)
+- `date`: Event date (YYYY-MM-DD format)
+- `venue`: Venue name (used for URL slug if title is empty)
+- `location`: City/location
+
+*Optional fields:*
+- `description`: Event description
+- `poster`: Path to promotional poster image
+- `event_link`: URL to event page (where tickets can be found)
+- `other_performers`: List of other artists (with optional URLs)
+- `media`: Pictures and videos added after the event
+
 ### File Organization
 
 **Media files:**
