@@ -464,6 +464,54 @@ items:
 ---
 ```
 
+## SEO and Accessibility
+
+### File Naming Convention
+
+All media files use SEO-friendly descriptive names following this pattern:
+
+**Pattern:** `obscvrat-{gig-slug}-{type}-{counter}.{ext}`
+
+**Rules:**
+- Use hyphens as separators (not underscores or spaces)
+- All lowercase
+- Include band name (obscvrat)
+- Include gig identifier from slug
+- Include type (poster, performance)
+- Include counter for multiple files of same type
+- Keep total length reasonable (5-6 words max)
+- Use year for posters
+
+**Examples:**
+- `obscvrat-noise-space-xv-poster-2025.jpg`
+- `obscvrat-noise-space-xv-performance-1.jpg`
+- `obscvrat-noise-space-xv-performance-2.jpg`
+
+**Benefits:**
+- Improved SEO (search engines read filenames)
+- Better accessibility (screen readers can parse names)
+- Easier content management (descriptive names)
+- Consistent organization across all gigs
+
+### Alt Text Pattern
+
+All images include descriptive alt text for accessibility:
+
+**For performance photos:**
+```
+Obscvrat live at {gig_title}, {location}, {date} - Photo by {author}
+```
+
+**For posters:**
+```
+{gig_title} poster
+```
+
+**Implementation:**
+- Gig single page: `website/layouts/gigs/single.html`
+- Media page: `website/layouts/media/list.html`
+- Script generates descriptive filenames: `scripts/manage-media.sh`
+
 ### Related Decisions
 - **ADR-003:** Website hosting and static site generation (Hugo + S3)
 - **ADR-007:** Homepage design system (dark minimal aesthetic applies to media page)

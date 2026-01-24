@@ -73,9 +73,12 @@
                 {{ $gigPermalink := .Permalink }}
                 {{ $author := .Params.media.pictures.author }}
                 {{ $authorUrl := .Params.media.pictures.author_url }}
+                {{ $location := .Params.location }}
+                {{ $date := .Date.Format "January 2, 2006" }}
                 {{ range .Params.media.pictures.images }}
                     {{ $imagePath := printf "media/gigs/%s/%s" $gigSlug . }}
                     {{ with resources.Get $imagePath }}
+                        {{ $altText := printf "Obscvrat live at %s, %s, %s - Photo by %s" $gigTitle $location $date $author }}
                         <div class="media-item photo-item">
                             <a href="#" class="open-lightbox" 
                                data-image-url="{{ .RelPermalink }}"
@@ -83,7 +86,7 @@
                                data-gig-link="{{ $gigPermalink }}"
                                data-author="{{ $author }}"
                                data-author-url="{{ $authorUrl }}">
-                                <img src="{{ .RelPermalink }}" alt="{{ $gigTitle }}">
+                                <img src="{{ .RelPermalink }}" alt="{{ $altText }}">
                             </a>
                         </div>
                     {{ end }}

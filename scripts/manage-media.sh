@@ -157,29 +157,27 @@ add_pictures() {
             break
         fi
         
+        # Generate descriptive filename: obscvrat-{gig-slug}-performance-{counter}.jpg
+        local ext="jpg"
+        if [[ "$pic_input" =~ \.(png|gif|jpeg)$ ]]; then
+            ext="${BASH_REMATCH[1]}"
+        fi
+        descriptive_name="obscvrat-${gig_slug}-performance-${pic_counter}.${ext}"
+        
         # Get original filename or generate one
         if [[ "$pic_input" =~ ^https?:// ]]; then
-            # Extract filename from URL or use counter
-            original_name=$(basename "$pic_input" | sed 's/[?#].*//')
-            if [[ ! "$original_name" =~ \.(jpg|jpeg|png|gif)$ ]]; then
-                original_name="pic-${pic_counter}.jpg"
-            fi
-            temp_file="/tmp/$(basename "$original_name")"
+            temp_file="/tmp/temp-pic-${pic_counter}.${ext}"
             
             if download_file "$pic_input" "$temp_file"; then
-                if generate_image_versions "$temp_file" "$original_name" "$media_dir"; then
-                    # Store base name (without extension) for frontmatter
-                    base_name="${original_name%.*}"
-                    pictures+=("${base_name}.${original_name##*.}")
+                if generate_image_versions "$temp_file" "$descriptive_name" "$media_dir"; then
+                    pictures+=("$descriptive_name")
                     rm "$temp_file"
                 fi
             fi
         else
             # Local file
-            original_name=$(basename "$pic_input")
-            if generate_image_versions "$pic_input" "$original_name" "$media_dir"; then
-                base_name="${original_name%.*}"
-                pictures+=("${base_name}.${original_name##*.}")
+            if generate_image_versions "$pic_input" "$descriptive_name" "$media_dir"; then
+                pictures+=("$descriptive_name")
             fi
         fi
         ((pic_counter++))

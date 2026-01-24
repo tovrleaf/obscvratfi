@@ -89,7 +89,6 @@ unprotect-main: ## Remove branch protection (emergency rollback only)
 deploy-production: ## Deploy to production (obscvrat.fi)
 	@./scripts/deploy.sh
 
-<<<<<<< HEAD
 # Content Management Tasks
 
 gigs: ## Manage gigs (create, list, edit, delete)
@@ -98,9 +97,6 @@ gigs: ## Manage gigs (create, list, edit, delete)
 media: ## Manage media (add pictures, videos, others)
 	@./scripts/manage-media.sh
 
-||||||| 4d2e4a1
-=======
->>>>>>> origin/main
 # Website Tasks
 
 serve: ## Run Hugo dev server in Docker (http://localhost:1313)
