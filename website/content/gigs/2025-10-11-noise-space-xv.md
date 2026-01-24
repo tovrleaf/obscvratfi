@@ -21,6 +21,11 @@ media:
     images:
       - DSC_9465.jpg
       - DSC_9476.jpg
+  videos:
+    author: "Roman Odjinud"
+    author_url: "https://www.instagram.com/er_odjinud"
+    files:
+      # Add your video files here (e.g., - video1.mp4)
 draft: false
 ---
 
