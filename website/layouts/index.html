@@ -29,6 +29,7 @@
     <section class="latest-gigs featured-section">
         <h2>Upcoming Gigs</h2>
         {{ $gigs := where .Site.Pages "Section" "gigs" }}
+        {{ $gigs := where $gigs "Kind" "page" }}
         {{ $sortedGigs := sort $gigs "Date" "desc" }}
         {{ $latestGigs := first 3 $sortedGigs }}
         {{ if $latestGigs }}
