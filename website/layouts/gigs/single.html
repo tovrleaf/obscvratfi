@@ -68,22 +68,25 @@
             </p>
             {{ end }}
             <div class="media-grid">
-                {{ $gigSlug := path.Base .File.Dir }}
+                {{ $gigSlug := .File.BaseFileName }}
                 {{ $gigTitle := .Title }}
                 {{ $gigPermalink := .Permalink }}
                 {{ $author := .Params.media.pictures.author }}
                 {{ $authorUrl := .Params.media.pictures.author_url }}
                 {{ range .Params.media.pictures.images }}
-                    <div class="media-item photo-item">
-                        <a href="#" class="open-lightbox" 
-                           data-image-url="/media/gigs/{{ $gigSlug }}/{{ . }}"
-                           data-gig-title="{{ $gigTitle }}"
-                           data-gig-link="{{ $gigPermalink }}"
-                           data-author="{{ $author }}"
-                           data-author-url="{{ $authorUrl }}">
-                            <img src="/media/gigs/{{ $gigSlug }}/{{ . }}" alt="{{ $gigTitle }}">
-                        </a>
-                    </div>
+                    {{ $imagePath := printf "media/gigs/%s/%s" $gigSlug . }}
+                    {{ with resources.Get $imagePath }}
+                        <div class="media-item photo-item">
+                            <a href="#" class="open-lightbox" 
+                               data-image-url="{{ .RelPermalink }}"
+                               data-gig-title="{{ $gigTitle }}"
+                               data-gig-link="{{ $gigPermalink }}"
+                               data-author="{{ $author }}"
+                               data-author-url="{{ $authorUrl }}">
+                                <img src="{{ .RelPermalink }}" alt="{{ $gigTitle }}">
+                            </a>
+                        </div>
+                    {{ end }}
                 {{ end }}
             </div>
         </section>
