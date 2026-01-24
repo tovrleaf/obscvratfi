@@ -80,10 +80,11 @@
                     {{ range .Params.media.videos }}
                         <div class="media-item video-item">
                             <a href="{{ $gigPermalink }}">
-                                <img src="https://img.youtube.com/vi/{{ .youtube_id }}/mqdefault.jpg" alt="{{ $gigTitle }}">
+                                <img src="https://img.youtube.com/vi/{{ .youtube_id }}/mqdefault.jpg" alt="{{ .title }}">
                                 <div class="play-icon">▶</div>
                             </a>
                             <div class="media-info">
+                                {{ if .title }}<p class="media-title">{{ .title }}</p>{{ end }}
                                 <p class="media-gig"><a href="{{ $gigPermalink }}">{{ $gigTitle }}</a></p>
                                 {{ if .credits }}
                                 <div class="video-credits">

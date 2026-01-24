@@ -21,14 +21,6 @@ media:
     images:
       - DSC_9465.jpg
       - DSC_9476.jpg
-  videos:
-    - youtube_id: "dQw4w9WgXcQ"
-      credits:
-        - type: "Recorded"
-          name: "John Doe"
-          url: "https://example.com"
-        - type: "Mastered"
-          name: "Jane Smith"
 draft: false
 ---
 

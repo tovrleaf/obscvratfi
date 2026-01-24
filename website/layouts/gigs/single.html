@@ -89,6 +89,7 @@
             <div class="media-gallery">
                 {{ range .Params.media.videos }}
                     <div class="media-item video-item">
+                        {{ if .title }}<h3>{{ .title }}</h3>{{ end }}
                         {{ if .youtube_id }}
                             <iframe width="100%" height="400" src="https://www.youtube.com/embed/{{ .youtube_id }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                         {{ end }}

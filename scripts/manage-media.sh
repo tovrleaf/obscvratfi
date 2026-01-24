@@ -264,8 +264,9 @@ add_video() {
     
     selected_file="${files[$((selection-1))]}"
     
-    # Get YouTube URL
+    # Get YouTube URL and title
     read -rp "YouTube URL: " youtube_url
+    read -rp "Video title: " video_title
     
     # Extract YouTube ID
     youtube_id=""
@@ -319,7 +320,7 @@ add_video() {
         fi
     else
         # Build media section with YouTube video
-        media_section="media:\n  videos:\n    - youtube_id: \"$youtube_id\""
+        media_section="media:\n  videos:\n    - youtube_id: \"$youtube_id\"\n      title: \"$video_title\""
         
         if [[ ${#credits[@]} -gt 0 ]]; then
             media_section="$media_section\n      credits:"
