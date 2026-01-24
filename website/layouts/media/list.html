@@ -90,7 +90,7 @@
                                 <div class="video-credits">
                                     {{ range .credits }}
                                         <p class="credit-item">
-                                            <strong>{{ .type }}:</strong>
+                                            {{ .type }} by
                                             {{ if .url }}
                                                 <a href="{{ .url }}" target="_blank">{{ .name }}</a>
                                             {{ else }}
