@@ -244,6 +244,16 @@ Place logo in traditional header/navigation area.
 - **ADR-003**: Website Hosting & Static Site Generation (Hugo) - this design works within existing Hugo architecture
 - **ADR-004**: Instagram Feed Integration - visual integration with new design system should be considered
 - **ADR-009**: Gig Media Management - gig pages should use this design system
+- Refine accent color usage based on user interaction patterns
+- Document design system specifications for team consistency
+- Consider extending glow effects to other interactive elements if user feedback is positive
+- Monitor social icon visibility and click-through rates
+
+### Related Decisions
+- **ADR-008**: Typo Font Typography Decision - decision to use custom Typo font as primary body font
+- **ADR-003**: Website Hosting & Static Site Generation (Hugo) - this design works within existing Hugo architecture
+- **ADR-004**: Instagram Feed Integration - visual integration with new design system should be considered
+>>>>>>> origin/main
 
 ### References
 - **Isabel Moranta** (https://www.isabelmoranta.com) - Inspiration for dark minimal + all-monospace typography + asymmetric layout approach; demonstrates effectiveness of experimental typography on dark backgrounds
