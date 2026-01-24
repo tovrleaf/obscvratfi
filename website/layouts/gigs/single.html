@@ -74,32 +74,16 @@
                 {{ $author := .Params.media.pictures.author }}
                 {{ $authorUrl := .Params.media.pictures.author_url }}
                 {{ range .Params.media.pictures.images }}
-                    {{ $imagePath := printf "media/gigs/%s/%s" $gigSlug . }}
-                    {{ $resource := resources.Get $imagePath }}
-                    {{ if $resource }}
-                        <div class="media-item photo-item">
-                            <a href="#" class="open-lightbox" 
-                               data-image-url="{{ $resource.RelPermalink }}"
-                               data-gig-title="{{ $gigTitle }}"
-                               data-gig-link="{{ $gigPermalink }}"
-                               data-author="{{ $author }}"
-                               data-author-url="{{ $authorUrl }}">
-                                <img src="{{ $resource.RelPermalink }}" alt="{{ $gigTitle }}">
-                            </a>
-                        </div>
-                    {{ else }}
-                        <!-- Fallback to static path -->
-                        <div class="media-item photo-item">
-                            <a href="#" class="open-lightbox" 
-                               data-image-url="/media/gigs/{{ $gigSlug }}/{{ . }}"
-                               data-gig-title="{{ $gigTitle }}"
-                               data-gig-link="{{ $gigPermalink }}"
-                               data-author="{{ $author }}"
-                               data-author-url="{{ $authorUrl }}">
-                                <img src="/media/gigs/{{ $gigSlug }}/{{ . }}" alt="{{ $gigTitle }}">
-                            </a>
-                        </div>
-                    {{ end }}
+                    <div class="media-item photo-item">
+                        <a href="#" class="open-lightbox" 
+                           data-image-url="/media/gigs/{{ $gigSlug }}/{{ . }}"
+                           data-gig-title="{{ $gigTitle }}"
+                           data-gig-link="{{ $gigPermalink }}"
+                           data-author="{{ $author }}"
+                           data-author-url="{{ $authorUrl }}">
+                            <img src="/media/gigs/{{ $gigSlug }}/{{ . }}" alt="{{ $gigTitle }}">
+                        </a>
+                    </div>
                 {{ end }}
             </div>
         </section>
