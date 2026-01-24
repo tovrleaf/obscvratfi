@@ -1,0 +1,273 @@
+{{ define "main" }}
+<section class="media-page">
+    <h1>{{ .Title }}</h1>
+    {{ if .Content }}<div class="intro">{{ .Content }}</div>{{ end }}
+    
+    <!-- Filter buttons -->
+    <div class="media-filters">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="photos">Photos</button>
+        <button class="filter-btn" data-filter="videos">Videos</button>
+        <button class="filter-btn" data-filter="others">Others</button>
+    </div>
+    
+    <!-- Photos Section -->
+    <section class="media-section photos-section" data-type="photos">
+        <h2>Photos</h2>
+        <div class="media-grid">
+            {{ $gigs := where .Site.Pages "Section" "gigs" }}
+            {{ range $gigs }}
+                {{ if .Params.media.pictures }}
+                    {{ $gigTitle := .Title }}
+                    {{ $gigPermalink := .Permalink }}
+                    {{ $gigSlug := strings.TrimSuffix "/" (strings.TrimPrefix "/gigs/" .RelPermalink) }}
+                    {{ $author := .Params.media.pictures.author }}
+                    {{ $authorUrl := .Params.media.pictures.author_url }}
+                    {{ range .Params.media.pictures.images }}
+                        <div class="media-item photo-item">
+                            <a href="{{ $gigPermalink }}">
+                                <img src="/media/gigs/{{ $gigSlug }}/{{ . }}" alt="{{ $gigTitle }}">
+                            </a>
+                            <div class="media-info">
+                                <p class="media-gig"><a href="{{ $gigPermalink }}">{{ $gigTitle }}</a></p>
+                                <p class="media-author">
+                                    {{ if $authorUrl }}
+                                        Photo by <a href="{{ $authorUrl }}" target="_blank">{{ $author }}</a>
+                                    {{ else }}
+                                        Photo by {{ $author }}
+                                    {{ end }}
+                                </p>
+                            </div>
+                        </div>
+                    {{ end }}
+                {{ end }}
+            {{ end }}
+            
+            {{ $standalonePics := where .Site.Pages "Section" "media" }}
+            {{ $standalonePics := where $standalonePics "Params.type" "picture" }}
+            {{ range $standalonePics }}
+                <div class="media-item photo-item">
+                    <img src="{{ .Params.image }}" alt="{{ .Title }}">
+                    <div class="media-info">
+                        <p class="media-title">{{ .Title }}</p>
+                        {{ if .Params.gig }}
+                            {{ $gigPage := $.Site.GetPage (printf "/gigs/%s" .Params.gig) }}
+                            {{ if $gigPage }}
+                                <p class="media-gig"><a href="{{ $gigPage.Permalink }}">{{ $gigPage.Title }}</a></p>
+                            {{ end }}
+                        {{ end }}
+                        <p class="media-author">
+                            {{ if .Params.author_url }}
+                                Photo by <a href="{{ .Params.author_url }}" target="_blank">{{ .Params.author }}</a>
+                            {{ else }}
+                                Photo by {{ .Params.author }}
+                            {{ end }}
+                        </p>
+                    </div>
+                </div>
+            {{ end }}
+        </div>
+    </section>
+    
+    <!-- Videos Section -->
+    <section class="media-section videos-section" data-type="videos">
+        <h2>Videos</h2>
+        <div class="media-grid">
+            {{ range $gigs }}
+                {{ if .Params.media.videos }}
+                    {{ $gigTitle := .Title }}
+                    {{ $gigPermalink := .Permalink }}
+                    {{ range .Params.media.videos }}
+                        <div class="media-item video-item">
+                            <a href="{{ $gigPermalink }}">
+                                <img src="https://img.youtube.com/vi/{{ .youtube_id }}/mqdefault.jpg" alt="{{ .title }}">
+                                <div class="play-icon">▶</div>
+                            </a>
+                            <div class="media-info">
+                                <p class="media-title">{{ .title }}</p>
+                                <p class="media-gig"><a href="{{ $gigPermalink }}">{{ $gigTitle }}</a></p>
+                            </div>
+                        </div>
+                    {{ end }}
+                {{ end }}
+            {{ end }}
+            
+            {{ $standaloneVids := where .Site.Pages "Section" "media" }}
+            {{ $standaloneVids := where $standaloneVids "Params.type" "video" }}
+            {{ range $standaloneVids }}
+                <div class="media-item video-item">
+                    <img src="https://img.youtube.com/vi/{{ .Params.youtube_id }}/mqdefault.jpg" alt="{{ .Title }}">
+                    <div class="play-icon">▶</div>
+                    <div class="media-info">
+                        <p class="media-title">{{ .Title }}</p>
+                        {{ if .Params.gig }}
+                            {{ $gigPage := $.Site.GetPage (printf "/gigs/%s" .Params.gig) }}
+                            {{ if $gigPage }}
+                                <p class="media-gig"><a href="{{ $gigPage.Permalink }}">{{ $gigPage.Title }}</a></p>
+                            {{ end }}
+                        {{ end }}
+                    </div>
+                </div>
+            {{ end }}
+        </div>
+    </section>
+    
+    <!-- Others Section -->
+    <section class="media-section others-section" data-type="others">
+        <h2>Others</h2>
+        {{ $othersPage := .Site.GetPage "/media/others" }}
+        {{ if $othersPage }}
+            <div class="others-content">
+                {{ $othersPage.Content }}
+            </div>
+        {{ else }}
+            <p>No interviews, mentions, or reviews yet.</p>
+        {{ end }}
+    </section>
+</section>
+
+<style>
+.media-filters {
+    margin: 2rem 0;
+    display: flex;
+    gap: 1rem;
+}
+
+.filter-btn {
+    background: var(--bg-secondary);
+    color: var(--primary-color);
+    border: 1px solid var(--border-color);
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    font-family: var(--font-display);
+    transition: all 0.3s;
+}
+
+.filter-btn:hover {
+    background: var(--accent-color);
+}
+
+.filter-btn.active {
+    background: var(--accent-color);
+    border-color: var(--primary-color);
+}
+
+.media-section {
+    margin: 3rem 0;
+}
+
+.media-section.hidden {
+    display: none;
+}
+
+.media-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.media-item {
+    position: relative;
+}
+
+.media-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid var(--border-color);
+}
+
+.media-item a {
+    display: block;
+    position: relative;
+}
+
+.play-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 3rem;
+    color: white;
+    text-shadow: 0 0 10px rgba(0,0,0,0.8);
+    pointer-events: none;
+}
+
+.media-info {
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+}
+
+.media-title {
+    font-weight: bold;
+    margin-bottom: 0.25rem;
+}
+
+.media-gig {
+    color: var(--secondary-color);
+    margin-bottom: 0.25rem;
+}
+
+.media-author {
+    color: var(--secondary-color);
+    font-style: italic;
+}
+
+.others-content {
+    max-width: 800px;
+}
+
+.others-content h2 {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+}
+
+.others-content ul {
+    list-style: none;
+    padding: 0;
+}
+
+.others-content li {
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+    position: relative;
+}
+
+.others-content li:before {
+    content: "→";
+    position: absolute;
+    left: 0;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const sections = document.querySelectorAll('.media-section');
+    
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const filter = this.dataset.filter;
+            
+            // Update active button
+            filterBtns.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Show/hide sections
+            sections.forEach(section => {
+                if (filter === 'all') {
+                    section.classList.remove('hidden');
+                } else {
+                    if (section.dataset.type === filter) {
+                        section.classList.remove('hidden');
+                    } else {
+                        section.classList.add('hidden');
+                    }
+                }
+            });
+        });
+    });
+});
+</script>
+{{ end }}

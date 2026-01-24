@@ -14,6 +14,13 @@ other_performers:
   - name: "Rautakymi"
     url: "https://rautakymi.bandcamp.com/"
   - name: "Ironstar"
+media:
+  pictures:
+    author: "Roman Odjinud"
+    author_url: "https://www.instagram.com/er_odjinud"
+    images:
+      - pic-1769256324.jpg
+      - pic-1769256331.jpg
 draft: false
 ---
 

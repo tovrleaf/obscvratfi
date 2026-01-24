@@ -43,7 +43,12 @@ We will implement the following data structure, display strategy, and content ma
 
 ### Data Structure
 
-**Gig Frontmatter:**
+**Two types of media:**
+
+1. **Embedded media** (in gig files) - Current approach, backward compatible
+2. **Standalone media** (separate files) - Can optionally link to gigs
+
+**Gig Frontmatter (Embedded Media):**
 ```yaml
 ---
 title: "Event Name"
@@ -60,12 +65,43 @@ other_performers:
 media:
   pictures:
     author: "Photographer Name"
+    author_url: "https://photographer.com"  # Optional
     images:
       - pic1.jpg
       - pic2.jpg
   videos:
     - youtube_id: "dQw4w9WgXcQ"
       title: "Full Performance"
+draft: false
+---
+```
+
+**Standalone Picture (Separate File):**
+```yaml
+# /content/media/pictures/2025-01-15-noise-space-photo.md
+---
+title: "Noise Space XV Performance"
+date: 2025-01-15
+type: "picture"
+image: "/media/standalone/2025-01-15-noise-space.jpg"
+author: "Photographer Name"
+author_url: "https://photographer.com"  # Optional
+gig: "2025-10-11-noise-space-xv"  # Optional: links to gig
+description: "Crowd shot during performance"
+draft: false
+---
+```
+
+**Standalone Video (Separate File):**
+```yaml
+# /content/media/videos/2025-01-15-full-set.md
+---
+title: "Full Set Recording"
+date: 2025-01-15
+type: "video"
+youtube_id: "dQw4w9WgXcQ"
+gig: "2025-10-11-noise-space-xv"  # Optional: links to gig
+description: "Complete performance"
 draft: false
 ---
 ```
@@ -89,12 +125,29 @@ draft: false
 
 **Media files:**
 ```
+# Gig-embedded media
 /static/media/gigs/2025-03-15-event-name/
   poster.jpg              # Promotional poster (gig page only)
   pic1.jpg                # Performance photos (media page)
   pic2.jpg
   pic1-thumb.jpg          # Generated thumbnails
   pic2-thumb.jpg
+
+# Standalone media
+/static/media/standalone/
+  2025-01-15-noise-space.jpg
+  2025-02-20-crowd-shot.jpg
+```
+
+**Content structure:**
+```
+/content/media/
+  pictures/
+    2025-01-15-noise-space-photo.md
+    2025-02-20-crowd-shot.md
+  videos/
+    2025-01-15-full-set.md
+  others.md
 ```
 
 **URL slug generation:**
@@ -297,8 +350,12 @@ This tool simplifies content management and ensures consistent frontmatter struc
 - [x] Interactive edit with prefilled values
 - [x] Apply site-wide design system to gig pages
 - [x] Update README.md with gig management instructions (if needed)
+- [x] Create media management tool (`make media`)
+- [x] Support for standalone media items
 
 **Pending (Media features):**
+- [ ] Update media tool to create standalone picture/video files
+- [ ] Display standalone media on gig pages (if linked)
 - [ ] Create Hugo shortcode for media gallery
 - [ ] Implement Hugo image processing for thumbnails
 - [ ] Add SwiperJS library and configuration

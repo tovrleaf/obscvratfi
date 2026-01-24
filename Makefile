@@ -1,5 +1,5 @@
 .DEFAULT_GOAL := help
-.PHONY: help adr-new adr-list adr-help gigs serve build clean build-docker build-prod build-minified serve-prod list-content setup-hooks run-hooks uninstall-hooks protect-main show-branch-rules unprotect-main deploy-production
+.PHONY: help adr-new adr-list adr-help gigs media serve build clean build-docker build-prod build-minified serve-prod list-content setup-hooks run-hooks uninstall-hooks protect-main show-branch-rules unprotect-main deploy-production
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":[^#]*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
@@ -93,6 +93,9 @@ deploy-production: ## Deploy to production (obscvrat.fi)
 
 gigs: ## Manage gigs (create, list, edit, delete)
 	@./scripts/manage-gigs.sh
+
+media: ## Manage media (add pictures, videos, others)
+	@./scripts/manage-media.sh
 
 # Website Tasks
 
