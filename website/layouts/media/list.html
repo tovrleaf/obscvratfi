@@ -317,19 +317,28 @@
 
 .swiper-modal-content img {
     width: 100%;
-    height: auto;
+    max-height: 80vh;
+    object-fit: contain;
     display: block;
     margin-bottom: 1rem;
 }
 
 .swiper-modal-content iframe {
     width: 100%;
+    max-height: 80vh;
     margin-bottom: 1rem;
 }
 
 .swiper-modal-info {
     color: var(--primary-color);
     font-size: 0.9rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.swiper-modal-info-left {
+    flex: 1;
 }
 
 .swiper-modal-info p {
@@ -341,15 +350,42 @@
     text-decoration: underline;
 }
 
+.swiper-modal-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--border-color);
+    color: var(--primary-color);
+    font-size: 3rem;
+    width: 60px;
+    height: 60px;
+    cursor: pointer;
+    z-index: 10;
+    transition: background 0.3s;
+}
+
+.swiper-modal-nav:hover {
+    background: rgba(0, 0, 0, 0.8);
+}
+
+.swiper-modal-prev {
+    left: 1rem;
+}
+
+.swiper-modal-next {
+    right: 1rem;
+}
+
 .download-btn {
     display: inline-block;
-    margin-top: 1rem;
     padding: 0.5rem 1rem;
     background: var(--accent-color);
     color: var(--primary-color);
     text-decoration: none;
     border: 1px solid var(--border-color);
     transition: background 0.3s;
+    white-space: nowrap;
 }
 
 .download-btn:hover {
@@ -440,15 +476,35 @@ document.addEventListener('DOMContentLoaded', function() {
             modal.innerHTML = `
                 <div class="swiper-modal-content">
                     <button class="swiper-modal-close">&times;</button>
+                    <button class="swiper-modal-nav swiper-modal-prev">‹</button>
+                    <button class="swiper-modal-nav swiper-modal-next">›</button>
                     <img src="/media/gigs/${gig}/${image}" alt="${gigTitle}">
                     <div class="swiper-modal-info">
-                        <p><strong>Gig:</strong> <a href="${gigLink}">${gigTitle}</a></p>
-                        <p><strong>Photo by:</strong> ${authorUrl ? `<a href="${authorUrl}" target="_blank">${author}</a>` : author}</p>
-                        <a href="/media/gigs/${gig}/${image}" download class="download-btn">Download Original</a>
+                        <div class="swiper-modal-info-left">
+                            <p><strong>Gig:</strong> <a href="${gigLink}">${gigTitle}</a></p>
+                            <p><strong>Photo by:</strong> ${authorUrl ? `<a href="${authorUrl}" target="_blank">${author}</a>` : author}</p>
+                        </div>
+                        <a href="/media/gigs/${gig}/${image}" download class="download-btn">Download</a>
                     </div>
                 </div>
             `;
             document.body.appendChild(modal);
+            
+            // Navigation
+            const allImages = Array.from(imageLightboxLinks);
+            const currentIndex = allImages.indexOf(this);
+            
+            modal.querySelector('.swiper-modal-prev').addEventListener('click', () => {
+                const prevIndex = (currentIndex - 1 + allImages.length) % allImages.length;
+                modal.remove();
+                allImages[prevIndex].click();
+            });
+            
+            modal.querySelector('.swiper-modal-next').addEventListener('click', () => {
+                const nextIndex = (currentIndex + 1) % allImages.length;
+                modal.remove();
+                allImages[nextIndex].click();
+            });
             
             modal.querySelector('.swiper-modal-close').addEventListener('click', () => {
                 modal.remove();
@@ -484,16 +540,36 @@ document.addEventListener('DOMContentLoaded', function() {
             modal.innerHTML = `
                 <div class="swiper-modal-content">
                     <button class="swiper-modal-close">&times;</button>
+                    <button class="swiper-modal-nav swiper-modal-prev">‹</button>
+                    <button class="swiper-modal-nav swiper-modal-next">›</button>
                     <iframe width="100%" height="500" src="https://www.youtube.com/embed/${youtubeId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                     <div class="swiper-modal-info">
-                        ${title ? `<p><strong>Title:</strong> ${title}</p>` : ''}
-                        <p><strong>Gig:</strong> <a href="${gigLink}">${gigTitle}</a></p>
-                        ${creditsHtml}
-                        <a href="https://www.youtube.com/watch?v=${youtubeId}" target="_blank" class="download-btn">Open in YouTube</a>
+                        <div class="swiper-modal-info-left">
+                            ${title ? `<p><strong>Title:</strong> ${title}</p>` : ''}
+                            <p><strong>Gig:</strong> <a href="${gigLink}">${gigTitle}</a></p>
+                            ${creditsHtml}
+                        </div>
+                        <a href="https://www.youtube.com/watch?v=${youtubeId}" target="_blank" class="download-btn">Open</a>
                     </div>
                 </div>
             `;
             document.body.appendChild(modal);
+            
+            // Navigation
+            const allVideos = Array.from(videoLightboxLinks);
+            const currentIndex = allVideos.indexOf(this);
+            
+            modal.querySelector('.swiper-modal-prev').addEventListener('click', () => {
+                const prevIndex = (currentIndex - 1 + allVideos.length) % allVideos.length;
+                modal.remove();
+                allVideos[prevIndex].click();
+            });
+            
+            modal.querySelector('.swiper-modal-next').addEventListener('click', () => {
+                const nextIndex = (currentIndex + 1) % allVideos.length;
+                modal.remove();
+                allVideos[nextIndex].click();
+            });
             
             modal.querySelector('.swiper-modal-close').addEventListener('click', () => {
                 modal.remove();
