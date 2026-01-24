@@ -302,21 +302,41 @@ add_video() {
     
     # Update gig frontmatter
     if grep -q "^media:" "$selected_file"; then
-        print_warning "Media section already exists. Manual edit required."
-        echo "YouTube ID: $youtube_id"
-        if [[ ${#credits[@]} -gt 0 ]]; then
-            echo "Credits:"
-            for credit in "${credits[@]}"; do
-                IFS='|' read -r type name url <<< "$credit"
-                if [[ -n "$url" ]]; then
-                    echo "  - type: \"$type\""
-                    echo "    name: \"$name\""
-                    echo "    url: \"$url\""
-                else
-                    echo "  - type: \"$type\""
-                    echo "    name: \"$name\""
-                fi
-            done
+        # Media section exists, check if videos subsection exists
+        if grep -q "^  videos:" "$selected_file"; then
+            print_warning "Videos section already exists. Manual edit required."
+            echo "Add this to the videos list:"
+            echo "    - youtube_id: \"$youtube_id\""
+            echo "      title: \"$video_title\""
+            if [[ ${#credits[@]} -gt 0 ]]; then
+                echo "      credits:"
+                for credit in "${credits[@]}"; do
+                    IFS='|' read -r type name url <<< "$credit"
+                    echo "        - type: \"$type\""
+                    echo "          name: \"$name\""
+                    if [[ -n "$url" ]]; then
+                        echo "          url: \"$url\""
+                    fi
+                done
+            fi
+        else
+            # Add videos section to existing media
+            video_section="  videos:\n    - youtube_id: \"$youtube_id\"\n      title: \"$video_title\""
+            if [[ ${#credits[@]} -gt 0 ]]; then
+                video_section="$video_section\n      credits:"
+                for credit in "${credits[@]}"; do
+                    IFS='|' read -r type name url <<< "$credit"
+                    video_section="$video_section\n        - type: \"$type\"\n          name: \"$name\""
+                    if [[ -n "$url" ]]; then
+                        video_section="$video_section\n          url: \"$url\""
+                    fi
+                done
+            fi
+            
+            # Insert videos section before draft line
+            awk -v videos="$video_section" '/^draft:/ {printf "%s\n", videos} {print}' "$selected_file" > "${selected_file}.tmp"
+            mv "${selected_file}.tmp" "$selected_file"
+            print_success "Added video to gig"
         fi
     else
         # Build media section with YouTube video
