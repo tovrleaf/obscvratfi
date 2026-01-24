@@ -183,7 +183,6 @@ add_pictures() {
         fi
         ((pic_counter++))
     done
-    done
     
     if [[ ${#pictures[@]} -eq 0 ]]; then
         print_warning "No pictures added"
