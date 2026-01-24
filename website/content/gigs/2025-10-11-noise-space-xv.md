@@ -19,8 +19,8 @@ media:
     author: "Roman Odjinud"
     author_url: "https://www.instagram.com/er_odjinud"
     images:
-      - pic-1769256324.jpg
-      - pic-1769256331.jpg
+      - DSC_9465.jpg
+      - DSC_9476.jpg
 draft: false
 ---
 
