@@ -272,8 +272,127 @@ edit_gig() {
     fi
     
     selected_file="${files[$((selection-1))]}"
-    ${EDITOR:-vim} "$selected_file"
-    print_success "Edited: $(basename "$selected_file")"
+    
+    # Parse existing values
+    local old_title=$(grep "^title:" "$selected_file" | sed 's/title: "\(.*\)"/\1/')
+    local old_date=$(grep "^date:" "$selected_file" | sed 's/date: \(.*\)/\1/')
+    local old_venue=$(grep "^venue:" "$selected_file" | sed 's/venue: "\(.*\)"/\1/')
+    local old_location=$(grep "^location:" "$selected_file" | sed 's/location: "\(.*\)"/\1/')
+    local old_description=$(grep "^description:" "$selected_file" | sed 's/description: "\(.*\)"/\1/')
+    local old_poster=$(grep "^poster:" "$selected_file" | sed 's/poster: "\(.*\)"/\1/')
+    
+    # Interactive edit with prefilled values
+    echo ""
+    print_header "Edit Gig: $old_title"
+    echo ""
+    
+    read -rp "Gig name [$old_title]: " gig_name
+    gig_name=${gig_name:-$old_title}
+    
+    read -rp "Date [$old_date]: " date
+    date=${date:-$old_date}
+    if [[ ! $date =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]]; then
+        print_error "Invalid date format"
+        show_menu
+        return
+    fi
+    
+    read -rp "Venue [$old_venue]: " venue
+    venue=${venue:-$old_venue}
+    
+    read -rp "City [$old_location]: " city
+    city=${city:-$old_location}
+    
+    read -rp "Description [$old_description]: " description
+    description=${description:-$old_description}
+    
+    read -rp "Poster [$old_poster]: " poster
+    poster=${poster:-$old_poster}
+    
+    # Event link
+    read -rp "Event link URL (or press Enter to skip): " event_url
+    if [[ -n "$event_url" ]]; then
+        read -rp "Event title: " event_title
+    fi
+    
+    # Other performers
+    echo "Other performers (press Enter when done):"
+    declare -a performers=()
+    while true; do
+        read -rp "  Performer name (or press Enter to finish): " performer_name
+        if [[ -z "$performer_name" ]]; then
+            break
+        fi
+        read -rp "  Performer URL (or press Enter to skip): " performer_url
+        performers+=("$performer_name|$performer_url")
+    done
+    
+    # Generate filename
+    venue_slug=$(echo "$venue" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | tr -cd '[:alnum:]-')
+    filename="${date}-${venue_slug}.md"
+    filepath="$GIGS_DIR/$filename"
+    
+    # Build updated frontmatter
+    cat > "$filepath" << 'FRONTMATTER'
+---
+title: "$gig_name"
+date: $date
+venue: "$venue"
+location: "$city"
+description: "$description"
+FRONTMATTER
+    
+    # Replace variables
+    sed -i.bak "s/\$gig_name/$gig_name/g; s/\$venue/$venue/g; s/\$date/$date/g; s/\$city/$city/g; s/\$description/$description/g" "$filepath"
+    rm -f "${filepath}.bak"
+    
+    # Add poster if provided
+    if [[ -n "$poster" ]]; then
+        echo "poster: \"$poster\"" >> "$filepath"
+    fi
+    
+    # Add event link if provided
+    if [[ -n "$event_url" ]]; then
+        cat >> "$filepath" << EVENTLINK
+event_link:
+  url: "$event_url"
+  title: "$event_title"
+EVENTLINK
+    fi
+    
+    # Add performers if provided
+    if [[ ${#performers[@]} -gt 0 ]]; then
+        echo "other_performers:" >> "$filepath"
+        for performer in "${performers[@]}"; do
+            IFS='|' read -r name url <<< "$performer"
+            if [[ -n "$url" ]]; then
+                cat >> "$filepath" << PERFORMER
+  - name: "$name"
+    url: "$url"
+PERFORMER
+            else
+                echo "  - name: \"$name\"" >> "$filepath"
+            fi
+        done
+    fi
+    
+    # Close frontmatter and add body
+    cat >> "$filepath" << 'BODY'
+draft: false
+---
+
+$description
+BODY
+    sed -i.bak "s/\$description/$description/g" "$filepath"
+    rm -f "${filepath}.bak"
+    
+    # Remove old file if filename changed
+    if [[ "$selected_file" != "$filepath" ]]; then
+        rm "$selected_file"
+        print_success "Updated and renamed: $(basename "$filepath")"
+    else
+        print_success "Updated: $(basename "$filepath")"
+    fi
     
     show_menu
 }
