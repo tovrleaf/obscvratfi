@@ -98,15 +98,23 @@ create_gig() {
     # Poster
     read -rp "Poster image path (or press Enter to skip): " poster
     
-    # Event page link
-    read -rp "Event page link (or press Enter to skip): " event_link
+    # Event link
+    read -rp "Event link URL (or press Enter to skip): " event_url
+    if [[ -n "$event_url" ]]; then
+        read -rp "Event title: " event_title
+    fi
     
     # Other performers
-    echo "Other performers (comma-separated, or press Enter to skip): "
-    read -r performers_input
-    
-    # Ticket link
-    read -rp "Ticket link (or press Enter to skip): " ticket_link
+    echo "Other performers (press Enter when done):"
+    declare -a performers=()
+    while true; do
+        read -rp "  Performer name (or press Enter to finish): " performer_name
+        if [[ -z "$performer_name" ]]; then
+            break
+        fi
+        read -rp "  Performer URL (or press Enter to skip): " performer_url
+        performers+=("$performer_name|$performer_url")
+    done
     
     # Generate filename
     venue_slug=$(echo "$venue" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | tr -cd '[:alnum:]-')
@@ -142,29 +150,28 @@ FRONTMATTER
         echo "poster: \"$poster\"" >> "$filepath"
     fi
     
-    # Add optional fields
-    if [[ -n "$event_link" ]] || [[ -n "$ticket_link" ]]; then
-        echo "links:" >> "$filepath"
-        if [[ -n "$event_link" ]]; then
-            cat >> "$filepath" << EVENTLINK
-  - url: "$event_link"
-    text: "Event page"
+    # Add event link if provided
+    if [[ -n "$event_url" ]]; then
+        cat >> "$filepath" << EVENTLINK
+event_link:
+  url: "$event_url"
+  title: "$event_title"
 EVENTLINK
-        fi
-        if [[ -n "$ticket_link" ]]; then
-            cat >> "$filepath" << TICKETLINK
-  - url: "$ticket_link"
-    text: "Buy tickets"
-TICKETLINK
-        fi
     fi
     
-    if [[ -n "$performers_input" ]]; then
+    # Add performers if provided
+    if [[ ${#performers[@]} -gt 0 ]]; then
         echo "other_performers:" >> "$filepath"
-        IFS=',' read -ra PERFORMERS <<< "$performers_input"
-        for performer in "${PERFORMERS[@]}"; do
-            performer=$(echo "$performer" | xargs) # trim whitespace
-            echo "  - \"$performer\"" >> "$filepath"
+        for performer in "${performers[@]}"; do
+            IFS='|' read -r name url <<< "$performer"
+            if [[ -n "$url" ]]; then
+                cat >> "$filepath" << PERFORMER
+  - name: "$name"
+    url: "$url"
+PERFORMER
+            else
+                echo "  - name: \"$name\"" >> "$filepath"
+            fi
         done
     fi
     

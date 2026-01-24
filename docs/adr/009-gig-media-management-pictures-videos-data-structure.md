@@ -18,7 +18,8 @@ The Obscvrat website needs to display media (pictures and videos) associated wit
 - Pictures: display as thumbnails, click to view full-size in modal, downloadable as originals
 - Videos: display as thumbnails, click to view in modal with embedded player, link to YouTube
 - Poster: display on gig page as promotional image (not in media gallery)
-- Links: support multiple links (event page, ticket sales, etc.)
+- Event link: single link to event page with custom title
+- Other performers: list with optional links to their pages/socials
 - Picture sets have author attribution
 - Media page uses masonry/waterfall grid layout
 - Separate sections for photos and videos with filter/toggle
@@ -48,12 +49,13 @@ venue: "Venue"
 location: "City"
 description: "Event description"
 poster: "/media/gigs/2025-03-15-venue-name/poster.jpg"
-links:
-  - url: "https://venue.com/events/obscvrat"
-    text: "Event page"
-  - url: "https://tickets.com"
-    text: "Buy tickets"
-other_performers: ["Artist 1", "Artist 2"]
+event_link:
+  url: "https://venue.com/events/obscvrat"
+  title: "Noise Festival 2025"
+other_performers:
+  - name: "Artist 1"
+    url: "https://artist1.com"
+  - name: "Artist 2"
 media:
   pictures:
     author: "Photographer Name"
@@ -241,7 +243,7 @@ An interactive CLI tool provides easy gig content management:
 
 **Features:**
 - Interactive prompts for all required fields
-- Optional fields: poster, event page link, ticket link, other performers
+- Optional fields: poster, event link with title, linkable performers
 - Automatic filename generation (YYYY-MM-DD-venue-slug.md)
 - List/edit/delete existing gigs
 - Validates date format and required fields
