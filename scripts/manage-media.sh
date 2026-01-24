@@ -4,6 +4,7 @@
 set -euo pipefail
 
 GIGS_DIR="website/content/gigs"
+MEDIA_DIR="website/assets/media"
 OTHERS_FILE="website/content/media/others.md"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
