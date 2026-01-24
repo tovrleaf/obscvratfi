@@ -99,13 +99,39 @@
             <div class="media-gallery">
                 {{ $gigSlug := path.Base .File.Dir }}
                 {{ range .Params.media.videos.files }}
-                    {{ $videoPath := printf "media/gigs/%s/%s" $gigSlug . }}
-                    <a href="/{{ $videoPath }}" class="media-item" data-type="video">
-                        <video preload="metadata">
-                            <source src="/{{ $videoPath }}#t=0.5" type="video/mp4">
-                        </video>
-                        <span class="play-icon">▶</span>
-                    </a>
+                    <div class="media-item video-item">
+                        {{ if .file }}
+                            {{ $videoPath := printf "media/gigs/%s/%s" $gigSlug .file }}
+                            <a href="/{{ $videoPath }}" data-type="video">
+                                <video preload="metadata">
+                                    <source src="/{{ $videoPath }}#t=0.5" type="video/mp4">
+                                </video>
+                                <span class="play-icon">▶</span>
+                            </a>
+                            {{ if .credits }}
+                            <div class="video-credits">
+                                {{ range .credits }}
+                                    <p class="credit-item">
+                                        <strong>{{ .type }} by:</strong>
+                                        {{ if .url }}
+                                            <a href="{{ .url }}" target="_blank">{{ .name }}</a>
+                                        {{ else }}
+                                            {{ .name }}
+                                        {{ end }}
+                                    </p>
+                                {{ end }}
+                            </div>
+                            {{ end }}
+                        {{ else }}
+                            {{ $videoPath := printf "media/gigs/%s/%s" $gigSlug . }}
+                            <a href="/{{ $videoPath }}" data-type="video">
+                                <video preload="metadata">
+                                    <source src="/{{ $videoPath }}#t=0.5" type="video/mp4">
+                                </video>
+                                <span class="play-icon">▶</span>
+                            </a>
+                        {{ end }}
+                    </div>
                 {{ end }}
             </div>
         </section>

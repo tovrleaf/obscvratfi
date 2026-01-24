@@ -25,7 +25,15 @@ media:
     author: "Roman Odjinud"
     author_url: "https://www.instagram.com/er_odjinud"
     files:
-      # Add your video files here (e.g., - video1.mp4)
+      # Add your video files here
+      # Example:
+      # - file: video1.mp4
+      #   credits:
+      #     - type: "Recorded"
+      #       name: "John Doe"
+      #       url: "https://example.com"
+      #     - type: "Mastered"
+      #       name: "Jane Smith"
 draft: false
 ---
 

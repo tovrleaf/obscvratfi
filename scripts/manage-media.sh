@@ -262,31 +262,74 @@ add_video() {
     fi
     
     selected_file="${files[$((selection-1))]}"
+    gig_slug=$(basename "$selected_file" .md)
+    media_dir="$MEDIA_DIR/gigs/$gig_slug"
+    mkdir -p "$media_dir"
     
-    # Get video details
-    read -rp "YouTube URL: " youtube_url
-    read -rp "Video title: " video_title
-    
-    # Extract YouTube ID
-    youtube_id=""
-    if [[ "$youtube_url" =~ youtube\.com/watch\?v=([^&]+) ]]; then
-        youtube_id="${BASH_REMATCH[1]}"
-    elif [[ "$youtube_url" =~ youtu\.be/([^?]+) ]]; then
-        youtube_id="${BASH_REMATCH[1]}"
-    else
-        print_error "Invalid YouTube URL"
+    # Get video file
+    read -rp "Video file path: " video_path
+    if [[ ! -f "$video_path" ]]; then
+        print_error "File not found: $video_path"
         show_menu
         return
     fi
     
+    video_filename=$(basename "$video_path")
+    cp "$video_path" "$media_dir/$video_filename"
+    print_success "Copied video to $media_dir/$video_filename"
+    
+    # Collect credits
+    echo ""
+    echo "Add credits (press Enter on credit type to finish):"
+    declare -a credits=()
+    while true; do
+        read -rp "  Credit type (e.g., Recorded, Mastered, Artwork): " credit_type
+        if [[ -z "$credit_type" ]]; then
+            break
+        fi
+        read -rp "  Name: " credit_name
+        read -rp "  URL (optional, press Enter to skip): " credit_url
+        
+        if [[ -n "$credit_url" ]]; then
+            credits+=("$credit_type|$credit_name|$credit_url")
+        else
+            credits+=("$credit_type|$credit_name|")
+        fi
+        echo ""
+    done
+    
     # Update gig frontmatter
     if grep -q "^media:" "$selected_file"; then
         print_warning "Media section already exists. Manual edit required."
-        echo "Video ID: $youtube_id"
-        echo "Title: $video_title"
+        echo "Video file: $video_filename"
+        if [[ ${#credits[@]} -gt 0 ]]; then
+            echo "Credits:"
+            for credit in "${credits[@]}"; do
+                IFS='|' read -r type name url <<< "$credit"
+                if [[ -n "$url" ]]; then
+                    echo "  - type: \"$type\""
+                    echo "    name: \"$name\""
+                    echo "    url: \"$url\""
+                else
+                    echo "  - type: \"$type\""
+                    echo "    name: \"$name\""
+                fi
+            done
+        fi
     else
-        # Build media section
-        media_section="media:\n  videos:\n    - youtube_id: \"$youtube_id\"\n      title: \"$video_title\""
+        # Build media section with video
+        media_section="media:\n  videos:\n    files:\n      - file: \"$video_filename\""
+        
+        if [[ ${#credits[@]} -gt 0 ]]; then
+            media_section="$media_section\n        credits:"
+            for credit in "${credits[@]}"; do
+                IFS='|' read -r type name url <<< "$credit"
+                media_section="$media_section\n          - type: \"$type\"\n            name: \"$name\""
+                if [[ -n "$url" ]]; then
+                    media_section="$media_section\n            url: \"$url\""
+                fi
+            done
+        fi
         
         # Insert before draft line using awk
         awk -v media="$media_section" '/^draft:/ {printf "%s\n", media} {print}' "$selected_file" > "${selected_file}.tmp"
