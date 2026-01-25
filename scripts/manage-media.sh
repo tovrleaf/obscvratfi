@@ -562,24 +562,36 @@ EOF
     fi
     
     # Build YAML item
-    item="  - type: \"$item_type\"\n"
-    item+="    title: \"$title\"\n"
-    item+="    url: \"$url\"\n"
-    [[ -n "$description" ]] && item+="    description: \"$description\"\n"
-    [[ -n "$item_date" ]] && item+="    date: $item_date\n"
-    [[ -n "$gig_slug" ]] && item+="    gig: \"$gig_slug\"\n"
+    local item_lines=()
+    item_lines+=("  - type: \"$item_type\"")
+    item_lines+=("    title: \"$title\"")
+    item_lines+=("    url: \"$url\"")
+    [[ -n "$description" ]] && item_lines+=("    description: \"$description\"")
+    [[ -n "$item_date" ]] && item_lines+=("    date: $item_date")
+    [[ -n "$gig_slug" ]] && item_lines+=("    gig: \"$gig_slug\"")
     
     # Add to items array
     if grep -q "^items: \[\]" "$OTHERS_FILE"; then
         # Empty array, replace with first item
-        sed -i.bak "s/^items: \[\]/items:\n$item/" "$OTHERS_FILE"
+        {
+            echo "---"
+            grep "^title:" "$OTHERS_FILE"
+            echo "items:"
+            printf '%s\n' "${item_lines[@]}"
+            echo "---"
+        } > "$OTHERS_FILE.tmp"
+        mv "$OTHERS_FILE.tmp" "$OTHERS_FILE"
     else
         # Append to existing items
-        sed -i.bak "/^items:/a\\
-$item
-" "$OTHERS_FILE"
+        local temp_file="$OTHERS_FILE.tmp"
+        while IFS= read -r line; do
+            echo "$line"
+            if [[ "$line" == "items:" ]]; then
+                printf '%s\n' "${item_lines[@]}"
+            fi
+        done < "$OTHERS_FILE" > "$temp_file"
+        mv "$temp_file" "$OTHERS_FILE"
     fi
-    rm -f "${OTHERS_FILE}.bak"
     
     print_success "Added to Others"
     show_menu
