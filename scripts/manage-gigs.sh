@@ -170,7 +170,7 @@ create_gig() {
     # Check if file exists
     if [[ -f "$filepath" ]]; then
         print_error "Gig already exists: $filename"
-        read -rp "Overwrite? (y/N): " overwrite || true
+        read -rp "Overwrite? (y/N): " overwrite || overwrite="n"
         if [[ ! "$overwrite" =~ ^[Yy]$ ]]; then
             show_menu
             return
@@ -540,7 +540,7 @@ delete_gig() {
     filename=$(basename "$selected_file")
     
     print_warning "About to delete: $filename"
-    read -rp "Are you sure? (y/N): " confirm || true
+    read -rp "Are you sure? (y/N): " confirm || confirm="n"
     
     if [[ "$confirm" =~ ^[Yy]$ ]]; then
         rm "$selected_file"
