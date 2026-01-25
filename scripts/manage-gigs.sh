@@ -147,17 +147,17 @@ create_gig() {
     fi
     
     # Event link
-    read -rp "Event link URL (or press Enter to skip): " event_url
+    read -rp "Event link URL (or press Enter to skip): " event_url < /dev/tty
     
     # Other performers
     echo "Other performers (press Enter when done):"
     declare -a performers=()
     while true; do
-        read -rp "  Performer name (or press Enter to finish): " performer_name
+        read -rp "  Performer name (or press Enter to finish): " performer_name < /dev/tty
         if [[ -z "$performer_name" ]]; then
             break
         fi
-        read -rp "  Performer URL (or press Enter to skip): " performer_url
+        read -rp "  Performer URL (or press Enter to skip): " performer_url < /dev/tty
         performers+=("$performer_name|$performer_url")
     done
     
@@ -376,7 +376,7 @@ edit_gig() {
     fi
     
     # Event link
-    read -rp "Event link URL (or press Enter to skip): " event_url
+    read -rp "Event link URL (or press Enter to skip): " event_url < /dev/tty
     
     # Other performers - parse existing
     echo ""
@@ -408,24 +408,24 @@ edit_gig() {
     echo "1) Add performer"
     echo "2) Remove performer"
     echo "3) Keep as is"
-    read -rp "Choose action: " perf_action
+    read -rp "Choose action: " perf_action < /dev/tty
     
     case $perf_action in
         1)
             # Add performer
             while true; do
-                read -rp "  Performer name (or press Enter to finish): " performer_name
+                read -rp "  Performer name (or press Enter to finish): " performer_name < /dev/tty
                 if [[ -z "$performer_name" ]]; then
                     break
                 fi
-                read -rp "  Performer URL (or press Enter to skip): " performer_url
+                read -rp "  Performer URL (or press Enter to skip): " performer_url < /dev/tty
                 performers+=("$performer_name|$performer_url")
             done
             ;;
         2)
             # Remove performer
             if [[ $performer_count -gt 0 ]]; then
-                read -rp "Enter performer number to remove: " remove_num
+                read -rp "Enter performer number to remove: " remove_num < /dev/tty
                 if [[ "$remove_num" =~ ^[0-9]+$ ]] && [[ "$remove_num" -ge 1 ]] && [[ "$remove_num" -le $performer_count ]]; then
                     unset 'performers[$((remove_num-1))]'
                     performers=("${performers[@]}")  # Re-index array
