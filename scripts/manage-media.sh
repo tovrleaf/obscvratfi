@@ -40,9 +40,9 @@ list_gigs_for_selection() {
     local counter=1
     for file in "$GIGS_DIR"/*.md; do
         if [[ -f "$file" ]] && [[ "$(basename "$file")" != "_index.md" ]]; then
-            title=$(grep "^title:" "$file" | sed 's/title: "\(.*\)"/\1/')
-            date=$(grep "^date:" "$file" | sed 's/date: //')
-            echo "  $counter) $title ($date)"
+            local gig_title=$(grep "^title:" "$file" | sed 's/title: "\(.*\)"/\1/')
+            local gig_date=$(grep "^date:" "$file" | sed 's/date: //')
+            echo "  $counter) $gig_title ($gig_date)"
             ((counter++))
         fi
     done
@@ -753,8 +753,20 @@ list_media() {
     echo ""
     if [[ -f "$OTHERS_FILE" ]]; then
         echo "Others:"
-        grep "^- \[" "$OTHERS_FILE" | head -5
-        echo "  (see $OTHERS_FILE for full list)"
+        local count=0
+        local in_items=false
+        while IFS= read -r line; do
+            if [[ "$line" == "items:" ]]; then
+                in_items=true
+                continue
+            fi
+            if [[ "$in_items" == true ]] && [[ "$line" =~ title:[[:space:]]+\"(.*)\" ]]; then
+                echo "  - ${BASH_REMATCH[1]}"
+                ((count++))
+                [[ $count -ge 5 ]] && break
+            fi
+        done < "$OTHERS_FILE"
+        [[ $count -eq 0 ]] && echo "  None"
     else
         echo "Others: None"
     fi
