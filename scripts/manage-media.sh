@@ -93,7 +93,7 @@ show_menu() {
     echo "7) List media"
     echo "8) Exit"
     echo ""
-    read -rp "Choose an option: " choice
+    read -rp "Choose an option: " choice || exit 0
     echo ""
     
     case $choice in
@@ -762,17 +762,19 @@ list_media() {
             fi
             if [[ "$in_items" == true ]] && [[ "$line" =~ title:[[:space:]]+\"(.*)\" ]]; then
                 echo "  - ${BASH_REMATCH[1]}"
-                ((count++))
+                count=$((count + 1))
                 [[ $count -ge 5 ]] && break
             fi
         done < "$OTHERS_FILE"
-        [[ $count -eq 0 ]] && echo "  None"
+        if [[ $count -eq 0 ]]; then
+            echo "  None"
+        fi
     else
         echo "Others: None"
     fi
     
     echo ""
-    read -rp "Press Enter to continue..." || true
+    read -rp "Press Enter to continue..." || :
     show_menu
 }
 
