@@ -52,6 +52,24 @@
     </div>
     {{ end }}
 
+    {{ if .Params.poster }}
+    <div class="gig-poster">
+        <h2>Poster</h2>
+        {{ $gigSlug := .File.BaseFileName }}
+        {{ $posterPath := printf "media/gigs/%s/%s" $gigSlug (path.Base .Params.poster) }}
+        {{ with resources.Get $posterPath }}
+        <div class="media-item photo-item">
+            <a href="#" class="open-lightbox" 
+               data-image-url="{{ .RelPermalink }}"
+               data-gig-title="{{ $.Title }}"
+               data-gig-link="{{ $.Permalink }}">
+                <img src="{{ .RelPermalink }}" alt="{{ $.Title }} poster">
+            </a>
+        </div>
+        {{ end }}
+    </div>
+    {{ end }}
+
     {{ if .Params.media }}
     <div class="gig-media">
         {{ if .Params.media.pictures }}
