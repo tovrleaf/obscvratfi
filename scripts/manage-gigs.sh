@@ -132,21 +132,31 @@ create_gig() {
     # Handle poster download if URL provided
     poster=""
     if [[ -n "$poster_input" ]]; then
+        slug=$(echo "$slug_base" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | tr -cd '[:alnum:]-')
+        poster_dir="website/assets/media/gigs/${date}-${slug}"
+        mkdir -p "$poster_dir"
+        
         if [[ "$poster_input" =~ ^https?:// ]]; then
             # It's a URL, download it
-            slug=$(echo "$slug_base" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | tr -cd '[:alnum:]-')
-            poster_dir="website/static/media/gigs/${date}-${slug}"
-            poster_path="$poster_dir/poster.jpg"
+            poster_filename="obscvrat-${slug}-poster-${date%%%-*}.jpg"
+            poster_path="$poster_dir/$poster_filename"
             
             if download_poster "$poster_input" "$poster_path"; then
-                poster="/media/gigs/${date}-${slug}/poster.jpg"
+                poster="$poster_filename"
             fi
         else
-            # It's a local path, use as-is
-            poster="$poster_input"
+            # It's a local path, copy and rename it
+            if [[ -f "$poster_input" ]]; then
+                poster_filename="obscvrat-${slug}-poster-${date%%%-*}.jpg"
+                poster_path="$poster_dir/$poster_filename"
+                cp "$poster_input" "$poster_path"
+                poster="$poster_filename"
+                print_success "Copied poster to $poster_path"
+            else
+                print_error "Poster file not found: $poster_input"
+            fi
         fi
     fi
-    
     # Event link
     read -rp "Event link URL (or press Enter to skip): " event_url || true
     
@@ -362,21 +372,31 @@ edit_gig() {
     # Handle poster download if URL provided
     poster=""
     if [[ -n "$poster_input" ]]; then
+        slug=$(echo "$slug_base" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | tr -cd '[:alnum:]-')
+        poster_dir="website/assets/media/gigs/${date}-${slug}"
+        mkdir -p "$poster_dir"
+        
         if [[ "$poster_input" =~ ^https?:// ]]; then
             # It's a URL, download it
-            slug=$(echo "$slug_base" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | tr -cd '[:alnum:]-')
-            poster_dir="website/static/media/gigs/${date}-${slug}"
-            poster_path="$poster_dir/poster.jpg"
+            poster_filename="obscvrat-${slug}-poster-${date%%%-*}.jpg"
+            poster_path="$poster_dir/$poster_filename"
             
             if download_poster "$poster_input" "$poster_path"; then
-                poster="/media/gigs/${date}-${slug}/poster.jpg"
+                poster="$poster_filename"
             fi
         else
-            # It's a local path, use as-is
-            poster="$poster_input"
+            # It's a local path, copy and rename it
+            if [[ -f "$poster_input" ]]; then
+                poster_filename="obscvrat-${slug}-poster-${date%%%-*}.jpg"
+                poster_path="$poster_dir/$poster_filename"
+                cp "$poster_input" "$poster_path"
+                poster="$poster_filename"
+                print_success "Copied poster to $poster_path"
+            else
+                print_error "Poster file not found: $poster_input"
+            fi
         fi
     fi
-    
     # Event link
     read -rp "Event link URL (or press Enter to skip): " event_url || true
     
