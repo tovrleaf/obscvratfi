@@ -35,6 +35,19 @@ print_warning() {
     echo -e "${YELLOW}⚠ $1${NC}"
 }
 
+# List gigs for selection
+list_gigs_for_selection() {
+    local counter=1
+    for file in "$GIGS_DIR"/*.md; do
+        if [[ -f "$file" ]] && [[ "$(basename "$file")" != "_index.md" ]]; then
+            title=$(grep "^title:" "$file" | sed 's/title: "\(.*\)"/\1/')
+            date=$(grep "^date:" "$file" | sed 's/date: //')
+            echo "  $counter) $title ($date)"
+            ((counter++))
+        fi
+    done
+}
+
 # Download file from URL
 download_file() {
     local url="$1"
@@ -76,8 +89,9 @@ show_menu() {
     echo "3) Add standalone picture"
     echo "4) Add standalone video"
     echo "5) Add to Others (interview, mention, review)"
-    echo "6) List media"
-    echo "7) Exit"
+    echo "6) Edit Others item"
+    echo "7) List media"
+    echo "8) Exit"
     echo ""
     read -rp "Choose an option: " choice
     echo ""
@@ -88,8 +102,9 @@ show_menu() {
         3) add_standalone_picture ;;
         4) add_standalone_video ;;
         5) add_others ;;
-        6) list_media ;;
-        7) exit 0 ;;
+        6) edit_others ;;
+        7) list_media ;;
+        8) exit 0 ;;
         *) print_error "Invalid option"; show_menu ;;
     esac
 }
@@ -507,13 +522,8 @@ add_others() {
         cat > "$OTHERS_FILE" << 'EOF'
 ---
 title: "Others"
+items: []
 ---
-
-## Interviews
-
-## Reviews
-
-## Mentions
 EOF
     fi
     
@@ -524,30 +534,95 @@ EOF
     read -rp "Type: " type_choice
     
     case $type_choice in
-        1) section="Interviews" ;;
-        2) section="Reviews" ;;
-        3) section="Mentions" ;;
+        1) item_type="interview" ;;
+        2) item_type="review" ;;
+        3) item_type="mention" ;;
         *) print_error "Invalid type"; show_menu; return ;;
     esac
     
     read -rp "Title: " title
     read -rp "URL: " url
     read -rp "Description (optional): " description
+    read -rp "Date (YYYY-MM-DD, optional): " item_date
     
-    # Add to appropriate section
-    if [[ -n "$description" ]]; then
-        entry="- [$title]($url) - $description"
-    else
-        entry="- [$title]($url)"
+    # Ask if related to a gig
+    echo ""
+    echo "Related to a gig? (optional)"
+    list_gigs_for_selection
+    read -rp "Gig number (or press Enter to skip): " gig_choice
+    
+    gig_slug=""
+    if [[ -n "$gig_choice" ]] && [[ "$gig_choice" =~ ^[0-9]+$ ]]; then
+        gig_files=("$GIGS_DIR"/*.md)
+        gig_files=("${gig_files[@]##*/}")
+        gig_files=("${gig_files[@]%.md}")
+        if [[ "$gig_choice" -gt 0 ]] && [[ "$gig_choice" -le "${#gig_files[@]}" ]]; then
+            gig_slug="${gig_files[$((gig_choice-1))]}"
+        fi
     fi
     
-    # Insert after section header
-    sed -i.bak "/^## $section/a\\
-$entry
+    # Build YAML item
+    item="  - type: \"$item_type\"\n"
+    item+="    title: \"$title\"\n"
+    item+="    url: \"$url\"\n"
+    [[ -n "$description" ]] && item+="    description: \"$description\"\n"
+    [[ -n "$item_date" ]] && item+="    date: $item_date\n"
+    [[ -n "$gig_slug" ]] && item+="    gig: \"$gig_slug\"\n"
+    
+    # Add to items array
+    if grep -q "^items: \[\]" "$OTHERS_FILE"; then
+        # Empty array, replace with first item
+        sed -i.bak "s/^items: \[\]/items:\n$item/" "$OTHERS_FILE"
+    else
+        # Append to existing items
+        sed -i.bak "/^items:/a\\
+$item
 " "$OTHERS_FILE"
+    fi
     rm -f "${OTHERS_FILE}.bak"
     
-    print_success "Added to $section"
+    print_success "Added to Others"
+    show_menu
+}
+
+# Edit Others item
+edit_others() {
+    print_header "Edit Others Item"
+    
+    if [[ ! -f "$OTHERS_FILE" ]]; then
+        print_error "No Others file found"
+        show_menu
+        return
+    fi
+    
+    # List existing items
+    echo "Existing items:"
+    local counter=1
+    while IFS= read -r line; do
+        if [[ "$line" =~ title:\ \"(.*)\" ]]; then
+            echo "  $counter) ${BASH_REMATCH[1]}"
+            ((counter++))
+        fi
+    done < "$OTHERS_FILE"
+    
+    if [[ $counter -eq 1 ]]; then
+        print_error "No items found"
+        show_menu
+        return
+    fi
+    
+    echo ""
+    read -rp "Select item to edit (or press Enter to cancel): " item_choice
+    
+    if [[ -z "$item_choice" ]] || [[ ! "$item_choice" =~ ^[0-9]+$ ]]; then
+        show_menu
+        return
+    fi
+    
+    # Open in editor
+    ${EDITOR:-vi} "$OTHERS_FILE"
+    
+    print_success "Others file updated"
     show_menu
 }
 
