@@ -114,16 +114,17 @@ create_gig() {
     fi
     
     # Description
-    echo "Description (press Enter twice when done):"
+    echo "Description (enter text, then type END on a new line and press Enter):"
     description=""
     while IFS= read -r line; do
-        if [[ -z "$line" ]]; then
+        if [[ "$line" == "END" ]]; then
             break
         fi
-        description+="$line"$'\n'
-    done < /dev/tty
-    # Remove trailing newline
-    description="${description%$'\n'}"
+        if [[ -n "$description" ]]; then
+            description+=$'\n'
+        fi
+        description+="$line"
+    done
     
     # Poster
     read -rp "Poster image URL or path (or press Enter to skip): " poster_input
@@ -147,17 +148,17 @@ create_gig() {
     fi
     
     # Event link
-    read -rp "Event link URL (or press Enter to skip): " event_url < /dev/tty
+    read -rp "Event link URL (or press Enter to skip): " event_url
     
     # Other performers
     echo "Other performers (press Enter when done):"
     declare -a performers=()
     while true; do
-        read -rp "  Performer name (or press Enter to finish): " performer_name < /dev/tty
+        read -rp "  Performer name (or press Enter to finish): " performer_name
         if [[ -z "$performer_name" ]]; then
             break
         fi
-        read -rp "  Performer URL (or press Enter to skip): " performer_url < /dev/tty
+        read -rp "  Performer URL (or press Enter to skip): " performer_url
         performers+=("$performer_name|$performer_url")
     done
     
@@ -339,16 +340,17 @@ edit_gig() {
     read -rp "City [$old_location]: " city
     city=${city:-$old_location}
     
-    echo "Description (current: ${old_description:0:50}...) - press Enter twice when done, or just Enter to keep current:"
+    echo "Description (current: ${old_description:0:50}...) - type END on a new line to finish, or just END to keep current:"
     description=""
     while IFS= read -r line; do
-        if [[ -z "$line" ]]; then
+        if [[ "$line" == "END" ]]; then
             break
         fi
-        description+="$line"$'\n'
-    done < /dev/tty
-    # Remove trailing newline
-    description="${description%$'\n'}"
+        if [[ -n "$description" ]]; then
+            description+=$'\n'
+        fi
+        description+="$line"
+    done
     # If empty, keep old description
     if [[ -z "$description" ]]; then
         description="$old_description"
@@ -376,7 +378,7 @@ edit_gig() {
     fi
     
     # Event link
-    read -rp "Event link URL (or press Enter to skip): " event_url < /dev/tty
+    read -rp "Event link URL (or press Enter to skip): " event_url
     
     # Other performers - parse existing
     echo ""
@@ -408,24 +410,24 @@ edit_gig() {
     echo "1) Add performer"
     echo "2) Remove performer"
     echo "3) Keep as is"
-    read -rp "Choose action: " perf_action < /dev/tty
+    read -rp "Choose action: " perf_action
     
     case $perf_action in
         1)
             # Add performer
             while true; do
-                read -rp "  Performer name (or press Enter to finish): " performer_name < /dev/tty
+                read -rp "  Performer name (or press Enter to finish): " performer_name
                 if [[ -z "$performer_name" ]]; then
                     break
                 fi
-                read -rp "  Performer URL (or press Enter to skip): " performer_url < /dev/tty
+                read -rp "  Performer URL (or press Enter to skip): " performer_url
                 performers+=("$performer_name|$performer_url")
             done
             ;;
         2)
             # Remove performer
             if [[ $performer_count -gt 0 ]]; then
-                read -rp "Enter performer number to remove: " remove_num < /dev/tty
+                read -rp "Enter performer number to remove: " remove_num
                 if [[ "$remove_num" =~ ^[0-9]+$ ]] && [[ "$remove_num" -ge 1 ]] && [[ "$remove_num" -le $performer_count ]]; then
                     unset 'performers[$((remove_num-1))]'
                     performers=("${performers[@]}")  # Re-index array
