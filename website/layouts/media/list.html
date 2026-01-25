@@ -146,9 +146,24 @@
     <section class="media-section others-section" data-type="others">
         <h2>Others</h2>
         {{ $othersPage := .Site.GetPage "/media/others" }}
-        {{ if $othersPage }}
-            <div class="others-content">
-                {{ $othersPage.Content }}
+        {{ if and $othersPage $othersPage.Params.items }}
+            <div class="others-list">
+                {{ range $othersPage.Params.items }}
+                <div class="others-item">
+                    <h3><a href="{{ .url }}" target="_blank">{{ .title }}</a></h3>
+                    {{ if .description }}<p>{{ .description }}</p>{{ end }}
+                    <div class="others-meta">
+                        <span class="others-type">{{ .type }}</span>
+                        {{ if .date }}<span class="others-date">{{ dateFormat "January 2, 2006" .date }}</span>{{ end }}
+                        {{ if .gig }}
+                            {{ $gigPage := $.Site.GetPage (printf "/gigs/%s" .gig) }}
+                            {{ if $gigPage }}
+                                <span class="others-gig">Related to: <a href="{{ $gigPage.Permalink }}">{{ $gigPage.Title }}</a></span>
+                            {{ end }}
+                        {{ end }}
+                    </div>
+                </div>
+                {{ end }}
             </div>
         {{ else }}
             <p>No interviews, mentions, or reviews yet.</p>

@@ -124,6 +124,31 @@
         {{ end }}
     </div>
     {{ end }}
+
+    {{ $gigSlug := .File.BaseFileName }}
+    {{ $othersPage := .Site.GetPage "/media/others.md" }}
+    {{ if $othersPage }}
+        {{ $relatedItems := slice }}
+        {{ range $othersPage.Params.items }}
+            {{ if eq .gig $gigSlug }}
+                {{ $relatedItems = $relatedItems | append . }}
+            {{ end }}
+        {{ end }}
+        {{ if gt (len $relatedItems) 0 }}
+        <div class="gig-others">
+            <h2>Press & Media</h2>
+            <ul>
+            {{ range $relatedItems }}
+                <li>
+                    <a href="{{ .url }}" target="_blank">{{ .title }}</a>
+                    {{ if .description }} - {{ .description }}{{ end }}
+                    {{ if .date }} ({{ dateFormat "January 2, 2006" .date }}){{ end }}
+                </li>
+            {{ end }}
+            </ul>
+        </div>
+        {{ end }}
+    {{ end }}
 </article>
 
 <style>

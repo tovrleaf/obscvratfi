@@ -77,6 +77,32 @@ git clean -fd  # remove any untracked files created during testing
 Do not hand back modified scripts without testing them first.
 Always restore the repository to the state it was in before testing.
 
+### Template/Webpage Testing Requirements
+
+**IMPORTANT:** When modifying Hugo templates or layouts, always test by building the site:
+
+1. **Syntax validation:** Check template syntax is valid
+2. **Build test:** Compile the site to verify no errors
+3. **Output verification:** Check generated HTML in `website/public/`
+4. **Do not start server:** Test by building and searching source, not by running server
+
+Example testing workflow:
+```bash
+# Build the site
+docker build -t obscvrat-hugo . && docker run --rm -v $(pwd)/website:/src obscvrat-hugo
+
+# Check for errors in build output
+docker run --rm -v $(pwd)/website:/src obscvrat-hugo 2>&1 | grep ERROR
+
+# Verify generated HTML
+cat website/public/media/index.html | grep "others-section"
+
+# Clean up if needed
+rm -rf website/public/
+```
+
+Do not hand back modified templates without building and verifying the output.
+
 ## Code Style Guidelines
 
 ### Shell Scripts
