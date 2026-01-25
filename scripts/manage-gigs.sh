@@ -79,10 +79,10 @@ create_gig() {
     print_header "Create New Gig"
     
     # Event name
-    read -rp "Event name (or press Enter to use venue name): " event_name
+    read -rp "Event name (or press Enter to use venue name): " event_name || true
     
     # Date
-    read -rp "Date (YYYY-MM-DD): " date
+    read -rp "Date (YYYY-MM-DD): " date || true
     if [[ ! $date =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]]; then
         print_error "Invalid date format"
         show_menu
@@ -90,7 +90,7 @@ create_gig() {
     fi
     
     # Venue
-    read -rp "Venue name: " venue
+    read -rp "Venue name: " venue || true
     if [[ -z "$venue" ]]; then
         print_error "Venue name is required"
         show_menu
@@ -106,7 +106,7 @@ create_gig() {
     fi
     
     # City
-    read -rp "City: " city
+    read -rp "City: " city || true
     if [[ -z "$city" ]]; then
         print_error "City is required"
         show_menu
@@ -127,7 +127,7 @@ create_gig() {
     done
     
     # Poster
-    read -rp "Poster image URL or path (or press Enter to skip): " poster_input
+    read -rp "Poster image URL or path (or press Enter to skip): " poster_input || true
     
     # Handle poster download if URL provided
     poster=""
@@ -170,7 +170,7 @@ create_gig() {
     # Check if file exists
     if [[ -f "$filepath" ]]; then
         print_error "Gig already exists: $filename"
-        read -rp "Overwrite? (y/N): " overwrite
+        read -rp "Overwrite? (y/N): " overwrite || true
         if [[ ! "$overwrite" =~ ^[Yy]$ ]]; then
             show_menu
             return
@@ -216,7 +216,7 @@ create_gig() {
     } > "$filepath"
     
     print_success "Created gig: $filename"
-    read -rp "Open in editor? (y/N): " open_editor
+    read -rp "Open in editor? (y/N): " open_editor || true
     if [[ "$open_editor" =~ ^[Yy]$ ]]; then
         ${EDITOR:-vim} "$filepath"
     fi
@@ -288,7 +288,7 @@ edit_gig() {
     done
     
     echo ""
-    read -rp "Select gig number (or 0 to cancel): " selection
+    read -rp "Select gig number (or 0 to cancel): " selection || true
     
     if [[ "$selection" == "0" ]]; then
         show_menu
@@ -316,10 +316,10 @@ edit_gig() {
     print_header "Edit Gig: $old_title"
     echo ""
     
-    read -rp "Event name [$old_title]: " event_name
+    read -rp "Event name [$old_title]: " event_name || true
     event_name=${event_name:-$old_title}
     
-    read -rp "Date [$old_date]: " date
+    read -rp "Date [$old_date]: " date || true
     date=${date:-$old_date}
     if [[ ! $date =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]]; then
         print_error "Invalid date format"
@@ -327,7 +327,7 @@ edit_gig() {
         return
     fi
     
-    read -rp "Venue [$old_venue]: " venue
+    read -rp "Venue [$old_venue]: " venue || true
     venue=${venue:-$old_venue}
     
     # Use event name for slug, fallback to venue
@@ -337,7 +337,7 @@ edit_gig() {
         slug_base="$event_name"
     fi
     
-    read -rp "City [$old_location]: " city
+    read -rp "City [$old_location]: " city || true
     city=${city:-$old_location}
     
     echo "Description (current: ${old_description:0:50}...) - type END on a new line to finish, or just END to keep current:"
@@ -356,7 +356,7 @@ edit_gig() {
         description="$old_description"
     fi
     
-    read -rp "Poster [$old_poster]: " poster_input
+    read -rp "Poster [$old_poster]: " poster_input || true
     poster_input=${poster_input:-$old_poster}
     
     # Handle poster download if URL provided
@@ -378,7 +378,7 @@ edit_gig() {
     fi
     
     # Event link
-    read -rp "Event link URL (or press Enter to skip): " event_url
+    read -rp "Event link URL (or press Enter to skip): " event_url || true
     
     # Other performers - parse existing
     echo ""
@@ -523,7 +523,7 @@ delete_gig() {
     done
     
     echo ""
-    read -rp "Select gig number to delete (or 0 to cancel): " selection
+    read -rp "Select gig number to delete (or 0 to cancel): " selection || true
     
     if [[ "$selection" == "0" ]]; then
         show_menu
@@ -540,7 +540,7 @@ delete_gig() {
     filename=$(basename "$selected_file")
     
     print_warning "About to delete: $filename"
-    read -rp "Are you sure? (y/N): " confirm
+    read -rp "Are you sure? (y/N): " confirm || true
     
     if [[ "$confirm" =~ ^[Yy]$ ]]; then
         rm "$selected_file"
