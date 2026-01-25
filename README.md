@@ -1,8 +1,12 @@
 # Obscvrat Website Documentation
 
-Official noisework website for Obscvrat - a static site built with Hugo, Docker, and deployed to AWS CloudFront.
+Official noisework website for Obscvrat - a static site built with Hugo and deployed to AWS CloudFront.
 
 ## Quick Start
+
+### Prerequisites
+
+- Hugo Extended v0.128.2 or later ([installation instructions](https://gohugo.io/installation/))
 
 ### Development
 

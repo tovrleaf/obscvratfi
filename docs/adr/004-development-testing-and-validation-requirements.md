@@ -85,7 +85,7 @@ We will implement a two-layer testing approach:
 5. **Hugo Build Validation**
    - Validates: Hugo site builds successfully
    - Catches: template errors, broken links in content
-   - Uses Docker (same as GitHub Actions)
+   - Uses: Local Hugo installation
 
 6. **HTML Validation (html5validator)**
    - Validates: Generated HTML (errors only, not warnings)
@@ -187,10 +187,10 @@ When modifying Hugo templates or layouts, test by building the site:
 Example workflow:
 ```bash
 # Build the site
-docker build -t obscvrat-hugo . && docker run --rm -v $(pwd)/website:/src obscvrat-hugo
+cd website && hugo
 
 # Check for errors in build output
-docker run --rm -v $(pwd)/website:/src obscvrat-hugo 2>&1 | grep ERROR
+cd website && hugo 2>&1 | grep ERROR
 
 # Verify generated HTML
 cat website/public/media/index.html | grep "others-section"
@@ -329,7 +329,7 @@ rm -rf website/public/
 - **Learning curve:** Developers unfamiliar with pre-commit framework
 - **Bypass temptation:** `--no-verify` flag can be abused
 - **Environment differences:** Issues caught by local hooks might not match CI exactly
-- **Docker dependency:** Hugo validation requires Docker installed locally
+- **Hugo dependency:** Hugo validation requires local Hugo installation (v0.128.2+)
 - **Maintenance:** Need to keep `.pre-commit-config.yaml` in sync with GitHub Actions
 - **Requires discipline:** Manual testing easy to skip without enforcement
 - **Adds time:** Testing adds time to development process
@@ -353,7 +353,7 @@ rm -rf website/public/
 - **Consistency:** Hooks exactly mirror GitHub Actions checks for consistency
 - **Customization:** `.pre-commit-config.yaml` allows disabling individual hooks if needed
 - **Performance:** Expected 10-30 second runtime per push (varies by file count)
-- **Docker:** Hugo validation uses Docker (same image as production)
+- **Hugo:** Uses local Hugo installation (same version as production)
 - **Link validation:** Custom script validates 6 critical endpoints after build
 - **Related:** ADR-003 describes GitHub Actions pipeline that local hooks mirror
 - **Future:** Could expand to include unit tests once test suite established

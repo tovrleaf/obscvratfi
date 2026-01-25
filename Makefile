@@ -1,5 +1,5 @@
 .DEFAULT_GOAL := help
-.PHONY: help adr-new adr-list adr-help gigs media serve build clean build-docker build-prod build-minified serve-prod list-content setup-hooks run-hooks uninstall-hooks protect-main show-branch-rules unprotect-main deploy-production
+.PHONY: help adr-new adr-list adr-help gigs media serve build clean build-prod build-minified list-content setup-hooks run-hooks uninstall-hooks protect-main show-branch-rules unprotect-main deploy-production
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":[^#]*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
@@ -99,27 +99,22 @@ media: ## Manage media (add pictures, videos, others)
 
 # Website Tasks
 
-serve: ## Run Hugo dev server in Docker (http://localhost:1313)
-	docker-compose up hugo
+serve: ## Run Hugo dev server (http://localhost:1313)
+	cd website && hugo server --bind 0.0.0.0
 
-build: ## Build Hugo site for development in Docker
-	docker-compose run --rm hugo --destination=/src/public
+build: ## Build Hugo site for development
+	cd website && hugo --destination=public
 
 build-prod: ## Build Hugo site for production (https://obscvrat.fi) with minification
-	docker-compose run --rm hugo --baseURL="https://obscvrat.fi" --minify --destination=/src/public
+	cd website && hugo --baseURL="https://obscvrat.fi" --minify --destination=public
 
 build-minified: ## Build Hugo site with minification enabled (for testing production optimization)
-	docker-compose run --rm hugo --minify --destination=/src/public
+	cd website && hugo --minify --destination=public
 
-build-docker: ## Build Docker image locally
-	docker build -t obscvratfi:latest .
-
-clean: ## Remove Docker containers and cleanup
-	docker-compose down
-	rm -rf website/public
+clean: ## Remove build artifacts
+	rm -rf website/public website/.hugo_build.lock
 
 distclean: ## Clean everything including build artifacts
-	docker-compose down
 	rm -rf website/public website/.hugo_build.lock
 
 list-content: ## List all content files in the site

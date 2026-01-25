@@ -93,10 +93,10 @@ Always restore the repository to the state it was in before testing.
 Example testing workflow:
 ```bash
 # Build the site
-docker build -t obscvrat-hugo . && docker run --rm -v $(pwd)/website:/src obscvrat-hugo
+cd website && hugo
 
 # Check for errors in build output
-docker run --rm -v $(pwd)/website:/src obscvrat-hugo 2>&1 | grep ERROR
+cd website && hugo 2>&1 | grep ERROR
 
 # Verify generated HTML
 cat website/public/media/index.html | grep "others-section"
