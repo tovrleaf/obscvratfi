@@ -1,8 +1,8 @@
-# 4. Local Pre-Commit Hooks for Development Validation
+# 4. Development Testing and Validation Requirements
 
 **Status:** Accepted
 
-**Date:** 2025-12-30
+**Date:** 2025-12-30 (Updated: 2026-01-25)
 
 ## Context
 
@@ -22,25 +22,38 @@ However, developers must push changes to GitHub to get feedback on these validat
 - Waiting for GitHub Actions to run (5-15 minutes per run)
 - Wasted GitHub Actions runner minutes on easily preventable issues
 
-Current workflow:
+Additionally, automated validation doesn't catch functional issues:
+- Scripts with correct syntax but broken logic
+- Templates that build successfully but don't display content correctly
+- Test artifacts being committed to the repository
+- Real content being accidentally deleted during cleanup
+- Changes that work in isolation but break integration
+
+Current workflow problems:
 1. Developer makes changes locally
 2. Developer commits and pushes to GitHub
 3. GitHub Actions runs (5-15 minutes)
 4. Developer discovers validation failures
 5. Developer fixes and pushes again
 6. Repeat until all checks pass
+7. Functional issues discovered only after deployment
 
 Better workflow:
 1. Developer makes changes locally
-2. Pre-commit hooks run automatically (catches issues immediately)
-3. Developer fixes issues (if any)
-4. Developer pushes to GitHub
-5. GitHub Actions re-validates (final safety check)
-6. One push succeeds first time
+2. Developer tests changes manually (functional verification)
+3. Pre-commit hooks run automatically (automated validation)
+4. Developer fixes issues (if any)
+5. Developer pushes to GitHub
+6. GitHub Actions re-validates (final safety check)
+7. One push succeeds first time with working functionality
 
 ## Decision
 
-We will implement **local pre-commit hooks** using the `pre-commit` framework that mirror the GitHub Actions validation checks.
+We will implement a two-layer testing approach:
+
+### Layer 1: Automated Validation (Pre-Commit Hooks)
+
+**Local pre-commit hooks** using the `pre-commit` framework that mirror the GitHub Actions validation checks.
 
 **Architecture Overview:**
 
@@ -129,6 +142,72 @@ When a hook fails:
 - **Pre-push stage** (not pre-commit): Allows `git commit` to work freely but blocks `git push` if issues exist
 - Rationale: Developers can make WIP commits locally without friction, but can't push broken code to GitHub
 
+### Layer 2: Manual Functional Testing
+
+**Manual testing requirements** for changes that automated validation cannot catch.
+
+#### Script Testing Requirements
+
+When modifying shell scripts, test before committing:
+
+1. **Syntax validation:** Run `bash -n script.sh` to check for syntax errors
+2. **Functional testing:** Execute the script with test inputs to verify behavior
+3. **Edge cases:** Test with empty inputs, invalid inputs, and boundary conditions
+4. **Integration:** Verify the script works with related files and commands
+5. **Cleanup:** Remove test artifacts and restore to pre-testing state
+
+Example workflow:
+```bash
+# Check syntax
+bash -n scripts/manage-media.sh
+
+# Test the script interactively or with test data
+./scripts/manage-media.sh
+
+# Verify generated files are correct
+cat website/content/media/others.md
+
+# Clean up test artifacts (restore to state before testing)
+rm -f website/content/media/others.md  # if created during testing
+git restore website/content/media/others.md  # if modified during testing
+git clean -fd  # remove any untracked files created during testing
+```
+
+**Important:** Always restore the repository to the state it was in before testing. Do not commit test artifacts or accidentally delete real content.
+
+#### Template/Webpage Testing Requirements
+
+When modifying Hugo templates or layouts, test by building the site:
+
+1. **Syntax validation:** Check template syntax is valid
+2. **Build test:** Compile the site to verify no errors
+3. **Output verification:** Check generated HTML in `website/public/`
+4. **Do not start server:** Test by building and searching source, not by running server
+
+Example workflow:
+```bash
+# Build the site
+docker build -t obscvrat-hugo . && docker run --rm -v $(pwd)/website:/src obscvrat-hugo
+
+# Check for errors in build output
+docker run --rm -v $(pwd)/website:/src obscvrat-hugo 2>&1 | grep ERROR
+
+# Verify generated HTML
+cat website/public/media/index.html | grep "others-section"
+
+# Clean up if needed
+rm -rf website/public/
+```
+
+**Important:** Do not hand back modified templates without building and verifying the output.
+
+#### General Testing Principles
+
+- **Test before commit:** Never commit untested code
+- **Restore state:** Always return repository to pre-testing state
+- **Distinguish test vs real data:** Be careful not to delete real content during cleanup
+- **Document in AGENTS.md:** Testing requirements are also documented in AGENTS.md for AI agents
+
 ## Alternatives Considered
 
 ### Alternative 1: No Local Validation (Current State)
@@ -199,6 +278,32 @@ When a hook fails:
   - Reinventing the wheel (pre-commit framework exists)
 - **Why rejected:** pre-commit framework is more maintainable and standardized
 
+### Alternative 6: Manual Testing Only (No Requirements)
+- Let developers test however they want
+- **Pros:**
+  - Simple, no enforcement
+  - Flexible approach
+  - No documentation needed
+- **Cons:**
+  - Easy to forget or skip
+  - Inconsistent across developers
+  - Leads to broken commits
+  - No guidance for new developers
+- **Why rejected:** Recent issues show manual testing without requirements leads to broken code
+
+### Alternative 7: Automated Functional Tests
+- Write automated tests for all scripts and templates
+- **Pros:**
+  - Catches functional issues automatically
+  - Consistent enforcement
+  - No manual work needed
+- **Cons:**
+  - Time-consuming to write tests
+  - Complex to maintain
+  - Not all functionality can be easily tested
+  - Overkill for simple scripts
+- **Why rejected:** Manual testing is sufficient for current needs; can add automated tests later if needed
+
 ## Consequences
 
 ### Positive
@@ -212,6 +317,10 @@ When a hook fails:
 - **WIP-friendly:** Pre-push stage allows developers to commit WIP code locally
 - **Educational:** Developers learn best practices through linting feedback
 - **Cost savings:** Fewer GitHub Actions runs = lower (or zero) cost
+- **Fewer broken commits:** Manual testing catches functional issues before commit
+- **Faster feedback:** Manual testing provides immediate feedback (seconds vs minutes)
+- **Cleaner git history:** Working code committed, not broken code
+- **Better understanding:** Hands-on testing improves code comprehension
 
 ### Negative
 - **Setup complexity:** Developers must run `make setup-hooks` first
@@ -222,6 +331,10 @@ When a hook fails:
 - **Environment differences:** Issues caught by local hooks might not match CI exactly
 - **Docker dependency:** Hugo validation requires Docker installed locally
 - **Maintenance:** Need to keep `.pre-commit-config.yaml` in sync with GitHub Actions
+- **Requires discipline:** Manual testing easy to skip without enforcement
+- **Adds time:** Testing adds time to development process
+- **Cleanup risk:** Can accidentally delete real content if not careful
+- **No automation:** Manual testing not enforced by tooling
 
 ### Neutral
 - **Pre-push vs pre-commit:** Pre-push stage is middle ground (not earliest possible intervention)
@@ -229,6 +342,8 @@ When a hook fails:
 - **Tool versions:** Local hook versions might differ slightly from GitHub Actions
 - **Bypass logging:** Can't easily audit `--no-verify` usage
 - **Parallel execution:** Hooks run sequentially by default (could parallelize if needed)
+- **Documentation:** Testing requirements documented in both ADR and AGENTS.md
+- **Two-layer approach:** Automated + manual testing complement each other
 
 ## Notes
 
@@ -244,6 +359,10 @@ When a hook fails:
 - **Future:** Could expand to include unit tests once test suite established
 - **Team:** Recommended setup instruction should be added to `CONTRIBUTING.md`
 - **CI as backup:** GitHub Actions remains final safety check even with local hooks
+- **Manual testing:** Also documented in AGENTS.md for AI agent reference
+- **Two-layer approach:** Automated validation (pre-commit hooks) + manual testing (functional verification)
+- **Future:** Consider automated functional tests if manual testing becomes insufficient
+- **Future:** Add make targets for common testing workflows (e.g., `make test-scripts`)
 
 ## Implementation Plan
 

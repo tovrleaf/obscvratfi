@@ -27,6 +27,10 @@ make help
 
 ## Testing and Validation
 
+**See ADR-004 for detailed rationale and decision on testing requirements.**
+
+Quick reference for local testing:
+
 ```bash
 # Setup local pre-commit hooks (one-time)
 make setup-hooks
