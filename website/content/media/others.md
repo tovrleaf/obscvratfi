@@ -7,6 +7,6 @@ items:
     media_title: "Länsi-Uusimaa"
     description: "Illan erityislaatuisen taiteellisen annin aloittaa noise battle Arktinen Harha vs. Obscvrat"
     date: 2025-10-29
-    gig: "2025-10-11-noise-space-xv"
+    gig: "2025-10-31-vihdin-kultsan-halloween"
 
 ---
