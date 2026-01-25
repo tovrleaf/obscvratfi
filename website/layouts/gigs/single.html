@@ -56,7 +56,8 @@
     <div class="gig-poster">
         <h2>Poster</h2>
         {{ $gigSlug := .File.BaseFileName }}
-        {{ $posterPath := printf "media/gigs/%s/%s" $gigSlug (path.Base .Params.poster) }}
+        {{ $posterFilename := path.Base .Params.poster }}
+        {{ $posterPath := printf "media/gigs/%s/%s" $gigSlug $posterFilename }}
         {{ with resources.Get $posterPath }}
         <div class="media-item photo-item">
             <a href="#" class="open-lightbox" 
