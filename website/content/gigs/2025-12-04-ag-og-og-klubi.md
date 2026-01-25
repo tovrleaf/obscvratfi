@@ -1,0 +1,24 @@
+---
+title: "Ag-Og-OG-klubi"
+date: 2025-12-04
+venue: "Club OMG Kontula"
+location: "Helsinki"
+poster: "obscvrat-ag-og-og-klubi-poster-2025.jpg"
+event_link: "https://www.facebook.com/events/club-omg-kontula/ag-og-og-klubi/770146949391559/"
+other_performers:
+  - name: "Kluik"
+    url: "https://kluik.bandcamp.com/"
+  - name: "Resting Place"
+    url: "https://satatuhatta.bandcamp.com/album/unexplored-pathways"
+  - name: "Atrophist"
+    url: "https://www.facebook.com/Atrophisthelsinki"
+media:
+  videos:
+    - youtube_id: "-rwf7jCKjIo"
+      title: "Obscvrat live at Ag-og-OG-klubi (full set, audio only)"
+      credits:
+        - type: "Recorded"
+          name: "Gray Ritual"
+          url: "https://www.youtube.com/@GrayRitual"
+draft: false
+---

@@ -3,9 +3,17 @@ title: "Vihdin Kultsan Halloween"
 date: 2025-10-31
 venue: "Vihdin Kultsa"
 location: "Vihti"
-description: ""
-event_link: "https://www.facebook.com/events/1234567890"
+poster: "obscvrat-vihdin-kultsan-halloween-poster-2025.jpg"
 other_performers:
   - name: "Arktinen Harha"
+    url: "https://www.facebook.com/arktinenharha/"
+  - name: "Mikko Kiri & Piri Piri"
+    url: "https://www.instagram.com/mikkokiri/"
+  - name: "Haamuvalo"
+    url: "https://www.facebook.com/haamuvalo/"
+  - name: "DJ Antti Kneckt"
+    url: "https://www.instagram.com/akneckt/"
 draft: false
 ---
+
+
