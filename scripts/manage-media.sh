@@ -850,7 +850,7 @@ edit_video() {
     # Extract videos section
     echo ""
     echo "Current videos:"
-    awk '/^videos:/,/^[a-z_]+:/ {if (!/^[a-z_]+:/ || /^videos:/) print}' "$selected_file" | grep -v "^[a-z_]*:" | sed 's/^  //'
+    awk '/  videos:/,/^[a-z_]+:/ {if (!/^[a-z_]+:/ || /  videos:/) print}' "$selected_file" | grep -v "^[a-z_]*:" | sed 's/^  //'
     
     echo ""
     echo "1) Add new video"
@@ -899,7 +899,7 @@ edit_video() {
             
             # Insert before the next frontmatter field or ---
             awk -v entry="$video_entry" '
-                /^videos:/ { in_videos=1; print; next }
+                /^  videos:/ { in_videos=1; print; next }
                 in_videos && /^[a-z_]+:/ { print entry; in_videos=0 }
                 in_videos && /^---$/ { print entry; in_videos=0 }
                 { print }
