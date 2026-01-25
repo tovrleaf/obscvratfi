@@ -61,7 +61,7 @@ show_menu() {
     echo "4) Delete gig"
     echo "5) Exit"
     echo ""
-    read -rp "Choose an option: " choice
+    read -rp "Choose an option: " choice || exit 0
     echo ""
     
     case $choice in
