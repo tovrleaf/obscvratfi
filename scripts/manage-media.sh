@@ -811,7 +811,7 @@ edit_video() {
     
     declare -a gigs_with_videos=()
     for file in "$GIGS_DIR"/*.md; do
-        if [[ -f "$file" ]] && grep -q "^videos:" "$file"; then
+        if [[ -f "$file" ]] && grep -q "youtube_id:" "$file"; then
             gigs_with_videos+=("$file")
         fi
     done
