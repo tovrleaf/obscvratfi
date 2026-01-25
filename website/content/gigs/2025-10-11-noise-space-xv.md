@@ -3,9 +3,8 @@ title: "Noise Space XV"
 date: 2025-10-11
 venue: "Kalasataman Vapaakaupunki"
 location: "Helsinki"
-description: ""
 poster: "/media/gigs/2025-10-11-noise-space-xv/obscvrat-noise-space-xv-poster-2025.jpg"
-event_link: "https://www.facebook.com/events/1174867227617176"
+event_link: "https://www.facebook.com/events/hermannin-rantatie-5-fi-00580-helsinki-suomi-00580-helsinki-finland/noise-space-xv/1174867227617176/"
 other_performers:
   - name: "Bryskt"
     url: "https://bryskt.org/"
