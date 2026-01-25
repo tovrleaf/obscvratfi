@@ -772,7 +772,7 @@ list_media() {
     fi
     
     echo ""
-    read -rp "Press Enter to continue..."
+    read -rp "Press Enter to continue..." || true
     show_menu
 }
 
