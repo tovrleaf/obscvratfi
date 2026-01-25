@@ -47,6 +47,29 @@ Local hooks validate:
 - Critical internal links
 - No secrets committed
 
+### Script Testing Requirements
+
+**IMPORTANT:** When modifying existing scripts, always test them before committing:
+
+1. **Syntax validation:** Run `bash -n script.sh` to check for syntax errors
+2. **Functional testing:** Execute the script with test inputs to verify behavior
+3. **Edge cases:** Test with empty inputs, invalid inputs, and boundary conditions
+4. **Integration:** Verify the script works with related files and commands
+
+Example testing workflow:
+```bash
+# Check syntax
+bash -n scripts/manage-media.sh
+
+# Test the script interactively or with test data
+./scripts/manage-media.sh
+
+# Verify generated files are correct
+cat website/content/media/others.md
+```
+
+Do not hand back modified scripts without testing them first.
+
 ## Code Style Guidelines
 
 ### Shell Scripts
