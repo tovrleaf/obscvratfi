@@ -216,7 +216,7 @@ create_gig() {
     } > "$filepath"
     
     print_success "Created gig: $filename"
-    read -rp "Open in editor? (y/N): " open_editor || true
+    read -rp "Open in editor? (y/N): " open_editor || open_editor="n"
     if [[ "$open_editor" =~ ^[Yy]$ ]]; then
         ${EDITOR:-vim} "$filepath"
     fi
