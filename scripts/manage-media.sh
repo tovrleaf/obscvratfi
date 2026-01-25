@@ -595,34 +595,131 @@ edit_others() {
         return
     fi
     
-    # List existing items
-    echo "Existing items:"
-    local counter=1
+    # Parse items from YAML
+    local -a items_data=()
+    local current_item=""
+    local in_items=false
+    
     while IFS= read -r line; do
-        if [[ "$line" =~ title:\ \"(.*)\" ]]; then
-            echo "  $counter) ${BASH_REMATCH[1]}"
-            ((counter++))
+        if [[ "$line" =~ ^items: ]]; then
+            in_items=true
+            continue
+        fi
+        if [[ "$in_items" == true ]]; then
+            if [[ "$line" =~ ^---$ ]]; then
+                break
+            fi
+            if [[ "$line" =~ ^[[:space:]]*-[[:space:]]type: ]]; then
+                [[ -n "$current_item" ]] && items_data+=("$current_item")
+                current_item="$line"
+            else
+                current_item+=$'\n'"$line"
+            fi
         fi
     done < "$OTHERS_FILE"
+    [[ -n "$current_item" ]] && items_data+=("$current_item")
     
-    if [[ $counter -eq 1 ]]; then
+    if [[ ${#items_data[@]} -eq 0 ]]; then
         print_error "No items found"
         show_menu
         return
     fi
     
+    # List items
+    echo "Existing items:"
+    for i in "${!items_data[@]}"; do
+        local title=$(echo "${items_data[$i]}" | grep "title:" | sed 's/.*title: "\(.*\)"/\1/')
+        echo "  $((i+1))) $title"
+    done
+    
     echo ""
     read -rp "Select item to edit (or press Enter to cancel): " item_choice
     
-    if [[ -z "$item_choice" ]] || [[ ! "$item_choice" =~ ^[0-9]+$ ]]; then
+    if [[ -z "$item_choice" ]] || [[ ! "$item_choice" =~ ^[0-9]+$ ]] || [[ "$item_choice" -lt 1 ]] || [[ "$item_choice" -gt ${#items_data[@]} ]]; then
         show_menu
         return
     fi
     
-    # Open in editor
-    ${EDITOR:-vi} "$OTHERS_FILE"
+    # Extract current values
+    local idx=$((item_choice-1))
+    local item="${items_data[$idx]}"
+    local current_type=$(echo "$item" | grep "type:" | sed 's/.*type: "\(.*\)"/\1/')
+    local current_title=$(echo "$item" | grep "title:" | sed 's/.*title: "\(.*\)"/\1/')
+    local current_url=$(echo "$item" | grep "url:" | sed 's/.*url: "\(.*\)"/\1/')
+    local current_desc=$(echo "$item" | grep "description:" | sed 's/.*description: "\(.*\)"/\1/')
+    local current_date=$(echo "$item" | grep "date:" | sed 's/.*date: \(.*\)/\1/')
+    local current_gig=$(echo "$item" | grep "gig:" | sed 's/.*gig: "\(.*\)"/\1/')
     
-    print_success "Others file updated"
+    # Interactive edit
+    echo ""
+    print_header "Editing: $current_title"
+    
+    echo "1) Interview"
+    echo "2) Review"
+    echo "3) Mention"
+    read -rp "Type [$current_type]: " new_type
+    [[ -z "$new_type" ]] && new_type="$current_type"
+    case $new_type in
+        1|interview) new_type="interview" ;;
+        2|review) new_type="review" ;;
+        3|mention) new_type="mention" ;;
+        *) new_type="$current_type" ;;
+    esac
+    
+    read -rp "Title [$current_title]: " new_title
+    [[ -z "$new_title" ]] && new_title="$current_title"
+    
+    read -rp "URL [$current_url]: " new_url
+    [[ -z "$new_url" ]] && new_url="$current_url"
+    
+    read -rp "Description [$current_desc]: " new_desc
+    [[ -z "$new_desc" ]] && new_desc="$current_desc"
+    
+    read -rp "Date (YYYY-MM-DD) [$current_date]: " new_date
+    [[ -z "$new_date" ]] && new_date="$current_date"
+    
+    echo ""
+    echo "Related to a gig? (current: ${current_gig:-none})"
+    list_gigs_for_selection
+    read -rp "Gig number (or press Enter to keep current): " gig_choice
+    
+    new_gig="$current_gig"
+    if [[ -n "$gig_choice" ]]; then
+        if [[ "$gig_choice" =~ ^[0-9]+$ ]]; then
+            gig_files=("$GIGS_DIR"/*.md)
+            gig_files=("${gig_files[@]##*/}")
+            gig_files=("${gig_files[@]%.md}")
+            if [[ "$gig_choice" -gt 0 ]] && [[ "$gig_choice" -le "${#gig_files[@]}" ]]; then
+                new_gig="${gig_files[$((gig_choice-1))]}"
+            fi
+        elif [[ "$gig_choice" == "none" ]] || [[ "$gig_choice" == "0" ]]; then
+            new_gig=""
+        fi
+    fi
+    
+    # Build new item
+    local new_item="  - type: \"$new_type\"\n"
+    new_item+="    title: \"$new_title\"\n"
+    new_item+="    url: \"$new_url\"\n"
+    [[ -n "$new_desc" ]] && new_item+="    description: \"$new_desc\"\n"
+    [[ -n "$new_date" ]] && new_item+="    date: $new_date\n"
+    [[ -n "$new_gig" ]] && new_item+="    gig: \"$new_gig\"\n"
+    
+    # Replace in array
+    items_data[$idx]="$new_item"
+    
+    # Rebuild file
+    {
+        echo "---"
+        echo "title: \"Others\""
+        echo "items:"
+        for item_data in "${items_data[@]}"; do
+            echo -e "$item_data"
+        done
+        echo "---"
+    } > "$OTHERS_FILE"
+    
+    print_success "Item updated"
     show_menu
 }
 
