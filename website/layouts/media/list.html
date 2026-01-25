@@ -151,10 +151,15 @@
                 {{ range $othersPage.Params.items }}
                 <div class="others-item">
                     <h3><a href="{{ .url }}" target="_blank">{{ .title }}</a></h3>
-                    {{ if .description }}<p>{{ .description }}</p>{{ end }}
                     <div class="others-meta">
                         <span class="others-type">{{ .type }}</span>
-                        {{ if .date }}<span class="others-date">{{ dateFormat "January 2, 2006" .date }}</span>{{ end }}
+                        {{ if or .media_title .date }}
+                        <span class="others-info">
+                            {{ if .media_title }}{{ .media_title }}{{ end }}
+                            {{ if and .media_title .date }} | {{ end }}
+                            {{ if .date }}{{ dateFormat "January 2, 2006" .date }}{{ end }}
+                        </span>
+                        {{ end }}
                         {{ if .gig }}
                             {{ $gigPage := $.Site.GetPage (printf "/gigs/%s" .gig) }}
                             {{ if $gigPage }}
@@ -162,6 +167,7 @@
                             {{ end }}
                         {{ end }}
                     </div>
+                    {{ if .description }}<p>{{ .description }}</p>{{ end }}
                 </div>
                 {{ end }}
             </div>

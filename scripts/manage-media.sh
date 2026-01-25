@@ -542,6 +542,7 @@ EOF
     
     read -rp "Title: " title
     read -rp "URL: " url
+    read -rp "Media title (optional, e.g., magazine/website name): " media_title
     read -rp "Description (optional): " description
     read -rp "Date (YYYY-MM-DD, optional): " item_date
     
@@ -566,6 +567,7 @@ EOF
     item_lines+=("  - type: \"$item_type\"")
     item_lines+=("    title: \"$title\"")
     item_lines+=("    url: \"$url\"")
+    [[ -n "$media_title" ]] && item_lines+=("    media_title: \"$media_title\"")
     [[ -n "$description" ]] && item_lines+=("    description: \"$description\"")
     [[ -n "$item_date" ]] && item_lines+=("    date: $item_date")
     [[ -n "$gig_slug" ]] && item_lines+=("    gig: \"$gig_slug\"")
@@ -640,7 +642,7 @@ edit_others() {
     # List items
     echo "Existing items:"
     for i in "${!items_data[@]}"; do
-        local title=$(echo "${items_data[$i]}" | grep "title:" | sed 's/.*title: "\(.*\)"/\1/')
+        local title=$(echo "${items_data[$i]}" | grep "^[[:space:]]*title:" | head -1 | sed 's/.*title: "\(.*\)"/\1/')
         echo "  $((i+1))) $title"
     done
     
@@ -656,8 +658,9 @@ edit_others() {
     local idx=$((item_choice-1))
     local item="${items_data[$idx]}"
     local current_type=$(echo "$item" | grep "type:" | sed 's/.*type: "\(.*\)"/\1/')
-    local current_title=$(echo "$item" | grep "title:" | sed 's/.*title: "\(.*\)"/\1/')
+    local current_title=$(echo "$item" | grep "^[[:space:]]*title:" | head -1 | sed 's/.*title: "\(.*\)"/\1/')
     local current_url=$(echo "$item" | grep "url:" | sed 's/.*url: "\(.*\)"/\1/')
+    local current_media_title=$(echo "$item" | grep "media_title:" | sed 's/.*media_title: "\(.*\)"/\1/')
     local current_desc=$(echo "$item" | grep "description:" | sed 's/.*description: "\(.*\)"/\1/')
     local current_date=$(echo "$item" | grep "date:" | sed 's/.*date: \(.*\)/\1/')
     local current_gig=$(echo "$item" | grep "gig:" | sed 's/.*gig: "\(.*\)"/\1/')
@@ -683,6 +686,9 @@ edit_others() {
     
     read -rp "URL [$current_url]: " new_url
     [[ -z "$new_url" ]] && new_url="$current_url"
+    
+    read -rp "Media title [$current_media_title]: " new_media_title
+    [[ -z "$new_media_title" ]] && new_media_title="$current_media_title"
     
     read -rp "Description [$current_desc]: " new_desc
     [[ -z "$new_desc" ]] && new_desc="$current_desc"
@@ -713,6 +719,7 @@ edit_others() {
     local new_item="  - type: \"$new_type\"\n"
     new_item+="    title: \"$new_title\"\n"
     new_item+="    url: \"$new_url\"\n"
+    [[ -n "$new_media_title" ]] && new_item+="    media_title: \"$new_media_title\"\n"
     [[ -n "$new_desc" ]] && new_item+="    description: \"$new_desc\"\n"
     [[ -n "$new_date" ]] && new_item+="    date: $new_date\n"
     [[ -n "$new_gig" ]] && new_item+="    gig: \"$new_gig\"\n"
