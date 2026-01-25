@@ -114,7 +114,8 @@ create_gig() {
     fi
     
     # Description
-    read -rp "Description: " description
+    echo "Description (press Ctrl+D when done, or Enter twice for empty):"
+    description=$(cat)
     
     # Poster
     read -rp "Poster image URL or path (or press Enter to skip): " poster_input
@@ -168,54 +169,42 @@ create_gig() {
     fi
     
     # Build frontmatter
-    cat > "$filepath" << 'FRONTMATTER'
----
-title: "$event_name"
-date: $date
-venue: "$venue"
-location: "$city"
-description: "$description"
-FRONTMATTER
-    
-    # Replace variables in frontmatter
-    sed -i.bak "s/\$event_name/$event_name/g; s/\$venue/$venue/g; s/\$date/$date/g; s/\$city/$city/g; s/\$description/$description/g" "$filepath"
-    rm -f "${filepath}.bak"
-    
-    # Add poster if provided
-    if [[ -n "$poster" ]]; then
-        echo "poster: \"$poster\"" >> "$filepath"
-    fi
-    
-    # Add event link if provided
-    if [[ -n "$event_url" ]]; then
-        echo "event_link: \"$event_url\"" >> "$filepath"
-    fi
-    
-    # Add performers if provided
-    if [[ ${#performers[@]} -gt 0 ]]; then
-        echo "other_performers:" >> "$filepath"
-        for performer in "${performers[@]}"; do
-            IFS='|' read -r name url <<< "$performer"
-            if [[ -n "$url" ]]; then
-                cat >> "$filepath" << PERFORMER
-  - name: "$name"
-    url: "$url"
-PERFORMER
-            else
-                echo "  - name: \"$name\"" >> "$filepath"
-            fi
-        done
-    fi
-    
-    # Close frontmatter and add body
-    cat >> "$filepath" << 'BODY'
-draft: false
----
-
-$description
-BODY
-    sed -i.bak "s/\$description/$description/g" "$filepath"
-    rm -f "${filepath}.bak"
+    {
+        echo "---"
+        echo "title: \"$event_name\""
+        echo "date: $date"
+        echo "venue: \"$venue\""
+        echo "location: \"$city\""
+        
+        # Add poster if provided
+        if [[ -n "$poster" ]]; then
+            echo "poster: \"$poster\""
+        fi
+        
+        # Add event link if provided
+        if [[ -n "$event_url" ]]; then
+            echo "event_link: \"$event_url\""
+        fi
+        
+        # Add performers if provided
+        if [[ ${#performers[@]} -gt 0 ]]; then
+            echo "other_performers:"
+            for performer in "${performers[@]}"; do
+                IFS='|' read -r name url <<< "$performer"
+                if [[ -n "$url" ]]; then
+                    echo "  - name: \"$name\""
+                    echo "    url: \"$url\""
+                else
+                    echo "  - name: \"$name\""
+                fi
+            done
+        fi
+        
+        echo "draft: false"
+        echo "---"
+        echo ""
+        echo "$description"
+    } > "$filepath"
     
     print_success "Created gig: $filename"
     read -rp "Open in editor? (y/N): " open_editor
@@ -342,8 +331,11 @@ edit_gig() {
     read -rp "City [$old_location]: " city
     city=${city:-$old_location}
     
-    read -rp "Description [$old_description]: " description
-    description=${description:-$old_description}
+    echo "Description (current: ${old_description:0:50}...) - press Ctrl+D when done, Enter to keep current:"
+    description=$(cat)
+    if [[ -z "$description" ]]; then
+        description="$old_description"
+    fi
     
     read -rp "Poster [$old_poster]: " poster_input
     poster_input=${poster_input:-$old_poster}
@@ -434,54 +426,42 @@ edit_gig() {
     filepath="$GIGS_DIR/$filename"
     
     # Build updated frontmatter
-    cat > "$filepath" << 'FRONTMATTER'
----
-title: "$event_name"
-date: $date
-venue: "$venue"
-location: "$city"
-description: "$description"
-FRONTMATTER
-    
-    # Replace variables
-    sed -i.bak "s/\$event_name/$event_name/g; s/\$venue/$venue/g; s/\$date/$date/g; s/\$city/$city/g; s/\$description/$description/g" "$filepath"
-    rm -f "${filepath}.bak"
-    
-    # Add poster if provided
-    if [[ -n "$poster" ]]; then
-        echo "poster: \"$poster\"" >> "$filepath"
-    fi
-    
-    # Add event link if provided
-    if [[ -n "$event_url" ]]; then
-        echo "event_link: \"$event_url\"" >> "$filepath"
-    fi
-    
-    # Add performers if provided
-    if [[ ${#performers[@]} -gt 0 ]]; then
-        echo "other_performers:" >> "$filepath"
-        for performer in "${performers[@]}"; do
-            IFS='|' read -r name url <<< "$performer"
-            if [[ -n "$url" ]]; then
-                cat >> "$filepath" << PERFORMER
-  - name: "$name"
-    url: "$url"
-PERFORMER
-            else
-                echo "  - name: \"$name\"" >> "$filepath"
-            fi
-        done
-    fi
-    
-    # Close frontmatter and add body
-    cat >> "$filepath" << 'BODY'
-draft: false
----
-
-$description
-BODY
-    sed -i.bak "s/\$description/$description/g" "$filepath"
-    rm -f "${filepath}.bak"
+    {
+        echo "---"
+        echo "title: \"$event_name\""
+        echo "date: $date"
+        echo "venue: \"$venue\""
+        echo "location: \"$city\""
+        
+        # Add poster if provided
+        if [[ -n "$poster" ]]; then
+            echo "poster: \"$poster\""
+        fi
+        
+        # Add event link if provided
+        if [[ -n "$event_url" ]]; then
+            echo "event_link: \"$event_url\""
+        fi
+        
+        # Add performers if provided
+        if [[ ${#performers[@]} -gt 0 ]]; then
+            echo "other_performers:"
+            for performer in "${performers[@]}"; do
+                IFS='|' read -r name url <<< "$performer"
+                if [[ -n "$url" ]]; then
+                    echo "  - name: \"$name\""
+                    echo "    url: \"$url\""
+                else
+                    echo "  - name: \"$name\""
+                fi
+            done
+        fi
+        
+        echo "draft: false"
+        echo "---"
+        echo ""
+        echo "$description"
+    } > "$filepath"
     
     # Remove old file if filename changed
     if [[ "$selected_file" != "$filepath" ]]; then
