@@ -92,6 +92,7 @@ show_menu() {
     echo "6) Edit Others item"
     echo "7) List media"
     echo "8) Exit"
+    echo "9) Edit video"
     echo ""
     read -rp "Choose an option: " choice || exit 0
     echo ""
@@ -105,6 +106,7 @@ show_menu() {
         6) edit_others ;;
         7) list_media ;;
         8) exit 0 ;;
+        9) edit_video ;;
         *) print_error "Invalid option"; show_menu ;;
     esac
 }
@@ -782,6 +784,135 @@ list_media() {
     
     echo ""
     read -rp "Press Enter to continue..." || :
+    show_menu
+}
+
+# Edit video
+edit_video() {
+    print_header "Edit Video"
+    
+    # List all gigs with videos
+    if [[ ! -d "$GIGS_DIR" ]]; then
+        print_error "No gigs directory found"
+        show_menu
+        return
+    fi
+    
+    declare -a gigs_with_videos=()
+    for file in "$GIGS_DIR"/*.md; do
+        if [[ -f "$file" ]] && grep -q "^videos:" "$file"; then
+            gigs_with_videos+=("$file")
+        fi
+    done
+    
+    if [[ ${#gigs_with_videos[@]} -eq 0 ]]; then
+        print_warning "No gigs with videos found"
+        show_menu
+        return
+    fi
+    
+    echo "Gigs with videos:"
+    for i in "${!gigs_with_videos[@]}"; do
+        file="${gigs_with_videos[$i]}"
+        title=$(grep "^title:" "$file" | sed 's/title: "\(.*\)"/\1/')
+        date=$(grep "^date:" "$file" | awk '{print $2}')
+        echo "$((i+1))) $date - $title"
+    done
+    echo "0) Cancel"
+    echo ""
+    
+    read -rp "Select gig: " selection || selection="0"
+    
+    if [[ "$selection" == "0" ]]; then
+        show_menu
+        return
+    fi
+    
+    if [[ ! "$selection" =~ ^[0-9]+$ ]] || [[ "$selection" -lt 1 ]] || [[ "$selection" -gt "${#gigs_with_videos[@]}" ]]; then
+        print_error "Invalid selection"
+        show_menu
+        return
+    fi
+    
+    selected_file="${gigs_with_videos[$((selection-1))]}"
+    
+    # Extract videos section
+    echo ""
+    echo "Current videos:"
+    awk '/^videos:/,/^[a-z_]+:/ {if (!/^[a-z_]+:/ || /^videos:/) print}' "$selected_file" | grep -v "^[a-z_]*:" | sed 's/^  //'
+    
+    echo ""
+    echo "1) Add new video"
+    echo "2) Remove video"
+    echo "3) Edit video details"
+    echo "0) Cancel"
+    read -rp "Choose action: " action || action="0"
+    
+    case $action in
+        1)
+            # Add new video
+            read -rp "Video URL: " video_url || video_url=""
+            read -rp "Video title: " video_title || video_title=""
+            read -rp "Video date (YYYY-MM-DD): " video_date || video_date=""
+            
+            # Add credits
+            echo "Add credits (press Enter on credit type to finish):"
+            declare -a credits=()
+            while true; do
+                read -rp "  Credit type: " credit_type || break
+                if [[ -z "$credit_type" ]]; then
+                    break
+                fi
+                read -rp "  Name: " credit_name || credit_name=""
+                read -rp "  URL (optional): " credit_url || credit_url=""
+                
+                if [[ -n "$credit_url" ]]; then
+                    credits+=("$credit_type|$credit_name|$credit_url")
+                else
+                    credits+=("$credit_type|$credit_name|")
+                fi
+            done
+            
+            # Build video entry
+            video_entry="  - url: \"$video_url\"\n    title: \"$video_title\"\n    date: $video_date"
+            if [[ ${#credits[@]} -gt 0 ]]; then
+                video_entry="$video_entry\n    credits:"
+                for credit in "${credits[@]}"; do
+                    IFS='|' read -r type name url <<< "$credit"
+                    video_entry="$video_entry\n      - type: \"$type\"\n        name: \"$name\""
+                    if [[ -n "$url" ]]; then
+                        video_entry="$video_entry\n        url: \"$url\""
+                    fi
+                done
+            fi
+            
+            # Insert before the next frontmatter field or ---
+            awk -v entry="$video_entry" '
+                /^videos:/ { in_videos=1; print; next }
+                in_videos && /^[a-z_]+:/ { print entry; in_videos=0 }
+                in_videos && /^---$/ { print entry; in_videos=0 }
+                { print }
+                END { if (in_videos) print entry }
+            ' "$selected_file" > "$selected_file.tmp" && mv "$selected_file.tmp" "$selected_file"
+            
+            print_success "Video added"
+            ;;
+        2)
+            # Remove video - open in editor
+            ${EDITOR:-vim} "$selected_file"
+            print_success "Edit complete"
+            ;;
+        3)
+            # Edit video - open in editor
+            ${EDITOR:-vim} "$selected_file"
+            print_success "Edit complete"
+            ;;
+        0)
+            show_menu
+            return
+            ;;
+    esac
+    
     show_menu
 }
 
