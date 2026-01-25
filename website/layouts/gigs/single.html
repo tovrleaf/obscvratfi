@@ -58,13 +58,14 @@
         {{ $gigSlug := .File.BaseFileName }}
         {{ $posterFilename := path.Base .Params.poster }}
         {{ $posterPath := printf "media/gigs/%s/%s" $gigSlug $posterFilename }}
-        {{ with resources.Get $posterPath }}
+        {{ $resource := resources.Get $posterPath }}
+        {{ if $resource }}
         <div class="media-item photo-item">
             <a href="#" class="open-lightbox" 
-               data-image-url="{{ .RelPermalink }}"
-               data-gig-title="{{ $.Title }}"
-               data-gig-link="{{ $.Permalink }}">
-                <img src="{{ .RelPermalink }}" alt="{{ $.Title }} poster">
+               data-image-url="{{ $resource.RelPermalink }}"
+               data-gig-title="{{ .Title }}"
+               data-gig-link="{{ .Permalink }}">
+                <img src="{{ $resource.RelPermalink }}" alt="{{ .Title }} poster">
             </a>
         </div>
         {{ end }}
