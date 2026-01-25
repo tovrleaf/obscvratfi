@@ -114,8 +114,16 @@ create_gig() {
     fi
     
     # Description
-    echo "Description (press Ctrl+D when done, or Enter twice for empty):"
-    description=$(cat)
+    echo "Description (press Enter twice when done):"
+    description=""
+    while IFS= read -r line; do
+        if [[ -z "$line" ]]; then
+            break
+        fi
+        description+="$line"$'\n'
+    done
+    # Remove trailing newline
+    description="${description%$'\n'}"
     
     # Poster
     read -rp "Poster image URL or path (or press Enter to skip): " poster_input
@@ -331,8 +339,17 @@ edit_gig() {
     read -rp "City [$old_location]: " city
     city=${city:-$old_location}
     
-    echo "Description (current: ${old_description:0:50}...) - press Ctrl+D when done, Enter to keep current:"
-    description=$(cat)
+    echo "Description (current: ${old_description:0:50}...) - press Enter twice when done, or just Enter to keep current:"
+    description=""
+    while IFS= read -r line; do
+        if [[ -z "$line" ]]; then
+            break
+        fi
+        description+="$line"$'\n'
+    done
+    # Remove trailing newline
+    description="${description%$'\n'}"
+    # If empty, keep old description
     if [[ -z "$description" ]]; then
         description="$old_description"
     fi
