@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # scripts/manage-gigs.sh - Interactive gig management tool
 
-set -euo pipefail
+set -uo pipefail
 
 GIGS_DIR="website/content/gigs"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
