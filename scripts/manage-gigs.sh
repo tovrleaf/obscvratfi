@@ -121,7 +121,7 @@ create_gig() {
             break
         fi
         description+="$line"$'\n'
-    done
+    done < /dev/tty
     # Remove trailing newline
     description="${description%$'\n'}"
     
@@ -346,7 +346,7 @@ edit_gig() {
             break
         fi
         description+="$line"$'\n'
-    done
+    done < /dev/tty
     # Remove trailing newline
     description="${description%$'\n'}"
     # If empty, keep old description
