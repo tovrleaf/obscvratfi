@@ -150,9 +150,8 @@
             <div class="others-list">
                 {{ range $othersPage.Params.items }}
                 <div class="others-item">
-                    <h3><a href="{{ .url }}" target="_blank">{{ .title }}</a></h3>
+                    <h3>{{ .type }}: <a href="{{ .url }}" target="_blank">{{ .title }}</a></h3>
                     <div class="others-meta">
-                        <span class="others-type">{{ .type }}</span>
                         {{ if or .media_title .date }}
                         <span class="others-info">
                             {{ if .media_title }}{{ .media_title }}{{ end }}
