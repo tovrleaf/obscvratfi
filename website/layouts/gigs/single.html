@@ -140,9 +140,13 @@
             <ul>
             {{ range $relatedItems }}
                 <li>
-                    <a href="{{ .url }}" target="_blank">{{ .title }}</a>
-                    {{ if .description }} - {{ .description }}{{ end }}
-                    {{ if .date }} ({{ dateFormat "January 2, 2006" .date }}){{ end }}
+                    <strong>{{ .type }}:</strong> <a href="{{ .url }}" target="_blank">{{ .title }}</a>
+                    {{ if or .media_title .date }}
+                    <br>
+                    {{ if .media_title }}{{ .media_title }}{{ if .date }} | {{ end }}{{ end }}
+                    {{ if .date }}{{ dateFormat "January 2, 2006" .date }}{{ end }}
+                    {{ end }}
+                    {{ if .description }}<br>{{ .description }}{{ end }}
                 </li>
             {{ end }}
             </ul>
