@@ -369,17 +369,64 @@ edit_gig() {
     # Event link
     read -rp "Event link URL (or press Enter to skip): " event_url
     
-    # Other performers
-    echo "Other performers (press Enter when done):"
+    # Other performers - parse existing
+    echo ""
+    echo "Other performers:"
     declare -a performers=()
-    while true; do
-        read -rp "  Performer name (or press Enter to finish): " performer_name
-        if [[ -z "$performer_name" ]]; then
-            break
+    local performer_count=0
+    
+    # Parse existing performers from file
+    while IFS= read -r line; do
+        if [[ "$line" =~ ^[[:space:]]*-[[:space:]]name:[[:space:]]*\"(.*)\" ]]; then
+            local perf_name="${BASH_REMATCH[1]}"
+            # Read next line for URL
+            read -r next_line
+            local perf_url=""
+            if [[ "$next_line" =~ url:[[:space:]]*\"(.*)\" ]]; then
+                perf_url="${BASH_REMATCH[1]}"
+            fi
+            performers+=("$perf_name|$perf_url")
+            ((performer_count++))
+            echo "  $performer_count) $perf_name${perf_url:+ ($perf_url)}"
         fi
-        read -rp "  Performer URL (or press Enter to skip): " performer_url
-        performers+=("$performer_name|$performer_url")
-    done
+    done < "$selected_file"
+    
+    if [[ $performer_count -eq 0 ]]; then
+        echo "  (none)"
+    fi
+    
+    echo ""
+    echo "1) Add performer"
+    echo "2) Remove performer"
+    echo "3) Keep as is"
+    read -rp "Choose action: " perf_action
+    
+    case $perf_action in
+        1)
+            # Add performer
+            while true; do
+                read -rp "  Performer name (or press Enter to finish): " performer_name
+                if [[ -z "$performer_name" ]]; then
+                    break
+                fi
+                read -rp "  Performer URL (or press Enter to skip): " performer_url
+                performers+=("$performer_name|$performer_url")
+            done
+            ;;
+        2)
+            # Remove performer
+            if [[ $performer_count -gt 0 ]]; then
+                read -rp "Enter performer number to remove: " remove_num
+                if [[ "$remove_num" =~ ^[0-9]+$ ]] && [[ "$remove_num" -ge 1 ]] && [[ "$remove_num" -le $performer_count ]]; then
+                    unset 'performers[$((remove_num-1))]'
+                    performers=("${performers[@]}")  # Re-index array
+                fi
+            fi
+            ;;
+        3|*)
+            # Keep as is
+            ;;
+    esac
     
     # Generate filename
     slug=$(echo "$slug_base" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | tr -cd '[:alnum:]-')
