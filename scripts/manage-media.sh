@@ -282,6 +282,7 @@ add_video() {
     # Get YouTube URL and title
     read -rp "YouTube URL: " youtube_url
     read -rp "Video title: " video_title
+    read -rp "Video date (YYYY-MM-DD, or press Enter to skip): " video_date
     
     # Extract YouTube ID
     youtube_id=""
@@ -323,6 +324,9 @@ add_video() {
             echo "Add this to the videos list:"
             echo "    - youtube_id: \"$youtube_id\""
             echo "      title: \"$video_title\""
+            if [[ -n "$video_date" ]]; then
+                echo "      date: $video_date"
+            fi
             if [[ ${#credits[@]} -gt 0 ]]; then
                 echo "      credits:"
                 for credit in "${credits[@]}"; do
@@ -337,6 +341,9 @@ add_video() {
         else
             # Add videos section to existing media
             video_section="  videos:\n    - youtube_id: \"$youtube_id\"\n      title: \"$video_title\""
+            if [[ -n "$video_date" ]]; then
+                video_section="$video_section\n      date: $video_date"
+            fi
             if [[ ${#credits[@]} -gt 0 ]]; then
                 video_section="$video_section\n      credits:"
                 for credit in "${credits[@]}"; do
@@ -356,6 +363,10 @@ add_video() {
     else
         # Build media section with YouTube video
         media_section="media:\n  videos:\n    - youtube_id: \"$youtube_id\"\n      title: \"$video_title\""
+        
+        if [[ -n "$video_date" ]]; then
+            media_section="$media_section\n      date: $video_date"
+        fi
         
         if [[ ${#credits[@]} -gt 0 ]]; then
             media_section="$media_section\n      credits:"

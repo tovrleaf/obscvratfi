@@ -90,7 +90,7 @@
                         <div class="media-item video-item">
                             <a href="#" class="open-video-lightbox"
                                data-youtube-id="{{ .youtube_id }}"
-                               data-title="{{ .title }}"
+                               data-title="{{ .title }}{{ if .date }} | {{ .date }}{{ end }}"
                                data-gig-title="{{ $gigTitle }}"
                                data-gig-link="{{ $gigPermalink }}"
                                {{ if .credits }}
