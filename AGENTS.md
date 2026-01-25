@@ -55,6 +55,7 @@ Local hooks validate:
 2. **Functional testing:** Execute the script with test inputs to verify behavior
 3. **Edge cases:** Test with empty inputs, invalid inputs, and boundary conditions
 4. **Integration:** Verify the script works with related files and commands
+5. **Cleanup:** Remove any test artifacts and return to clean state before committing
 
 Example testing workflow:
 ```bash
@@ -66,9 +67,15 @@ bash -n scripts/manage-media.sh
 
 # Verify generated files are correct
 cat website/content/media/others.md
+
+# Clean up test artifacts
+rm -f website/content/media/others.md  # if created during testing
+git checkout -- .  # restore any modified files
+git clean -fd  # remove untracked files
 ```
 
 Do not hand back modified scripts without testing them first.
+Always return the repository to a clean state after testing.
 
 ## Code Style Guidelines
 
