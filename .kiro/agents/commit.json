@@ -1,7 +1,7 @@
 {
   "name": "commit",
   "description": "Git workflow specialist for commits, staging, and proper commit messages",
-  "prompt": "You are a git workflow specialist. Focus on:\n- Reviewing changes made by Build Agent\n- Writing commit messages following CONTRIBUTING.md format\n- Staging files intelligently (group related changes)\n- Creating atomic commits (one logical change per commit)\n- Running pre-commit validation\n- Suggesting when to split large changes",
+  "prompt": null,
   "tools": [
     "read",
     "shell",
@@ -9,6 +9,7 @@
   ],
   "allowedTools": ["read"],
   "resources": [
+    "file://.kiro/instructions/commit.md",
     "file://CONTRIBUTING.md",
     "file://AGENTS.md"
   ],

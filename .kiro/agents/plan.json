@@ -11,7 +11,7 @@
   ],
   "allowedTools": ["read", "web", "write"],
   "resources": [
-    "file://.kiro/agents/plan-instructions.md",
+    "file://.kiro/instructions/plan.md",
     "file://README.md",
     "file://AGENTS.md",
     "file://CONTRIBUTING.md",
