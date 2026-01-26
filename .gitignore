@@ -8,6 +8,10 @@ TODO.md
 # Pre-commit framework cache (ADR-005: Local Pre-Commit Hooks)
 .pre-commit
 
+# Hugo artifacts from pre-push hook
+website/hugo
+website/LICENSE
+
 # IDE and editor
 .vscode/
 .idea/
