@@ -4,10 +4,11 @@
   "prompt": null,
   "tools": [
     "read",
+    "web",
     "introspect",
     "thinking"
   ],
-  "allowedTools": ["read"],
+  "allowedTools": ["read", "web"],
   "resources": [
     "file://.kiro/agents/plan-instructions.md",
     "file://README.md",
