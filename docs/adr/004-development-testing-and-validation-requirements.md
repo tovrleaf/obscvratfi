@@ -184,7 +184,17 @@ If linting fails before commit:
 4. Or bypass if necessary: `git commit --no-verify`
 
 **Requirements:**
-- All linters installed via `make hooks setup` in local .venv
+- Python 3.9+ for creating virtual environment
+- All linters installed via `make hooks setup` in local `.venv/` directory
+- Tools installed: pre-commit, shellcheck-py, yamllint, pymarkdownlnt (from requirements-dev.txt)
+
+**Installation:**
+```bash
+# One-time setup - creates .venv and installs all tools
+make hooks setup
+```
+
+This creates a local Python virtual environment (`.venv/`) and installs all development dependencies from `requirements-dev.txt`. All tools are isolated to the project - no global installation needed.
 
 ### Layer 2: Manual Functional Testing
 
