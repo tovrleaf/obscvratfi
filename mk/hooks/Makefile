@@ -24,10 +24,20 @@ setup:
 	}
 	@echo "Setting up pre-commit hooks..."
 	@cd ../.. && pre-commit install --hook-type pre-push
+	@echo "Setting up post-commit hook for shellcheck..."
+	@cd ../.. && ln -sf ../../scripts/post-commit-shellcheck.sh .git/hooks/post-commit
+	@chmod +x ../../scripts/post-commit-shellcheck.sh
 	@echo "✓ Pre-commit hooks installed successfully"
+	@echo "✓ Post-commit shellcheck hook installed"
 	@echo ""
-	@echo "Hooks will now run automatically before git push"
-	@echo "To run hooks manually: make hooks run"
+	@echo "Hooks will now run:"
+	@echo "  - After every commit (shellcheck on changed .sh files)"
+	@echo "  - Before every push (all validation checks)"
+	@echo ""
+	@echo "To run manually:"
+	@echo "  make test sh-commit    - Check shell scripts in last commit"
+	@echo "  make hooks run         - Run all pre-push checks"
+	@echo ""
 	@echo "To uninstall: make hooks uninstall"
 
 run:
@@ -42,7 +52,13 @@ run:
 uninstall:
 	@if [ -f ../../.git/hooks/pre-push ]; then \
 		cd ../.. && pre-commit uninstall --hook-type pre-push; \
-		echo "✓ Pre-commit hooks uninstalled"; \
+		echo "✓ Pre-push hooks uninstalled"; \
 	else \
-		echo "Pre-commit hooks are not installed"; \
+		echo "Pre-push hooks are not installed"; \
+	fi
+	@if [ -L ../../.git/hooks/post-commit ]; then \
+		rm ../../.git/hooks/post-commit; \
+		echo "✓ Post-commit hook uninstalled"; \
+	else \
+		echo "Post-commit hook is not installed"; \
 	fi

@@ -8,6 +8,7 @@ include mk/media.mk
 include mk/music.mk
 include mk/site.mk
 include mk/deploy.mk
+include mk/test.mk
 
 .PHONY: help
 
@@ -27,6 +28,11 @@ help: ## Show this help
 	@echo "  make clean                     - Remove build artifacts"
 	@echo "  make list-content              - List all content"
 	@echo ""
+	@echo "Testing:"
+	@echo "  make test                      - Show test help"
+	@echo "  make test sh                   - Run shellcheck on all scripts"
+	@echo "  make test sh-commit            - Check scripts in last commit"
+	@echo ""
 	@echo "Development:"
 	@echo "  make hooks                     - Show hooks help"
 	@echo "  make hooks setup               - Install pre-commit hooks"
@@ -42,6 +48,6 @@ help: ## Show this help
 	@echo "  make deploy production         - Deploy to production"
 	@echo ""
 	@echo "For detailed help on any command group, run:"
-	@echo "  make <group>  (e.g., make adr, make hooks, make deploy)"
+	@echo "  make <group>  (e.g., make adr, make hooks, make deploy, make test)"
 
 # vim: noexpandtab
