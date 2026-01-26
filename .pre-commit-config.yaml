@@ -34,16 +34,16 @@ repos:
         args: [--config-file=.github/yamllint-config.yml]
 
   # Markdown linting
-  - repo: https://github.com/igorshubovych/markdownlint-cli
-    rev: v0.39.0
+  - repo: https://github.com/jackdewinter/pymarkdown
+    rev: v0.9.22
     hooks:
-      - id: markdownlint
-        name: markdownlint
-        description: Markdown linting
-        entry: markdownlint
-        language: node
+      - id: pymarkdown
+        name: pymarkdown
+        description: Markdown linting (Python-based)
+        entry: pymarkdown
+        language: python
         types: [markdown]
-        args: [--fix]
+        args: [scan]
 
   # TOML linting (Hugo configuration)
   - repo: https://github.com/pre-commit/mirrors-pip-tools
