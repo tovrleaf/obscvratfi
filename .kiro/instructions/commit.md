@@ -33,6 +33,8 @@ Examples of logical groupings:
 
 - Read entire codebase
 - Run git commands: `status`, `diff`, `add`, `commit`, `push`, `log`
+- Create pull requests: `gh pr create`
+- **Only agent with push and PR permissions**
 
 ## Responsibilities
 
@@ -94,4 +96,6 @@ Pre-commit hooks run automatically before commit:
 After committing:
 - Show commit log: `git log --oneline -n 2`
 - Confirm what was committed
+- Ask if user wants to push to remote
+- Ask if user wants to create a pull request
 - Suggest next steps if needed

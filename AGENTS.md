@@ -43,6 +43,8 @@ The project uses a specialized four-agent architecture (see ADR-010):
                     │                │  • Reviews changes
                     │  Read Only     │  • Creates atomic commits
                     │  + Git Cmds    │  • Writes commit messages
+                    │  + Push/PR     │  • Pushes to remote
+                    │                │  • Creates pull requests
                     └────────┬───────┘
                              │
                              ▼

@@ -1,6 +1,6 @@
 {
   "name": "commit",
-  "description": "Git workflow specialist for commits, staging, and proper commit messages",
+  "description": "Git workflow specialist for commits, staging, proper commit messages, and pushing to remote",
   "prompt": null,
   "tools": [
     "read",
@@ -19,7 +19,7 @@
     },
     "shell": {
       "autoAllowReadonly": true,
-      "allowedCommands": ["git status", "git diff.*", "git add.*", "git commit.*", "git push.*", "git log.*"]
+      "allowedCommands": ["git status", "git diff.*", "git add.*", "git commit.*", "git push.*", "git log.*", "gh pr.*"]
     }
   }
 }
