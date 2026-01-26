@@ -2,6 +2,71 @@
 
 This document provides guidelines for AI coding agents working in this repository.
 
+## Agent Workflow
+
+The project uses a specialized four-agent architecture (see ADR-010):
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                         USER REQUEST                             │
+└────────────────────────────┬────────────────────────────────────┘
+                             │
+                             ▼
+                    ┌────────────────┐
+                    │  PLAN AGENT    │  Architecture & Research
+                    │                │  • Creates ADRs
+                    │  Read + Write  │  • Researches alternatives
+                    │  (docs/adr/)   │  • Breaks down tasks
+                    │  + Web Search  │  • Designs solutions
+                    └────────┬───────┘
+                             │
+                             ▼
+                    ┌────────────────┐
+                    │  BUILD AGENT   │  Implementation
+                    │                │  • Writes code
+                    │  Read + Write  │  • Runs tests
+                    │  (except ADRs) │  • Builds site
+                    │  + Shell       │  • Makes changes
+                    └────────┬───────┘
+                             │
+                             ▼
+                    ┌────────────────┐
+                    │  TEST AGENT    │  Validation (Optional)
+                    │                │  • Runs linters
+                    │  Read Only     │  • Validates builds
+                    │  + Test Cmds   │  • Checks for secrets
+                    └────────┬───────┘
+                             │
+                             ▼
+                    ┌────────────────┐
+                    │ COMMIT AGENT   │  Git Workflow
+                    │                │  • Reviews changes
+                    │  Read Only     │  • Creates atomic commits
+                    │  + Git Cmds    │  • Writes commit messages
+                    └────────┬───────┘
+                             │
+                             ▼
+                    ┌────────────────┐
+                    │   COMPLETED    │
+                    └────────────────┘
+
+Flow Examples:
+─────────────
+
+Simple change:
+  User → Build Agent → Commit Agent → Done
+
+With architecture decision:
+  User → Plan Agent → Build Agent → Commit Agent → Done
+
+With validation:
+  User → Build Agent → Test Agent → Commit Agent → Done
+       └─────────────────┘ (if tests fail, back to Build)
+
+Full workflow:
+  User → Plan Agent → Build Agent → Test Agent → Commit Agent → Done
+```
+
 ## Project Overview
 
 Obscvrat is a band website built with Hugo static site generator, deployed to AWS S3 + CloudFront. The project uses shell scripts for deployment and infrastructure management.
