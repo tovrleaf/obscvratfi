@@ -2,6 +2,9 @@
 TODO.md
 .DS_Store
 
+# Python virtual environment (local pre-commit installation)
+.venv/
+
 # Pre-commit framework cache (ADR-005: Local Pre-Commit Hooks)
 .pre-commit
 
