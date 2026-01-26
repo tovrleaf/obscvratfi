@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Pre-commit hook to run linters on staged files
 # Installed by: make hooks setup
+# Uses direct venv binaries instead of pre-commit framework
 
 # Get staged files by type
 shell_files=$(git diff --cached --name-only --diff-filter=ACM | grep '\.sh$')
@@ -13,10 +14,8 @@ has_issues=0
 if [ -n "$shell_files" ]; then
     echo ""
     echo "🔍 Running shellcheck on staged shell scripts..."
-    if [ -f .venv/bin/pre-commit ]; then
-        echo "$shell_files" | xargs .venv/bin/pre-commit run shellcheck --files || has_issues=1
-    elif command -v shellcheck >/dev/null 2>&1; then
-        echo "$shell_files" | xargs shellcheck --format=gcc || has_issues=1
+    if [ -f .venv/bin/shellcheck ]; then
+        echo "$shell_files" | xargs .venv/bin/shellcheck --format=gcc || has_issues=1
     else
         echo "⚠️  shellcheck not found, skipping"
     fi
@@ -26,8 +25,8 @@ fi
 if [ -n "$yaml_files" ]; then
     echo ""
     echo "🔍 Running yamllint on staged YAML files..."
-    if [ -f .venv/bin/pre-commit ]; then
-        echo "$yaml_files" | xargs .venv/bin/pre-commit run yamllint --files || has_issues=1
+    if [ -f .venv/bin/yamllint ]; then
+        echo "$yaml_files" | xargs .venv/bin/yamllint --config-file=.github/yamllint-config.yml || has_issues=1
     else
         echo "⚠️  yamllint not found, skipping"
     fi
@@ -37,8 +36,8 @@ fi
 if [ -n "$md_files" ]; then
     echo ""
     echo "🔍 Running pymarkdown on staged Markdown files..."
-    if [ -f .venv/bin/pre-commit ]; then
-        echo "$md_files" | xargs .venv/bin/pre-commit run pymarkdown --files || has_issues=1
+    if [ -f .venv/bin/pymarkdown ]; then
+        echo "$md_files" | xargs .venv/bin/pymarkdown scan || has_issues=1
     else
         echo "⚠️  pymarkdown not found, skipping"
     fi
@@ -54,3 +53,4 @@ if [ $has_issues -eq 1 ]; then
 fi
 
 exit 0
+

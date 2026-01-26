@@ -7,56 +7,11 @@
 # Uninstall: make uninstall-hooks
 #
 # See ADR-004 for decision rationale: docs/adr/004-local-pre-commit-hooks-for-development-validation.md
+#
+# Note: Linting (shellcheck, yamllint, pymarkdown) runs in pre-commit hook via scripts/pre-commit-lint.sh
+#       Pre-push only runs expensive checks (build, HTML validation, secrets, links)
 
 repos:
-  # Shell script linting
-  - repo: https://github.com/shellcheck-py/shellcheck-py
-    rev: v0.9.0.7
-    hooks:
-      - id: shellcheck
-        name: shellcheck
-        description: Shell script linting
-        entry: shellcheck
-        language: python
-        types: [shell]
-        args: [--format=gcc]
-
-  # YAML linting
-  - repo: https://github.com/adrienverge/yamllint
-    rev: v1.35.1
-    hooks:
-      - id: yamllint
-        name: yamllint
-        description: YAML linting
-        entry: yamllint
-        language: python
-        types: [yaml]
-        args: [--config-file=.github/yamllint-config.yml]
-
-  # Markdown linting
-  - repo: https://github.com/jackdewinter/pymarkdown
-    rev: v0.9.22
-    hooks:
-      - id: pymarkdown
-        name: pymarkdown
-        description: Markdown linting (Python-based)
-        entry: pymarkdown
-        language: python
-        types: [markdown]
-        args: [scan]
-
-  # TOML linting (Hugo configuration)
-  - repo: https://github.com/pre-commit/mirrors-pip-tools
-    rev: v7.4.0
-    hooks:
-      - id: pip-compile
-        name: pip-compile
-        entry: python -m tomli
-        language: system
-        types: [toml]
-        pass_filenames: true
-        always_run: false
-
   # Secret scanning (prevent accidental credential commits)
   - repo: https://github.com/Yelp/detect-secrets
     rev: v1.5.0
@@ -65,6 +20,7 @@ repos:
         name: detect-secrets
         description: Prevent secrets from being committed
         args: ['--baseline', '.secrets.baseline']
+        stages: [push]
         exclude: |
           (?x)^(
             website/public/|
