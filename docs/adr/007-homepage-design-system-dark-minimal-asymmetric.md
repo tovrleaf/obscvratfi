@@ -193,7 +193,7 @@ Place logo in traditional header/navigation area.
 ### Neutral
 - **Font Loading**: Google Fonts imports (Fira Mono) add slight performance overhead; Typo served locally avoids external CDN dependency
 - **Iteration**: Design may evolve as homepage is used; flexibility to refine asymmetry, typography, and glow effects as user feedback arrives
-- **Content Sections**: Original "upcoming gigs" focus de-emphasized in favor of layout; may require content strategy adjustment
+- **Content Sections**: Original "upcoming live performances" focus de-emphasized in favor of layout; may require content strategy adjustment
 - **Monospace Preference**: All-monospace typography is unconventional choice; represents deliberate aesthetic preference rather than universal best practice
 - **Social Media Links**: Removal of "Connect" section from homepage means social links now appear only in footer; requires clear discoverability
 
@@ -233,7 +233,7 @@ Place logo in traditional header/navigation area.
 ### Future Considerations
 - Monitor user behavior and scroll patterns to validate asymmetric layout effectiveness
 - Consider A/B testing against alternative layouts if analytics suggest issues
-- **Site-wide application**: Design system (colors, typography, navigation, footer) should be applied consistently across all pages (gigs, albums, about) for cohesive user experience
+- **Site-wide application**: Design system (colors, typography, navigation, footer) should be applied consistently across all pages (live, albums, about) for cohesive user experience
 - Refine accent color usage based on user interaction patterns
 - Document design system specifications for team consistency
 - Consider extending glow effects to other interactive elements if user feedback is positive
@@ -243,7 +243,7 @@ Place logo in traditional header/navigation area.
 - **ADR-008**: Typo Font Typography Decision - decision to use custom Typo font as primary body font
 - **ADR-003**: Website Hosting & Static Site Generation (Hugo) - this design works within existing Hugo architecture
 - **ADR-004**: Instagram Feed Integration - visual integration with new design system should be considered
-- **ADR-009**: Gig Media Management - gig pages should use this design system
+- **ADR-009**: Live Performance Media Management - live performance pages should use this design system
 - Refine accent color usage based on user interaction patterns
 - Document design system specifications for team consistency
 - Consider extending glow effects to other interactive elements if user feedback is positive

@@ -6,28 +6,28 @@
 
 ## Context
 
-The Obscvrat website needs to display media (pictures and videos) associated with gigs, as well as other media like interviews and mentions. Requirements:
+The Obscvrat website needs to display media (pictures and videos) associated with live performances, as well as other media like interviews and mentions. Requirements:
 
-- Each gig can have 0 to many pictures and videos
-- Each gig can have an optional poster image (promotional material)
+- Each live performance can have 0 to many pictures and videos
+- Each live performance can have an optional poster image (promotional material)
 - Pictures stored locally in S3 (same bucket as site)
 - Videos hosted on YouTube (embedded)
-- Display media on individual gig pages
-- Poster displayed on gig page but NOT included in media page
+- Display media on individual live performance pages
+- Poster displayed on live performance page but NOT included in media page
 - Separate top-level "Media" page listing all media (excluding posters)
 - Media page has three sections: Photos, Videos, and Others
 - Others section includes: interviews, mentions, reviews, etc.
 - Pictures: display as thumbnails, click to view full-size in modal, downloadable as originals
 - Videos: display as thumbnails, click to view in modal with embedded player, link to YouTube
 - Others: display as links with title and optional description
-- Poster: display on gig page as promotional image (not in media gallery)
+- Poster: display on live performance page as promotional image (not in media gallery)
 - Event link: single URL to event page
 - Other performers: list with optional links to their pages/socials
 - Picture sets have author attribution
 - Media page uses masonry/waterfall grid layout for photos/videos
 - Separate sections for photos, videos, and others with filter/toggle
-- Each media set links back to its gig (if applicable)
-- Need easy content management for creating and editing gigs
+- Each media set links back to its live performance (if applicable)
+- Need easy content management for creating and editing live performances
 
 Technical considerations:
 - Hugo static site generator
@@ -35,7 +35,7 @@ Technical considerations:
 - Modal/lightbox functionality for viewing
 - Responsive design for mobile
 - Maintain aspect ratios in masonry layout
-- Simplify gig creation workflow
+- Simplify live performance creation workflow
 
 ## Decision
 
@@ -45,8 +45,8 @@ We will implement the following data structure, display strategy, and content ma
 
 **Two types of media:**
 
-1. **Embedded media** (in gig files) - Current approach, backward compatible
-2. **Standalone media** (separate files) - Can optionally link to gigs
+1. **Embedded media** (in live performance files) - Current approach, backward compatible
+2. **Standalone media** (separate files) - Can optionally link to live performances
 
 **Gig Frontmatter (Embedded Media):**
 ```yaml
@@ -56,7 +56,7 @@ date: 2025-03-15
 venue: "Venue"
 location: "City"
 description: "Event description"
-poster: "/media/gigs/2025-03-15-event-name/poster.jpg"
+poster: "/media/live/2025-03-15-event-name/poster.jpg"
 event_link: "https://venue.com/events/obscvrat"
 other_performers:
   - name: "Artist 1"
@@ -132,13 +132,13 @@ draft: false
 **Media files:**
 ```
 # Gig-embedded media (Hugo processes from assets)
-/assets/media/gigs/2025-03-15-event-name/
+/assets/media/live/2025-03-15-event-name/
   poster.jpg              # Promotional poster (gig page only)
   pic1.jpg                # Performance photos (media page)
   pic2.jpg
 
 # Generated at build time by Hugo
-/public/media/gigs/2025-03-15-event-name/
+/public/media/live/2025-03-15-event-name/
   poster.jpg
   pic1.jpg
   pic2.jpg
@@ -166,13 +166,13 @@ draft: false
 - Falls back to venue name if event name is empty: `YYYY-MM-DD-venue-name`
 
 **Poster vs Media distinction:**
-- **Poster:** Promotional image for the gig (flyer, event artwork)
-  - Displayed on gig detail page
+- **Poster:** Promotional image for the live performance (flyer, event artwork)
+  - Displayed on live performance detail page
   - NOT included in media page gallery
   - Optional field
 - **Media (pictures/videos):** Performance documentation
-  - Added after the gig happens
-  - Displayed on both gig page and media page
+  - Added after the live performance happens
+  - Displayed on both live performance page and media page
   - Can be 0 to many items
 
 ### Implementation Components
@@ -186,7 +186,7 @@ draft: false
    - Lightbox modal for full-size viewing
    - Navigation arrows to browse between images/videos
    - Click outside or X button to close
-   - Display gig info and photographer/credits
+   - Display live performance info and photographer/credits
    - Download original image button (right-aligned)
    - Open in YouTube button for videos (right-aligned)
    - Touch/gesture support for mobile
@@ -210,13 +210,13 @@ draft: false
    - Support for multiple credits per video (Recorded, Mastered, etc.)
 
 5. **Content Management Tool:** Interactive CLI tool
-   - Create new gigs with interactive prompts
-   - List all existing gigs
-   - Edit existing gigs in $EDITOR
-   - Delete gigs with confirmation
+   - Create new live performances with interactive prompts
+   - List all existing live performances
+   - Edit existing live performances in $EDITOR
+   - Delete live performances with confirmation
    - Validates required fields (date, venue, city)
    - Generates proper filename slugs
-   - Accessible via `make gigs` command
+   - Accessible via `make live performances` command
 
 ## Alternatives Considered
 
@@ -278,9 +278,9 @@ draft: false
   - Easier to manage
 - **Cons:**
   - Hard to organize as media grows
-  - No clear association with gigs
+  - No clear association with live performances
   - Naming conflicts likely
-- **Why rejected:** Grouping by gig provides clear organization and scalability
+- **Why rejected:** Grouping by live performance provides clear organization and scalability
 
 ### Alternative 6: Manual Gig Creation (No Tool)
 - **Pros:**
@@ -303,13 +303,13 @@ draft: false
 - **Build-time optimization:** Hugo generates responsive images automatically from assets/
 - **Modern UX:** Lightbox modals with navigation provide smooth gallery experience
 - **Responsive layout:** Masonry grid adapts (4/3/2/1 columns) to different screen sizes
-- **Scalable:** Structure supports unlimited gigs and media
+- **Scalable:** Structure supports unlimited live performances and media
 - **SEO-friendly:** Static HTML with proper image alt tags
 - **No external dependencies:** All media in same S3 bucket
 - **Flexible filtering:** Media page supports multiple view modes (Photos, Videos, Others)
-- **Easy content management:** Interactive tool simplifies gig creation
+- **Easy content management:** Interactive tool simplifies live performance creation
 - **Consistent structure:** Tool enforces proper frontmatter format
-- **Fast workflow:** Create gigs in seconds with prompts
+- **Fast workflow:** Create live performances in seconds with prompts
 - **Centralized media:** All media types accessible from single page
 - **Per-video credits:** Flexible credit system for any role (Recorded, Mastered, etc.)
 - **Download originals:** Users can download full-resolution images
@@ -317,7 +317,7 @@ draft: false
 
 ### Negative
 - **Build time increase:** Hugo image processing adds to build time
-- **Manual media management:** Must manually add media to frontmatter after gigs
+- **Manual media management:** Must manually add media to frontmatter after live performances
 - **Storage costs:** Original images in assets/ increase repository size
 - **Browser support:** CSS Grid masonry requires modern browsers (fallback needed)
 - **JavaScript dependency:** Lightbox modals require JavaScript enabled
@@ -331,33 +331,33 @@ draft: false
 - **YouTube IDs only:** Store just video IDs, not full URLs (cleaner, but requires URL construction)
 - **Aspect ratio handling:** Dominant ratio maintained, but some cropping may occur in masonry layout
 - **Filter default:** Shows all media initially, user can filter to photos or videos
-- **Tool is optional:** Can still create gigs manually if preferred
+- **Tool is optional:** Can still create live performances manually if preferred
 
 ## Notes
 
 ### Gig Management Tool
 
-An interactive CLI tool provides easy gig content management:
+An interactive CLI tool provides easy live performance content management:
 
 **Features:**
 - Interactive prompts for all required fields
 - Optional fields: poster, event link with title, linkable performers
 - Automatic filename generation (YYYY-MM-DD-venue-slug.md)
-- List/edit/delete existing gigs
+- List/edit/delete existing live performances
 - Validates date format and required fields
 - Opens editor after creation (optional)
 - Color-coded output for better UX
 
 **Usage:**
 ```bash
-make gigs
+make live performances
 ```
 
 **Menu Options:**
-1. Create new gig - Interactive prompts for all fields
-2. List all gigs - Shows date, venue, location
-3. Edit existing gig - Select from numbered list
-4. Delete gig - Select and confirm deletion
+1. Create new live performance - Interactive prompts for all fields
+2. List all live performances - Shows date, venue, location
+3. Edit existing live performance - Select from numbered list
+4. Delete live performance - Select and confirm deletion
 5. Exit
 
 This tool simplifies content management and ensures consistent frontmatter structure.
@@ -365,15 +365,15 @@ This tool simplifies content management and ensures consistent frontmatter struc
 ### Implementation Checklist
 
 **Completed:**
-- [x] Create gig management tool
-- [x] Add `make gigs` target to Makefile
-- [x] Create gig list page template (grouped by year)
-- [x] Create gig detail page template
+- [x] Create live performance management tool
+- [x] Add `make live performances` target to Makefile
+- [x] Create live performance list page template (grouped by year)
+- [x] Create live performance detail page template
 - [x] Display event link and linkable performers
 - [x] Auto-download posters from URLs
 - [x] Interactive edit with prefilled values
-- [x] Apply site-wide design system to gig pages
-- [x] Update README.md with gig management instructions
+- [x] Apply site-wide design system to live performance pages
+- [x] Update README.md with live performance management instructions
 - [x] Create media management tool (`make media`)
 - [x] Support for standalone media items
 - [x] Implement Hugo image processing (from assets/)
@@ -386,12 +386,12 @@ This tool simplifies content management and ensures consistent frontmatter struc
 - [x] Add YouTube embed support in modal
 - [x] Add per-video credits system (Recorded by, Mastered by, etc.)
 - [x] Add Open in YouTube button for videos
-- [x] Display media galleries on gig pages with same lightbox
+- [x] Display media galleries on live performance pages with same lightbox
 - [x] Add video title support
 
 **Pending:**
 - [ ] Update media tool to create standalone picture/video files
-- [ ] Display standalone media on gig pages (if linked)
+- [ ] Display standalone media on live performance pages (if linked)
 - [ ] Create Others content management (interviews, mentions, reviews)
 - [ ] Add Others section to media page
 - [ ] Test on mobile devices
@@ -418,8 +418,8 @@ const swiper = new Swiper('.swiper', {
 
 ### Gig Management Example
 ```bash
-# Create/manage gigs interactively
-make gigs
+# Create/manage live performances interactively
+make live performances
 ```
 
 ### Others Content Structure
@@ -470,13 +470,13 @@ items:
 
 All media files use SEO-friendly descriptive names following this pattern:
 
-**Pattern:** `obscvrat-{gig-slug}-{type}-{counter}.{ext}`
+**Pattern:** `obscvrat-{live-slug}-{type}-{counter}.{ext}`
 
 **Rules:**
 - Use hyphens as separators (not underscores or spaces)
 - All lowercase
 - Include band name (obscvrat)
-- Include gig identifier from slug
+- Include live performance identifier from slug
 - Include type (poster, performance)
 - Include counter for multiple files of same type
 - Keep total length reasonable (5-6 words max)
@@ -491,7 +491,7 @@ All media files use SEO-friendly descriptive names following this pattern:
 - Improved SEO (search engines read filenames)
 - Better accessibility (screen readers can parse names)
 - Easier content management (descriptive names)
-- Consistent organization across all gigs
+- Consistent organization across all live performances
 
 ### Alt Text Pattern
 
@@ -499,16 +499,16 @@ All images include descriptive alt text for accessibility:
 
 **For performance photos:**
 ```
-Obscvrat live at {gig_title}, {location}, {date} - Photo by {author}
+Obscvrat live at {live_title}, {location}, {date} - Photo by {author}
 ```
 
 **For posters:**
 ```
-{gig_title} poster
+{live_title} poster
 ```
 
 **Implementation:**
-- Gig single page: `website/layouts/gigs/single.html`
+- Gig single page: `website/layouts/live/single.html`
 - Media page: `website/layouts/media/list.html`
 - Script generates descriptive filenames: `scripts/manage-media.sh`
 

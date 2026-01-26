@@ -97,7 +97,7 @@ We will implement a two-layer testing approach:
 
 8. **Critical Link Validation (Custom)**
    - Validates: 6 essential internal links work
-   - Links: `/`, `/about/`, `/gigs/`, `/albums/`, `/feed.xml`, `/sitemap.xml`
+   - Links: `/`, `/about/`, `/live/`, `/albums/`, `/feed.xml`, `/sitemap.xml`
    - Uses: Custom bash script with curl
 
 **Configuration Files:**

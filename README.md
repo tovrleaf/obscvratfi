@@ -138,14 +138,14 @@ website/
 │   └── albums.md       # Template for new album pages
 ├── content/            # All site content in Markdown
 │   ├── about/          # About page
-│   ├── gigs/           # Gig listings and details
+│   ├── live/           # Gig listings and details
 │   └── albums/         # Album releases and details
 ├── layouts/            # Hugo templates
 │   ├── baseof.html     # Base template with styling
 │   ├── index.html      # Homepage
 │   ├── about/          # About page templates
 │   ├── albums/         # Album page templates
-│   ├── gigs/           # Gig page templates
+│   ├── live/           # Gig page templates
 │   ├── _default/       # Default templates
 │   ├── partials/       # Reusable template components
 │   └── shortcodes/     # Custom Markdown shortcodes
@@ -156,15 +156,15 @@ website/
 
 ## Content Management
 
-### Adding a New Gig
+### Adding a New Live Performance
 
 1. **Using the archetype (recommended):**
    ```bash
-   hugo new gigs/YYYY-MM-DD-venue-name.md
+   hugo new live/YYYY-MM-DD-venue-name.md
    ```
 
 2. **Manual creation:**
-   Create a file in `website/content/gigs/` with the following structure:
+   Create a file in `website/content/live/` with the following structure:
 
    ```markdown
    ---

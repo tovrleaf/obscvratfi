@@ -7,7 +7,7 @@
 ## Context
 
 Building a band website for Obscvrat with the following requirements:
-- Showcase gigs, music (Bandcamp), videos (YouTube), and basic band info
+- Showcase live performances, music (Bandcamp), videos (YouTube), and basic band info
 - Content managed locally via Markdown files
 - Manual updates and deployments to AWS infrastructure
 - Custom domain: obscvrat.fi
@@ -48,7 +48,7 @@ We will use the following architecture:
 - Easy to update and maintain
 
 **SEO Strategy:**
-- Event Schema markup for gigs (location, date, performer info)
+- Event Schema markup for live performances (location, date, performer info)
 - Music Schema markup for Bandcamp embeds (album, artist, track info)
 - Open Graph tags for social media sharing
 - Dynamic sitemap and robots.txt generation
@@ -142,7 +142,7 @@ We will use the following architecture:
 ## Notes
 
 - The S3 + CloudFront combination provides better SEO performance than GitHub Pages or Netlify
-- Hugo's Event Schema support is excellent for promoting gigs in search results
+- Hugo's Event Schema support is excellent for promoting live performances in search results
 - Music Schema markup for Bandcamp embeds will help with music discoverability
 - Open Graph tags enable better sharing on Instagram, YouTube, and other social platforms
 - This architecture scales easily - band can grow without changing infrastructure
