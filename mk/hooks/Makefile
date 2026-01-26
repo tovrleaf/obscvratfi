@@ -20,13 +20,14 @@ help:
 setup:
 	@echo "Setting up local Python virtual environment..."
 	@cd ../.. && python3 -m venv .venv
-	@echo "Installing pre-commit framework locally..."
-	@cd ../.. && .venv/bin/pip install pre-commit
+	@echo "Installing development dependencies from requirements-dev.txt..."
+	@cd ../.. && .venv/bin/pip install -r requirements-dev.txt
 	@echo "Setting up pre-commit hooks..."
 	@cd ../.. && .venv/bin/pre-commit install --hook-type pre-push
 	@echo "Setting up post-commit hook for shellcheck..."
 	@cd ../.. && ln -sf ../../scripts/post-commit-shellcheck.sh .git/hooks/post-commit
 	@chmod +x ../../scripts/post-commit-shellcheck.sh
+	@echo "✓ Development dependencies installed"
 	@echo "✓ Pre-commit hooks installed successfully"
 	@echo "✓ Post-commit shellcheck hook installed"
 	@echo ""
