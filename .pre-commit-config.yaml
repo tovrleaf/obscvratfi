@@ -59,20 +59,16 @@ repos:
 
   # Secret scanning (prevent accidental credential commits)
   - repo: https://github.com/Yelp/detect-secrets
-    rev: v1.4.0
+    rev: v1.5.0
     hooks:
       - id: detect-secrets
         name: detect-secrets
         description: Prevent secrets from being committed
-        entry: detect-secrets scan
-        language: python
-        types: [text]
-        args: [--baseline, .secrets.baseline]
+        args: ['--baseline', '.secrets.baseline']
         exclude: |
           (?x)^(
-            website/content/|
-            docs/|
-            README.md
+            website/public/|
+            \.secrets\.baseline$
           )
 
   # Custom hooks

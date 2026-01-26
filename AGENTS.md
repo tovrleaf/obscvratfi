@@ -83,12 +83,13 @@ Always restore the repository to the state it was in before testing.
 
 ### Template/Webpage Testing Requirements
 
-**IMPORTANT:** When modifying Hugo templates or layouts, always test by building the site:
+**IMPORTANT:** When modifying Hugo templates, layouts, or content in `website/`, always test by building and validating:
 
-1. **Syntax validation:** Check template syntax is valid
-2. **Build test:** Compile the site to verify no errors
-3. **Output verification:** Check generated HTML in `website/public/`
-4. **Do not start server:** Test by building and searching source, not by running server
+1. **Build the site:** Run `cd website && hugo` to compile
+2. **Check for build errors:** Look for ERROR messages in output
+3. **Validate HTML:** Run `make test html-commit` to validate changed HTML files
+4. **Verify content:** Check generated HTML contains expected content
+5. **Clean up:** Remove test artifacts if needed
 
 Example testing workflow:
 ```bash
@@ -98,14 +99,17 @@ cd website && hugo
 # Check for errors in build output
 cd website && hugo 2>&1 | grep ERROR
 
-# Verify generated HTML
-cat website/public/media/index.html | grep "others-section"
+# Validate HTML from your changes
+make test html-commit
+
+# Verify generated HTML content
+cat website/public/media/index.html | grep "expected-content"
 
 # Clean up if needed
 rm -rf website/public/
 ```
 
-Do not hand back modified templates without building and verifying the output.
+Do not hand back modified templates without building and validating the output.
 
 ## Code Style Guidelines
 

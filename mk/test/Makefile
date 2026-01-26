@@ -1,5 +1,5 @@
 .DEFAULT_GOAL := help
-.PHONY: help sh sh-all sh-commit yaml yaml-all yaml-commit md md-all md-commit
+.PHONY: help sh sh-all sh-commit yaml yaml-all yaml-commit md md-all md-commit html html-all html-commit secrets secrets-all links
 
 help:
 	@echo "Testing Commands"
@@ -9,11 +9,15 @@ help:
 	@echo "  make test sh              - Run shellcheck on all shell scripts"
 	@echo "  make test yaml            - Run yamllint on all YAML files"
 	@echo "  make test md              - Run pymarkdown on all Markdown files"
+	@echo "  make test html            - Run html5lib on all HTML files"
+	@echo "  make test secrets         - Run detect-secrets on all files"
+	@echo "  make test links           - Check critical internal links"
 	@echo ""
 	@echo "Test committed files:"
 	@echo "  make test sh-commit       - Run shellcheck on shell scripts in last commit"
 	@echo "  make test yaml-commit     - Run yamllint on YAML files in last commit"
 	@echo "  make test md-commit       - Run pymarkdown on Markdown files in last commit"
+	@echo "  make test html-commit     - Run html5lib on HTML from changed files"
 	@echo ""
 	@echo "More info:"
 	@echo "  See ADR-004 for testing requirements"
@@ -109,5 +113,48 @@ md-commit:
 	else \
 		echo "❌ pymarkdown not found"; \
 		echo "Run 'make hooks setup' to install locally"; \
+		exit 1; \
+	fi
+
+html:
+	@echo "🔍 Running html5lib on all HTML files..."
+	@if [ -f ../../.venv/bin/python3 ]; then \
+		cd ../.. && chmod +x scripts/test-html.sh && scripts/test-html.sh all; \
+	else \
+		echo "❌ Python venv not found"; \
+		echo "Run 'make hooks setup' to install locally"; \
+		exit 1; \
+	fi
+
+html-all: html
+
+html-commit:
+	@echo "🔍 Running html5lib on HTML from changed files..."
+	@if [ -f ../../.venv/bin/python3 ]; then \
+		cd ../.. && chmod +x scripts/test-html.sh && scripts/test-html.sh changed; \
+	else \
+		echo "❌ Python venv not found"; \
+		echo "Run 'make hooks setup' to install locally"; \
+		exit 1; \
+	fi
+
+secrets:
+	@echo "🔍 Running detect-secrets on all files..."
+	@if [ -f ../../.venv/bin/detect-secrets ]; then \
+		cd ../.. && .venv/bin/detect-secrets scan; \
+	else \
+		echo "❌ detect-secrets not found"; \
+		echo "Run 'make hooks setup' to install locally"; \
+		exit 1; \
+	fi
+
+secrets-all: secrets
+
+links:
+	@echo "🔗 Checking critical internal links..."
+	@if [ -f ../../scripts/pre-push-link-checker.sh ]; then \
+		cd ../.. && chmod +x scripts/pre-push-link-checker.sh && scripts/pre-push-link-checker.sh; \
+	else \
+		echo "❌ Link checker script not found"; \
 		exit 1; \
 	fi
