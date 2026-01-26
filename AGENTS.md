@@ -109,6 +109,21 @@ Do not hand back modified templates without building and verifying the output.
 
 ## Code Style Guidelines
 
+### File Renaming and Moving
+
+**IMPORTANT:** When renaming or moving files tracked by git, always use `git mv` to preserve file history:
+
+```bash
+# Correct - preserves history
+git mv old-name.sh new-name.sh
+
+# Wrong - breaks history
+mv old-name.sh new-name.sh
+git add new-name.sh
+```
+
+After using `git mv`, make content changes and commit. Git will show the rename with similarity percentage (e.g., "rename scripts/{old.sh => new.sh} (90%)").
+
 ### Shell Scripts
 - Use shellcheck for validation
 - Include error handling (`set -e`)

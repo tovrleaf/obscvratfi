@@ -15,31 +15,33 @@
     <section class="media-section photos-section" data-type="photos">
         <h2>Photos</h2>
         <div class="media-grid">
-            {{ $gigs := where .Site.Pages "Section" "gigs" }}
+            {{ $gigs := where .Site.Pages "Section" "live" }}
             {{ range $gigs }}
                 {{ if .Params.media.pictures }}
                     {{ $gigTitle := .Title }}
                     {{ $gigPermalink := .Permalink }}
-                    {{ $gigSlug := strings.TrimSuffix "/" (strings.TrimPrefix "/gigs/" .RelPermalink) }}
+                    {{ $gigSlug := strings.TrimSuffix "/" (strings.TrimPrefix "/live/" .RelPermalink) }}
                     {{ $author := .Params.media.pictures.author }}
                     {{ $authorUrl := .Params.media.pictures.author_url }}
                     {{ $location := .Params.location }}
                     {{ $date := .Date.Format "January 2, 2006" }}
                     {{ range $index, $image := .Params.media.pictures.images }}
-                        {{ $altText := printf "Obscvrat live at %s, %s, %s - Photo by %s" $gigTitle $location $date $author }}
-                        <div class="media-item photo-item">
-                            <a href="#" class="open-lightbox" 
-                               data-gig="{{ $gigSlug }}" 
-                               data-image="{{ $image }}"
-                               data-gig-title="{{ $gigTitle }}"
-                               data-gig-link="{{ $gigPermalink }}"
-                               data-author="{{ $author }}"
-                               data-author-url="{{ $authorUrl }}">
-                                <img src="/media/gigs/{{ $gigSlug }}/{{ $image }}" alt="{{ $altText }}">
-                            </a>
-                            <div class="media-info">
-                                <p class="media-gig"><a href="{{ $gigPermalink }}">{{ $gigTitle }}</a></p>
-                                <p class="media-author">
+                        {{ $imagePath := printf "media/live/%s/%s" $gigSlug $image }}
+                        {{ with resources.Get $imagePath }}
+                            {{ $altText := printf "Obscvrat live at %s, %s, %s - Photo by %s" $gigTitle $location $date $author }}
+                            <div class="media-item photo-item">
+                                <a href="#" class="open-lightbox" 
+                                   data-gig="{{ $gigSlug }}" 
+                                   data-image="{{ $image }}"
+                                   data-gig-title="{{ $gigTitle }}"
+                                   data-gig-link="{{ $gigPermalink }}"
+                                   data-author="{{ $author }}"
+                                   data-author-url="{{ $authorUrl }}">
+                                    <img src="{{ .RelPermalink }}" alt="{{ $altText }}">
+                                </a>
+                                <div class="media-info">
+                                    <p class="media-gig"><a href="{{ $gigPermalink }}">{{ $gigTitle }}</a></p>
+                                    <p class="media-author">
                                     {{ if $authorUrl }}
                                         Photo by <a href="{{ $authorUrl }}" target="_blank">{{ $author }}</a>
                                     {{ else }}
@@ -48,6 +50,7 @@
                                 </p>
                             </div>
                         </div>
+                        {{ end }}
                     {{ end }}
                 {{ end }}
             {{ end }}
@@ -60,7 +63,7 @@
                     <div class="media-info">
                         <p class="media-title">{{ .Title }}</p>
                         {{ if .Params.gig }}
-                            {{ $gigPage := $.Site.GetPage (printf "/gigs/%s" .Params.gig) }}
+                            {{ $gigPage := $.Site.GetPage (printf "/live/%s" .Params.gig) }}
                             {{ if $gigPage }}
                                 <p class="media-gig"><a href="{{ $gigPage.Permalink }}">{{ $gigPage.Title }}</a></p>
                             {{ end }}
@@ -131,7 +134,7 @@
                     <div class="media-info">
                         <p class="media-title">{{ .Title }}</p>
                         {{ if .Params.gig }}
-                            {{ $gigPage := $.Site.GetPage (printf "/gigs/%s" .Params.gig) }}
+                            {{ $gigPage := $.Site.GetPage (printf "/live/%s" .Params.gig) }}
                             {{ if $gigPage }}
                                 <p class="media-gig"><a href="{{ $gigPage.Permalink }}">{{ $gigPage.Title }}</a></p>
                             {{ end }}
@@ -156,7 +159,7 @@
                             {{ if .media_title }}{{ .media_title }}{{ if .date }} | {{ end }}{{ end }}
                             {{ if .date }}{{ dateFormat "January 2, 2006" .date }}{{ end }}
                             {{ if .gig }}
-                                {{ $gigPage := $.Site.GetPage (printf "/gigs/%s" .gig) }}
+                                {{ $gigPage := $.Site.GetPage (printf "/live/%s" .gig) }}
                                 {{ if $gigPage }} (<a href="{{ $gigPage.Permalink }}">{{ $gigPage.Title }}</a>){{ end }}
                             {{ end }}
                         </span>
@@ -496,13 +499,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     <button class="swiper-modal-close">&times;</button>
                     <button class="swiper-modal-nav swiper-modal-prev">‹</button>
                     <button class="swiper-modal-nav swiper-modal-next">›</button>
-                    <img src="/media/gigs/${gig}/${image}" alt="${gigTitle}">
+                    <img src="/media/live/${gig}/${image}" alt="${gigTitle}">
                     <div class="swiper-modal-info">
                         <div class="swiper-modal-info-left">
                             <p><strong>Gig:</strong> <a href="${gigLink}">${gigTitle}</a></p>
                             <p><strong>Photo by:</strong> ${authorUrl ? `<a href="${authorUrl}" target="_blank">${author}</a>` : author}</p>
                         </div>
-                        <a href="/media/gigs/${gig}/${image}" download class="download-btn">Download</a>
+                        <a href="/media/live/${gig}/${image}" download class="download-btn">Download</a>
                     </div>
                 </div>
             `;

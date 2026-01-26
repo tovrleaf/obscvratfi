@@ -27,14 +27,14 @@
     
     {{ if .Site.GetPage "/gigs" }}
     <section class="latest-gigs featured-section">
-        <h2>Upcoming Gigs</h2>
-        {{ $gigs := where .Site.Pages "Section" "gigs" }}
-        {{ $gigs := where $gigs "Kind" "page" }}
-        {{ $sortedGigs := sort $gigs "Date" "desc" }}
-        {{ $latestGigs := first 3 $sortedGigs }}
-        {{ if $latestGigs }}
+        <h2>Upcoming Live Performances</h2>
+        {{ $live := where .Site.Pages "Section" "live" }}
+        {{ $live := where $live "Kind" "page" }}
+        {{ $sortedLive := sort $live "Date" "desc" }}
+        {{ $latestLive := first 3 $sortedLive }}
+        {{ if $latestLive }}
             <div class="gigs-grid">
-            {{ range $latestGigs }}
+            {{ range $latestLive }}
                 <div class="gig-card">
                     <div class="gig-date">{{ .Date | dateFormat "Jan 02" }}</div>
                     <div class="gig-info">

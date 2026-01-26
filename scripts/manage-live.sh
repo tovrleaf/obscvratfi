@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# scripts/manage-gigs.sh - Interactive gig management tool
+# scripts/manage-live.sh - Interactive live performance management tool
 
 set -uo pipefail
 
-GIGS_DIR="website/content/gigs"
+LIVE_DIR="website/content/live"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
@@ -54,29 +54,29 @@ download_poster() {
 # Main menu
 show_menu() {
     echo ""
-    print_header "Gig Management"
-    echo "1) Create new gig"
-    echo "2) List all gigs"
-    echo "3) Edit existing gig"
-    echo "4) Delete gig"
+    print_header "Live Performance Management"
+    echo "1) Create new live performance"
+    echo "2) List all live performances"
+    echo "3) Edit existing live performance"
+    echo "4) Delete live performance"
     echo "5) Exit"
     echo ""
     read -rp "Choose an option: " choice || exit 0
     echo ""
     
     case $choice in
-        1) create_gig ;;
-        2) list_gigs ;;
-        3) edit_gig ;;
-        4) delete_gig ;;
+        1) create_live ;;
+        2) list_live ;;
+        3) edit_live ;;
+        4) delete_live ;;
         5) exit 0 ;;
         *) print_error "Invalid option"; show_menu ;;
     esac
 }
 
-# Create new gig
-create_gig() {
-    print_header "Create New Gig"
+# Create new live performance
+create_live() {
+    print_header "Create New Live Performance"
     
     # Event name
     read -rp "Event name (or press Enter to use venue name): " event_name || true
@@ -175,11 +175,11 @@ create_gig() {
     # Generate filename
     slug=$(echo "$slug_base" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | tr -cd '[:alnum:]-')
     filename="${date}-${slug}.md"
-    filepath="$GIGS_DIR/$filename"
+    filepath="$LIVE_DIR/$filename"
     
     # Check if file exists
     if [[ -f "$filepath" ]]; then
-        print_error "Gig already exists: $filename"
+        print_error "Live performance already exists: $filename"
         read -rp "Overwrite? (y/N): " overwrite || overwrite="n"
         if [[ ! "$overwrite" =~ ^[Yy]$ ]]; then
             show_menu
@@ -225,7 +225,7 @@ create_gig() {
         echo "$description"
     } > "$filepath"
     
-    print_success "Created gig: $filename"
+    print_success "Created live performance: $filename"
     read -rp "Open in editor? (y/N): " open_editor || open_editor="n"
     if [[ "$open_editor" =~ ^[Yy]$ ]]; then
         ${EDITOR:-vim} "$filepath"
@@ -234,19 +234,19 @@ create_gig() {
     show_menu
 }
 
-# List all gigs
-list_gigs() {
+# List all live performances
+list_live() {
     print_header "All Gigs"
     
-    if [[ ! -d "$GIGS_DIR" ]] || [[ -z "$(ls -A "$GIGS_DIR" 2>/dev/null)" ]]; then
-        print_warning "No gigs found"
+    if [[ ! -d "$LIVE_DIR" ]] || [[ -z "$(ls -A "$LIVE_DIR" 2>/dev/null)" ]]; then
+        print_warning "No live performances found"
         show_menu
         return
     fi
     
     echo ""
     local count=1
-    for file in "$GIGS_DIR"/*.md; do
+    for file in "$LIVE_DIR"/*.md; do
         if [[ -f "$file" ]]; then
             filename=$(basename "$file")
             # Skip _index.md files
@@ -269,12 +269,12 @@ list_gigs() {
     show_menu
 }
 
-# Edit existing gig
-edit_gig() {
-    print_header "Edit Gig"
+# Edit existing live performance
+edit_live() {
+    print_header "Edit Live Performance"
     
-    if [[ ! -d "$GIGS_DIR" ]] || [[ -z "$(ls -A "$GIGS_DIR" 2>/dev/null)" ]]; then
-        print_warning "No gigs found"
+    if [[ ! -d "$LIVE_DIR" ]] || [[ -z "$(ls -A "$LIVE_DIR" 2>/dev/null)" ]]; then
+        print_warning "No live performances found"
         show_menu
         return
     fi
@@ -283,7 +283,7 @@ edit_gig() {
     echo ""
     local -a files=()
     local count=1
-    for file in "$GIGS_DIR"/*.md; do
+    for file in "$LIVE_DIR"/*.md; do
         if [[ -f "$file" ]]; then
             filename=$(basename "$file")
             # Skip _index.md files
@@ -298,7 +298,7 @@ edit_gig() {
     done
     
     echo ""
-    read -rp "Select gig number (or 0 to cancel): " selection || true
+    read -rp "Select live performance number (or 0 to cancel): " selection || true
     
     if [[ "$selection" == "0" ]]; then
         show_menu
@@ -323,7 +323,7 @@ edit_gig() {
     
     # Interactive edit with prefilled values
     echo ""
-    print_header "Edit Gig: $old_title"
+    print_header "Edit Live Performance: $old_title"
     echo ""
     
     read -rp "Event name [$old_title]: " event_name || true
@@ -462,7 +462,7 @@ edit_gig() {
     # Generate filename
     slug=$(echo "$slug_base" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | tr -cd '[:alnum:]-')
     filename="${date}-${slug}.md"
-    filepath="$GIGS_DIR/$filename"
+    filepath="$LIVE_DIR/$filename"
     
     # Build updated frontmatter
     {
@@ -513,12 +513,12 @@ edit_gig() {
     show_menu
 }
 
-# Delete gig
-delete_gig() {
-    print_header "Delete Gig"
+# Delete live performance
+delete_live() {
+    print_header "Delete Live Performance"
     
-    if [[ ! -d "$GIGS_DIR" ]] || [[ -z "$(ls -A "$GIGS_DIR" 2>/dev/null)" ]]; then
-        print_warning "No gigs found"
+    if [[ ! -d "$LIVE_DIR" ]] || [[ -z "$(ls -A "$LIVE_DIR" 2>/dev/null)" ]]; then
+        print_warning "No live performances found"
         show_menu
         return
     fi
@@ -527,7 +527,7 @@ delete_gig() {
     echo ""
     local -a files=()
     local count=1
-    for file in "$GIGS_DIR"/*.md; do
+    for file in "$LIVE_DIR"/*.md; do
         if [[ -f "$file" ]]; then
             filename=$(basename "$file")
             # Skip _index.md files
@@ -543,7 +543,7 @@ delete_gig() {
     done
     
     echo ""
-    read -rp "Select gig number to delete (or 0 to cancel): " selection || true
+    read -rp "Select live performance number to delete (or 0 to cancel): " selection || true
     
     if [[ "$selection" == "0" ]]; then
         show_menu
@@ -573,7 +573,7 @@ delete_gig() {
 }
 
 # Create gigs directory if it doesn't exist
-mkdir -p "$GIGS_DIR"
+mkdir -p "$LIVE_DIR"
 
 # Start
 show_menu

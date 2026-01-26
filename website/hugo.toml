@@ -26,7 +26,7 @@ logLevel = "warn"
 
 # Site parameters
 [params]
-description = "Official noisework website for Obscvrat showcasing gigs, music, and videos"
+description = "Official noisework website for Obscvrat showcasing live performances, music, and videos"
 author = "Obscvrat"
 year = 2025
 
@@ -91,8 +91,8 @@ url = "/albums/"
 weight = 2
 
 [[menu.main]]
-name = "Gigs"
-url = "/gigs/"
+name = "Live"
+url = "/live/"
 weight = 3
 
 [[menu.main]]
@@ -102,7 +102,7 @@ weight = 4
 
 # Permalinks configuration
 [permalinks]
-gigs = "/gigs/:filename/"
+live = "/live/:filename/"
 albums = "/albums/:filename/"
 about = "/about/"
 
