@@ -26,20 +26,22 @@
                     {{ $location := .Params.location }}
                     {{ $date := .Date.Format "January 2, 2006" }}
                     {{ range $index, $image := .Params.media.pictures.images }}
-                        {{ $altText := printf "Obscvrat live at %s, %s, %s - Photo by %s" $gigTitle $location $date $author }}
-                        <div class="media-item photo-item">
-                            <a href="#" class="open-lightbox" 
-                               data-gig="{{ $gigSlug }}" 
-                               data-image="{{ $image }}"
-                               data-gig-title="{{ $gigTitle }}"
-                               data-gig-link="{{ $gigPermalink }}"
-                               data-author="{{ $author }}"
-                               data-author-url="{{ $authorUrl }}">
-                                <img src="/media/live/{{ $gigSlug }}/{{ $image }}" alt="{{ $altText }}">
-                            </a>
-                            <div class="media-info">
-                                <p class="media-gig"><a href="{{ $gigPermalink }}">{{ $gigTitle }}</a></p>
-                                <p class="media-author">
+                        {{ $imagePath := printf "media/live/%s/%s" $gigSlug $image }}
+                        {{ with resources.Get $imagePath }}
+                            {{ $altText := printf "Obscvrat live at %s, %s, %s - Photo by %s" $gigTitle $location $date $author }}
+                            <div class="media-item photo-item">
+                                <a href="#" class="open-lightbox" 
+                                   data-gig="{{ $gigSlug }}" 
+                                   data-image="{{ $image }}"
+                                   data-gig-title="{{ $gigTitle }}"
+                                   data-gig-link="{{ $gigPermalink }}"
+                                   data-author="{{ $author }}"
+                                   data-author-url="{{ $authorUrl }}">
+                                    <img src="{{ .RelPermalink }}" alt="{{ $altText }}">
+                                </a>
+                                <div class="media-info">
+                                    <p class="media-gig"><a href="{{ $gigPermalink }}">{{ $gigTitle }}</a></p>
+                                    <p class="media-author">
                                     {{ if $authorUrl }}
                                         Photo by <a href="{{ $authorUrl }}" target="_blank">{{ $author }}</a>
                                     {{ else }}
@@ -48,6 +50,7 @@
                                 </p>
                             </div>
                         </div>
+                        {{ end }}
                     {{ end }}
                 {{ end }}
             {{ end }}

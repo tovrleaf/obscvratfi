@@ -57,7 +57,7 @@
         <h2>Poster</h2>
         {{ $gigSlug := .File.BaseFileName }}
         {{ $posterFilename := path.Base .Params.poster }}
-        {{ $posterPath := printf "media/gigs/%s/%s" $gigSlug $posterFilename }}
+        {{ $posterPath := printf "media/live/%s/%s" $gigSlug $posterFilename }}
         {{ $resource := resources.Get $posterPath }}
         {{ if $resource }}
         <div class="media-item photo-item">
@@ -96,7 +96,7 @@
                 {{ $location := .Params.location }}
                 {{ $date := .Date.Format "January 2, 2006" }}
                 {{ range .Params.media.pictures.images }}
-                    {{ $imagePath := printf "media/gigs/%s/%s" $gigSlug . }}
+                    {{ $imagePath := printf "media/live/%s/%s" $gigSlug . }}
                     {{ with resources.Get $imagePath }}
                         {{ $altText := printf "Obscvrat live at %s, %s, %s - Photo by %s" $gigTitle $location $date $author }}
                         <div class="media-item photo-item">
