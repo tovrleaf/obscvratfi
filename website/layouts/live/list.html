@@ -3,13 +3,13 @@
     <h1>{{ .Title }}</h1>
     {{ if .Content }}<div class="intro">{{ .Content }}</div>{{ end }}
     
-    {{ $gigs := where .Pages "Kind" "page" }}
-    {{ $sortedGigs := sort $gigs "Date" "desc" }}
-    {{ if $sortedGigs }}
-        {{ range $sortedGigs.GroupByDate "2006" }}
+    {{ $live := where .Pages "Kind" "page" }}
+    {{ $sortedLive := sort $live "Date" "desc" }}
+    {{ if $sortedLive }}
+        {{ range $sortedLive.GroupByDate "2006" }}
         <section class="year-group">
             <h2>{{ .Key }}</h2>
-            <ul class="gigs">
+            <ul class="live">
             {{ range .Pages }}
                 <li>
                     <a href="{{ .Permalink }}">

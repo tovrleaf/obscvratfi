@@ -91,8 +91,8 @@ url = "/albums/"
 weight = 2
 
 [[menu.main]]
-name = "Gigs"
-url = "/gigs/"
+name = "Live"
+url = "/live/"
 weight = 3
 
 [[menu.main]]
