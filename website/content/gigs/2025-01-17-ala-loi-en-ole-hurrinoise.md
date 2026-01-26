@@ -13,6 +13,17 @@ other_performers:
     url: "https://skrgrd.bandcamp.com/"
   - name: "Bryskt"
     url: "https://bryskt.org/"
+media:
+  pictures:
+    author: "Roman Odjinud"
+    author_url: "https://www.instagram.com/er_odjinud"
+    images:
+      - obscvrat-ala-loi-en-ole-hurrinoise-performance-1.jpg
+      - obscvrat-ala-loi-en-ole-hurrinoise-performance-2.jpg
+      - obscvrat-ala-loi-en-ole-hurrinoise-performance-3.jpg
+      - obscvrat-ala-loi-en-ole-hurrinoise-performance-4.jpg
+      - obscvrat-ala-loi-en-ole-hurrinoise-performance-5.jpg
+      - obscvrat-ala-loi-en-ole-hurrinoise-performance-6.jpg
 draft: false
 ---
 
