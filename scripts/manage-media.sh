@@ -3,7 +3,7 @@
 
 set -euo pipefail
 
-GIGS_DIR="website/content/gigs"
+LIVE_DIR="website/content/live"
 MEDIA_DIR="website/assets/media"
 OTHERS_FILE="website/content/media/others.md"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -35,14 +35,14 @@ print_warning() {
     echo -e "${YELLOW}⚠ $1${NC}"
 }
 
-# List gigs for selection
-list_gigs_for_selection() {
+# List live performances for selection
+list_live_for_selection() {
     local counter=1
-    for file in "$GIGS_DIR"/*.md; do
+    for file in "$LIVE_DIR"/*.md; do
         if [[ -f "$file" ]] && [[ "$(basename "$file")" != "_index.md" ]]; then
             local gig_title=$(grep "^title:" "$file" | sed 's/title: "\(.*\)"/\1/')
             local gig_date=$(grep "^date:" "$file" | sed 's/date: //')
-            echo "  $counter) $gig_title ($gig_date)"
+            echo "  $counter) $live_title ($live_date)"
             ((counter++))
         fi
     done
@@ -84,8 +84,8 @@ generate_image_versions() {
 show_menu() {
     echo ""
     print_header "Media Management"
-    echo "1) Add pictures to gig"
-    echo "2) Add video to gig"
+    echo "1) Add pictures to live performance"
+    echo "2) Add video to live performance"
     echo "3) Add standalone picture"
     echo "4) Add standalone video"
     echo "5) Add to Others (interview, mention, review)"
@@ -111,13 +111,13 @@ show_menu() {
     esac
 }
 
-# Add pictures to gig
+# Add pictures to live performance
 add_pictures() {
     print_header "Add Pictures to Gig"
     
-    # List gigs
-    if [[ ! -d "$GIGS_DIR" ]] || [[ -z "$(ls -A "$GIGS_DIR" 2>/dev/null)" ]]; then
-        print_warning "No gigs found"
+    # List live performances
+    if [[ ! -d "$LIVE_DIR" ]] || [[ -z "$(ls -A "$LIVE_DIR" 2>/dev/null)" ]]; then
+        print_warning "No live performances found"
         show_menu
         return
     fi
@@ -125,7 +125,7 @@ add_pictures() {
     echo ""
     local -a files=()
     local count=1
-    for file in "$GIGS_DIR"/*.md; do
+    for file in "$LIVE_DIR"/*.md; do
         if [[ -f "$file" ]]; then
             filename=$(basename "$file")
             if [[ "$filename" == "_index.md" ]]; then
@@ -140,7 +140,7 @@ add_pictures() {
     done
     
     echo ""
-    read -rp "Select gig number (or 0 to cancel): " selection
+    read -rp "Select live performance number (or 0 to cancel): " selection
     
     if [[ "$selection" == "0" ]]; then
         show_menu
@@ -159,9 +159,9 @@ add_pictures() {
     read -rp "Photographer name: " photographer
     read -rp "Photographer URL (optional): " photographer_url
     
-    # Get gig slug from filename
+    # Get live performance slug from filename
     gig_slug=$(basename "$selected_file" .md)
-    media_dir="website/static/media/gigs/$gig_slug"
+    media_dir="website/static/media/live/$live_slug"
     mkdir -p "$media_dir"
     
     # Add pictures
@@ -206,7 +206,7 @@ add_pictures() {
         return
     fi
     
-    # Update gig frontmatter
+    # Update live performance frontmatter
     # Check if media section exists
     if grep -q "^media:" "$selected_file"; then
         # Media section exists, update it
@@ -229,19 +229,19 @@ add_pictures() {
         # Insert before draft line using awk
         awk -v media="$media_section" '/^draft:/ {printf "%s\n", media} {print}' "$selected_file" > "${selected_file}.tmp"
         mv "${selected_file}.tmp" "$selected_file"
-        print_success "Added ${#pictures[@]} pictures to gig"
+        print_success "Added ${#pictures[@]} pictures to live performance"
     fi
     
     show_menu
 }
 
-# Add video to gig
+# Add video to live performance
 add_video() {
     print_header "Add Video to Gig"
     
-    # List gigs
-    if [[ ! -d "$GIGS_DIR" ]] || [[ -z "$(ls -A "$GIGS_DIR" 2>/dev/null)" ]]; then
-        print_warning "No gigs found"
+    # List live performances
+    if [[ ! -d "$LIVE_DIR" ]] || [[ -z "$(ls -A "$LIVE_DIR" 2>/dev/null)" ]]; then
+        print_warning "No live performances found"
         show_menu
         return
     fi
@@ -249,7 +249,7 @@ add_video() {
     echo ""
     local -a files=()
     local count=1
-    for file in "$GIGS_DIR"/*.md; do
+    for file in "$LIVE_DIR"/*.md; do
         if [[ -f "$file" ]]; then
             filename=$(basename "$file")
             if [[ "$filename" == "_index.md" ]]; then
@@ -264,7 +264,7 @@ add_video() {
     done
     
     echo ""
-    read -rp "Select gig number (or 0 to cancel): " selection
+    read -rp "Select live performance number (or 0 to cancel): " selection
     
     if [[ "$selection" == "0" ]]; then
         show_menu
@@ -316,7 +316,7 @@ add_video() {
         echo ""
     done
     
-    # Update gig frontmatter
+    # Update live performance frontmatter
     if grep -q "^media:" "$selected_file"; then
         # Media section exists, check if videos subsection exists
         if grep -q "^  videos:" "$selected_file"; then
@@ -358,7 +358,7 @@ add_video() {
             # Insert videos section before draft line
             awk -v videos="$video_section" '/^draft:/ {printf "%s\n", videos} {print}' "$selected_file" > "${selected_file}.tmp"
             mv "${selected_file}.tmp" "$selected_file"
-            print_success "Added video to gig"
+            print_success "Added video to live performance"
         fi
     else
         # Build media section with YouTube video
@@ -382,7 +382,7 @@ add_video() {
         # Insert before draft line using awk
         awk -v media="$media_section" '/^draft:/ {printf "%s\n", media} {print}' "$selected_file" > "${selected_file}.tmp"
         mv "${selected_file}.tmp" "$selected_file"
-        print_success "Added YouTube video to gig"
+        print_success "Added YouTube video to live performance"
     fi
     
     show_menu
@@ -398,9 +398,9 @@ add_standalone_picture() {
     read -rp "Photographer URL (optional): " photographer_url
     read -rp "Description (optional): " description
     
-    # Optional gig link
+    # Optional live performance link
     echo ""
-    echo "Link to gig? (optional)"
+    echo "Link to live performance? (optional)"
     read -rp "Gig slug (e.g., 2025-10-11-noise-space-xv) or press Enter to skip: " gig_slug
     
     # Generate filename
@@ -449,8 +449,8 @@ EOF
         echo "author_url: \"$photographer_url\"" >> "$content_file"
     fi
     
-    if [[ -n "$gig_slug" ]]; then
-        echo "gig: \"$gig_slug\"" >> "$content_file"
+    if [[ -n "$live_slug" ]]; then
+        echo "gig: \"$live_slug\"" >> "$content_file"
     fi
     
     if [[ -n "$description" ]]; then
@@ -474,9 +474,9 @@ add_standalone_video() {
     read -rp "YouTube URL: " youtube_url
     read -rp "Description (optional): " description
     
-    # Optional gig link
+    # Optional live performance link
     echo ""
-    echo "Link to gig? (optional)"
+    echo "Link to live performance? (optional)"
     read -rp "Gig slug (e.g., 2025-10-11-noise-space-xv) or press Enter to skip: " gig_slug
     
     # Extract YouTube ID
@@ -508,8 +508,8 @@ type: "video"
 youtube_id: "$youtube_id"
 EOF
     
-    if [[ -n "$gig_slug" ]]; then
-        echo "gig: \"$gig_slug\"" >> "$content_file"
+    if [[ -n "$live_slug" ]]; then
+        echo "gig: \"$live_slug\"" >> "$content_file"
     fi
     
     if [[ -n "$description" ]]; then
@@ -562,15 +562,15 @@ EOF
     # Ask if related to a gig
     echo ""
     echo "Related to a gig? (optional)"
-    list_gigs_for_selection
+    list_live_for_selection
     read -rp "Gig number (or press Enter to skip): " gig_choice
     
     gig_slug=""
-    if [[ -n "$gig_choice" ]] && [[ "$gig_choice" =~ ^[0-9]+$ ]]; then
-        gig_files=("$GIGS_DIR"/*.md)
+    if [[ -n "$live_choice" ]] && [[ "$live_choice" =~ ^[0-9]+$ ]]; then
+        gig_files=("$LIVE_DIR"/*.md)
         gig_files=("${gig_files[@]##*/}")
         gig_files=("${gig_files[@]%.md}")
-        if [[ "$gig_choice" -gt 0 ]] && [[ "$gig_choice" -le "${#gig_files[@]}" ]]; then
+        if [[ "$live_choice" -gt 0 ]] && [[ "$live_choice" -le "${#gig_files[@]}" ]]; then
             gig_slug="${gig_files[$((gig_choice-1))]}"
         fi
     fi
@@ -583,7 +583,7 @@ EOF
     [[ -n "$media_title" ]] && item_lines+=("    media_title: \"$media_title\"")
     [[ -n "$description" ]] && item_lines+=("    description: \"$description\"")
     [[ -n "$item_date" ]] && item_lines+=("    date: $item_date")
-    [[ -n "$gig_slug" ]] && item_lines+=("    gig: \"$gig_slug\"")
+    [[ -n "$live_slug" ]] && item_lines+=("    gig: \"$live_slug\"")
     
     # Add to items array
     if grep -q "^items: \[\]" "$OTHERS_FILE"; then
@@ -711,19 +711,19 @@ edit_others() {
     
     echo ""
     echo "Related to a gig? (current: ${current_gig:-none})"
-    list_gigs_for_selection
+    list_live_for_selection
     read -rp "Gig number (or press Enter to keep current): " gig_choice
     
     new_gig="$current_gig"
-    if [[ -n "$gig_choice" ]]; then
-        if [[ "$gig_choice" =~ ^[0-9]+$ ]]; then
-            gig_files=("$GIGS_DIR"/*.md)
+    if [[ -n "$live_choice" ]]; then
+        if [[ "$live_choice" =~ ^[0-9]+$ ]]; then
+            gig_files=("$LIVE_DIR"/*.md)
             gig_files=("${gig_files[@]##*/}")
             gig_files=("${gig_files[@]%.md}")
-            if [[ "$gig_choice" -gt 0 ]] && [[ "$gig_choice" -le "${#gig_files[@]}" ]]; then
+            if [[ "$live_choice" -gt 0 ]] && [[ "$live_choice" -le "${#gig_files[@]}" ]]; then
                 new_gig="${gig_files[$((gig_choice-1))]}"
             fi
-        elif [[ "$gig_choice" == "none" ]] || [[ "$gig_choice" == "0" ]]; then
+        elif [[ "$live_choice" == "none" ]] || [[ "$live_choice" == "0" ]]; then
             new_gig=""
         fi
     fi
@@ -761,7 +761,7 @@ list_media() {
     
     echo ""
     echo "Gig Media:"
-    for file in "$GIGS_DIR"/*.md; do
+    for file in "$LIVE_DIR"/*.md; do
         if [[ -f "$file" ]] && [[ "$(basename "$file")" != "_index.md" ]]; then
             if grep -q "^media:" "$file"; then
                 title=$(grep "^title:" "$file" | sed 's/title: "\(.*\)"/\1/')
@@ -803,14 +803,14 @@ edit_video() {
     print_header "Edit Video"
     
     # List all gigs with videos
-    if [[ ! -d "$GIGS_DIR" ]]; then
+    if [[ ! -d "$LIVE_DIR" ]]; then
         print_error "No gigs directory found"
         show_menu
         return
     fi
     
     declare -a gigs_with_videos=()
-    for file in "$GIGS_DIR"/*.md; do
+    for file in "$LIVE_DIR"/*.md; do
         if [[ -f "$file" ]] && grep -q "youtube_id:" "$file"; then
             gigs_with_videos+=("$file")
         fi
@@ -832,7 +832,7 @@ edit_video() {
     echo "0) Cancel"
     echo ""
     
-    read -rp "Select gig: " selection || selection="0"
+    read -rp "Select live performance: " selection || selection="0"
     
     if [[ "$selection" == "0" ]]; then
         show_menu
