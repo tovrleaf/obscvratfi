@@ -7,72 +7,24 @@
 # Uninstall: make uninstall-hooks
 #
 # See ADR-004 for decision rationale: docs/adr/004-local-pre-commit-hooks-for-development-validation.md
+#
+# Note: Linting (shellcheck, yamllint, pymarkdown) runs in pre-commit hook via scripts/pre-commit-lint.sh
+#       Pre-push only runs expensive checks (build, HTML validation, secrets, links)
 
 repos:
-  # Shell script linting
-  - repo: https://github.com/shellcheck-py/shellcheck-py
-    rev: v0.9.0.7
-    hooks:
-      - id: shellcheck
-        name: shellcheck
-        description: Shell script linting
-        entry: shellcheck
-        language: python
-        types: [shell]
-        args: [--format=gcc]
-
-  # YAML linting
-  - repo: https://github.com/adrienverge/yamllint
-    rev: v1.35.1
-    hooks:
-      - id: yamllint
-        name: yamllint
-        description: YAML linting
-        entry: yamllint
-        language: python
-        types: [yaml]
-        args: [--config-file=.github/yamllint-config.yml]
-
-  # Markdown linting
-  - repo: https://github.com/igorshubovych/markdownlint-cli
-    rev: v0.39.0
-    hooks:
-      - id: markdownlint
-        name: markdownlint
-        description: Markdown linting
-        entry: markdownlint
-        language: node
-        types: [markdown]
-        args: [--fix]
-
-  # TOML linting (Hugo configuration)
-  - repo: https://github.com/pre-commit/mirrors-pip-tools
-    rev: v7.4.0
-    hooks:
-      - id: pip-compile
-        name: pip-compile
-        entry: python -m tomli
-        language: system
-        types: [toml]
-        pass_filenames: true
-        always_run: false
-
   # Secret scanning (prevent accidental credential commits)
   - repo: https://github.com/Yelp/detect-secrets
-    rev: v1.4.0
+    rev: v1.5.0
     hooks:
       - id: detect-secrets
         name: detect-secrets
         description: Prevent secrets from being committed
-        entry: detect-secrets scan
-        language: python
-        types: [text]
-        args: [--baseline, .secrets.baseline]
+        args: ['--baseline', '.secrets.baseline']
+        stages: [push]
         exclude: |
           (?x)^(
-            website/content/|
-            docs/|
-            README.md
+            website/public/|
+            \.secrets\.baseline$
           )
 
   # Custom hooks
@@ -82,7 +34,7 @@ repos:
       - id: hugo-build
         name: hugo-build
         description: Validate Hugo build (dev mode)
-        entry: bash -c 'docker run --rm -v "$PWD/website:/site" -w /site alpine:3.20.2 sh -c "wget -q -O - https://github.com/gohugoio/hugo/releases/download/v0.128.2/hugo_0.128.2_linux-amd64.tar.gz | tar xz && ./hugo --config hugo.toml -s /site"'
+        entry: bash -c 'cd website && docker run --rm -v "$PWD:/site" -w /site alpine:3.20.2 sh -c "wget -q -O - https://github.com/gohugoio/hugo/releases/download/v0.128.2/hugo_0.128.2_linux-amd64.tar.gz | tar xz && ./hugo --config hugo.toml && rm -f hugo LICENSE" && cd ..'
         language: system
         pass_filenames: false
         always_run: true

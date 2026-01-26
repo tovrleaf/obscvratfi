@@ -142,6 +142,60 @@ When a hook fails:
 - **Pre-push stage** (not pre-commit): Allows `git commit` to work freely but blocks `git push` if issues exist
 - Rationale: Developers can make WIP commits locally without friction, but can't push broken code to GitHub
 
+### Pre-Commit Linting Hook
+
+In addition to pre-push hooks, a **pre-commit hook** runs linters on staged files before the commit is made:
+
+**Behavior:**
+- Runs automatically before `git commit` on staged files only
+- Checks shell scripts (.sh), YAML files (.yml, .yaml), and Markdown files (.md)
+- Blocking (commit is prevented if linting fails)
+- Can be bypassed with `git commit --no-verify` if necessary
+
+**File Types Checked:**
+- **Shell scripts:** shellcheck on .sh files
+- **YAML files:** yamllint on .yml and .yaml files
+- **Markdown files:** pymarkdown on .md files
+
+**Installation:**
+The pre-commit hook is installed automatically with `make hooks setup`.
+
+**Manual Testing:**
+
+Test all files of a type:
+```bash
+make test sh       # All shell scripts
+make test yaml     # All YAML files
+make test md       # All Markdown files
+```
+
+Test files in last commit:
+```bash
+make test sh-commit     # Shell scripts in last commit
+make test yaml-commit   # YAML files in last commit
+make test md-commit     # Markdown files in last commit
+```
+
+**Fix Workflow:**
+If linting fails before commit:
+1. Fix the issues shown in the output
+2. Stage the fixes: `git add <files>`
+3. Try committing again: `git commit`
+4. Or bypass if necessary: `git commit --no-verify`
+
+**Requirements:**
+- Python 3.9+ for creating virtual environment
+- All linters installed via `make hooks setup` in local `.venv/` directory
+- Tools installed: pre-commit, shellcheck-py, yamllint, pymarkdownlnt (from requirements-dev.txt)
+
+**Installation:**
+```bash
+# One-time setup - creates .venv and installs all tools
+make hooks setup
+```
+
+This creates a local Python virtual environment (`.venv/`) and installs all development dependencies from `requirements-dev.txt`. All tools are isolated to the project - no global installation needed.
+
 ### Layer 2: Manual Functional Testing
 
 **Manual testing requirements** for changes that automated validation cannot catch.

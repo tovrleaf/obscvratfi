@@ -1,0 +1,17 @@
+# Development dependencies for local testing and validation
+# Install with: pip install -r requirements-dev.txt
+# Or use: make hooks setup (creates venv and installs automatically)
+
+# Pre-commit framework for git hooks
+pre-commit>=3.5.0
+
+# Linting tools
+shellcheck-py>=0.9.0      # Shell script linting
+yamllint>=1.35.0          # YAML linting
+pymarkdownlnt>=0.9.0      # Markdown linting (Python-based alternative to markdownlint-cli)
+
+# HTML validation (pure Python, no Java)
+html5lib>=1.1             # HTML5 parser and validator
+
+# Secret scanning (pure Python)
+detect-secrets>=1.5.0     # Yelp's secret scanner

@@ -18,31 +18,54 @@ help:
 	@echo "  See ADR-004 for detailed rationale"
 
 setup:
-	@command -v pre-commit >/dev/null 2>&1 || { \
-		echo "Installing pre-commit framework..."; \
-		pip3 install pre-commit; \
-	}
-	@echo "Setting up pre-commit hooks..."
-	@cd ../.. && pre-commit install --hook-type pre-push
-	@echo "✓ Pre-commit hooks installed successfully"
+	@echo "Setting up local Python virtual environment..."
+	@cd ../.. && python3 -m venv .venv
+	@echo "Installing development dependencies from requirements-dev.txt..."
+	@cd ../.. && .venv/bin/pip install -r requirements-dev.txt
+	@echo "Setting up pre-push hooks..."
+	@cd ../.. && .venv/bin/pre-commit install --hook-type pre-push
+	@echo "Setting up pre-commit hook for linting..."
+	@cd ../.. && ln -sf ../../scripts/pre-commit-lint.sh .git/hooks/pre-commit
+	@chmod +x ../../scripts/pre-commit-lint.sh
+	@echo "✓ Development dependencies installed"
+	@echo "✓ Pre-push hooks installed successfully"
+	@echo "✓ Pre-commit linting hook installed"
 	@echo ""
-	@echo "Hooks will now run automatically before git push"
-	@echo "To run hooks manually: make hooks run"
+	@echo "Hooks will now run:"
+	@echo "  - Before every commit: Linting on staged .sh, .yml, .md files"
+	@echo "  - Before every push: Hugo build, HTML validation, secret scanning, link checking"
+	@echo ""
+	@echo "To run manually:"
+	@echo "  make test sh         - Check all shell scripts"
+	@echo "  make test yaml       - Check all YAML files"
+	@echo "  make test md         - Check all Markdown files"
+	@echo "  make test html       - Check all HTML files"
+	@echo "  make test secrets    - Check for secrets in all files"
+	@echo "  make test links      - Check critical internal links"
+	@echo "  make hooks run       - Run all pre-push checks"
+	@echo ""
 	@echo "To uninstall: make hooks uninstall"
 
 run:
-	@command -v pre-commit >/dev/null 2>&1 || { \
+	@if [ -f ../../.venv/bin/pre-commit ]; then \
+		echo "Running pre-commit hooks on all files..."; \
+		cd ../.. && .venv/bin/pre-commit run --all-files; \
+	else \
 		echo "Error: pre-commit not installed"; \
 		echo "Run 'make hooks setup' first"; \
 		exit 1; \
-	}
-	@echo "Running pre-commit hooks on all files..."
-	@cd ../.. && pre-commit run --all-files
+	fi
 
 uninstall:
 	@if [ -f ../../.git/hooks/pre-push ]; then \
 		cd ../.. && pre-commit uninstall --hook-type pre-push; \
-		echo "✓ Pre-commit hooks uninstalled"; \
+		echo "✓ Pre-push hooks uninstalled"; \
 	else \
-		echo "Pre-commit hooks are not installed"; \
+		echo "Pre-push hooks are not installed"; \
+	fi
+	@if [ -L ../../.git/hooks/pre-commit ]; then \
+		rm ../../.git/hooks/pre-commit; \
+		echo "✓ Pre-commit hook uninstalled"; \
+	else \
+		echo "Pre-commit hook is not installed"; \
 	fi

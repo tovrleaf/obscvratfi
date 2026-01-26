@@ -30,25 +30,38 @@ make build-prod
 
 ## Local Development Setup
 
-To catch validation issues **before** pushing to GitHub, set up local pre-commit hooks:
+### Prerequisites
+
+- Python 3.9+ (for local development tools)
+- Hugo Extended v0.128.2 or later ([installation instructions](https://gohugo.io/installation/))
+
+### Setup Development Tools
+
+To catch validation issues **before** committing, set up local development tools:
 
 ```bash
-# One-time setup (installs dependencies and git hooks)
-make setup-hooks
-
-# Push normally - hooks run automatically
-git push
-
-# If you need to bypass hooks (emergency only)
-git push --no-verify
+# One-time setup (creates .venv and installs all tools)
+make hooks setup
 ```
+
+This creates a local Python virtual environment (`.venv/`) and installs:
+- **pre-commit** - Git hook framework
+- **shellcheck-py** - Shell script linting
+- **yamllint** - YAML file linting
+- **pymarkdownlnt** - Markdown file linting
+
+All tools are installed locally in `.venv/` - no global installation needed.
 
 ### What Local Hooks Check
 
-Local pre-commit hooks automatically validate:
-- ✅ Shell scripts (`shellcheck`)
-- ✅ YAML files (`yamllint`)
-- ✅ Markdown files (`markdownlint`)
+Hooks automatically validate before commit and push:
+
+**Pre-commit (before commit):**
+- ✅ Shell scripts (`.sh`) - shellcheck
+- ✅ YAML files (`.yml`, `.yaml`) - yamllint
+- ✅ Markdown files (`.md`) - pymarkdown
+
+**Pre-push (before push):**
 - ✅ Hugo site builds correctly
 - ✅ Generated HTML is valid
 - ✅ Critical internal links exist
@@ -56,17 +69,32 @@ Local pre-commit hooks automatically validate:
 
 **Feedback in seconds** instead of waiting 5-15 minutes for GitHub Actions!
 
-### Manual Hook Execution
+### Manual Testing
+
+Run linters manually anytime:
 
 ```bash
-# Run all hooks manually on all files
-make run-hooks
+# Test all files
+make test sh       # All shell scripts
+make test yaml     # All YAML files
+make test md       # All Markdown files
 
-# Uninstall hooks (if needed)
-make uninstall-hooks
+# Test files in last commit
+make test sh-commit
+make test yaml-commit
+make test md-commit
+
+# Run all pre-push checks
+make hooks run
 ```
 
-See `docs/adr/005-local-pre-commit-hooks-for-development-validation.md` for detailed information about local validation.
+### Uninstall Hooks
+
+```bash
+make hooks uninstall
+```
+
+See `docs/adr/004-development-testing-and-validation-requirements.md` for detailed information about local validation.
 
 ## CI/CD Pipeline
 
