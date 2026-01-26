@@ -1,13 +1,19 @@
 .DEFAULT_GOAL := help
-.PHONY: help sh sh-all sh-commit
+.PHONY: help sh sh-all sh-commit yaml yaml-all yaml-commit md md-all md-commit
 
 help:
 	@echo "Testing Commands"
 	@echo "================"
 	@echo ""
-	@echo "Run tests:"
+	@echo "Test all files:"
 	@echo "  make test sh              - Run shellcheck on all shell scripts"
+	@echo "  make test yaml            - Run yamllint on all YAML files"
+	@echo "  make test md              - Run pymarkdown on all Markdown files"
+	@echo ""
+	@echo "Test committed files:"
 	@echo "  make test sh-commit       - Run shellcheck on shell scripts in last commit"
+	@echo "  make test yaml-commit     - Run yamllint on YAML files in last commit"
+	@echo "  make test md-commit       - Run pymarkdown on Markdown files in last commit"
 	@echo ""
 	@echo "More info:"
 	@echo "  See ADR-004 for testing requirements"
@@ -21,7 +27,6 @@ sh:
 		echo "✅ Shellcheck complete"; \
 	else \
 		echo "❌ shellcheck not found"; \
-		echo ""; \
 		echo "Run 'make hooks setup' to install locally"; \
 		exit 1; \
 	fi
@@ -46,7 +51,60 @@ sh-commit:
 		fi; \
 	else \
 		echo "❌ shellcheck not found"; \
-		echo ""; \
+		echo "Run 'make hooks setup' to install locally"; \
+		exit 1; \
+	fi
+
+yaml:
+	@echo "🔍 Running yamllint on all YAML files..."
+	@if [ -f ../../.venv/bin/pre-commit ]; then \
+		cd ../.. && .venv/bin/pre-commit run yamllint --all-files; \
+	else \
+		echo "❌ yamllint not found"; \
+		echo "Run 'make hooks setup' to install locally"; \
+		exit 1; \
+	fi
+
+yaml-all: yaml
+
+yaml-commit:
+	@echo "🔍 Running yamllint on YAML files in last commit..."
+	@if [ -f ../../.venv/bin/pre-commit ]; then \
+		cd ../.. && yaml_files=$$(git diff-tree --no-commit-id --name-only -r HEAD | grep -E '\.(yml|yaml)$$'); \
+		if [ -n "$$yaml_files" ]; then \
+			.venv/bin/pre-commit run yamllint --files $$yaml_files && echo "✅ Yamllint passed" || echo "❌ Yamllint found issues"; \
+		else \
+			echo "ℹ️  No YAML files in last commit"; \
+		fi; \
+	else \
+		echo "❌ yamllint not found"; \
+		echo "Run 'make hooks setup' to install locally"; \
+		exit 1; \
+	fi
+
+md:
+	@echo "🔍 Running pymarkdown on all Markdown files..."
+	@if [ -f ../../.venv/bin/pre-commit ]; then \
+		cd ../.. && .venv/bin/pre-commit run pymarkdown --all-files; \
+	else \
+		echo "❌ pymarkdown not found"; \
+		echo "Run 'make hooks setup' to install locally"; \
+		exit 1; \
+	fi
+
+md-all: md
+
+md-commit:
+	@echo "🔍 Running pymarkdown on Markdown files in last commit..."
+	@if [ -f ../../.venv/bin/pre-commit ]; then \
+		cd ../.. && md_files=$$(git diff-tree --no-commit-id --name-only -r HEAD | grep '\.md$$'); \
+		if [ -n "$$md_files" ]; then \
+			.venv/bin/pre-commit run pymarkdown --files $$md_files && echo "✅ Pymarkdown passed" || echo "❌ Pymarkdown found issues"; \
+		else \
+			echo "ℹ️  No Markdown files in last commit"; \
+		fi; \
+	else \
+		echo "❌ pymarkdown not found"; \
 		echo "Run 'make hooks setup' to install locally"; \
 		exit 1; \
 	fi

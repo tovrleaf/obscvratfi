@@ -142,36 +142,49 @@ When a hook fails:
 - **Pre-push stage** (not pre-commit): Allows `git commit` to work freely but blocks `git push` if issues exist
 - Rationale: Developers can make WIP commits locally without friction, but can't push broken code to GitHub
 
-### Post-Commit Shellcheck Hook
+### Pre-Commit Linting Hook
 
-In addition to pre-push hooks, a **post-commit hook** runs shellcheck immediately after commits that modify shell scripts:
+In addition to pre-push hooks, a **pre-commit hook** runs linters on staged files before the commit is made:
 
 **Behavior:**
-- Runs automatically after `git commit` if any `.sh` files were committed
-- Only checks shell scripts in that specific commit
-- Non-blocking (commit is already made)
-- Provides immediate feedback with fix instructions
+- Runs automatically before `git commit` on staged files only
+- Checks shell scripts (.sh), YAML files (.yml, .yaml), and Markdown files (.md)
+- Blocking (commit is prevented if linting fails)
+- Can be bypassed with `git commit --no-verify` if necessary
+
+**File Types Checked:**
+- **Shell scripts:** shellcheck on .sh files
+- **YAML files:** yamllint on .yml and .yaml files
+- **Markdown files:** pymarkdown on .md files
 
 **Installation:**
-The post-commit hook is installed automatically with `make hooks setup`.
+The pre-commit hook is installed automatically with `make hooks setup`.
 
 **Manual Testing:**
-```bash
-# Run shellcheck on all scripts
-make test sh
 
-# Run shellcheck on scripts in last commit
-make test sh-commit
+Test all files of a type:
+```bash
+make test sh       # All shell scripts
+make test yaml     # All YAML files
+make test md       # All Markdown files
+```
+
+Test files in last commit:
+```bash
+make test sh-commit     # Shell scripts in last commit
+make test yaml-commit   # YAML files in last commit
+make test md-commit     # Markdown files in last commit
 ```
 
 **Fix Workflow:**
-If shellcheck finds issues after commit:
+If linting fails before commit:
 1. Fix the issues shown in the output
 2. Stage the fixes: `git add <files>`
-3. Amend the commit: `git commit --amend --no-edit`
+3. Try committing again: `git commit`
+4. Or bypass if necessary: `git commit --no-verify`
 
 **Requirements:**
-- Shellcheck must be installed: `brew install shellcheck` (macOS) or via pre-commit framework
+- All linters installed via `make hooks setup` in local .venv
 
 ### Layer 2: Manual Functional Testing
 

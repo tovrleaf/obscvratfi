@@ -22,22 +22,24 @@ setup:
 	@cd ../.. && python3 -m venv .venv
 	@echo "Installing development dependencies from requirements-dev.txt..."
 	@cd ../.. && .venv/bin/pip install -r requirements-dev.txt
-	@echo "Setting up pre-commit hooks..."
+	@echo "Setting up pre-push hooks..."
 	@cd ../.. && .venv/bin/pre-commit install --hook-type pre-push
-	@echo "Setting up post-commit hook for shellcheck..."
-	@cd ../.. && ln -sf ../../scripts/post-commit-shellcheck.sh .git/hooks/post-commit
-	@chmod +x ../../scripts/post-commit-shellcheck.sh
+	@echo "Setting up pre-commit hook for linting..."
+	@cd ../.. && ln -sf ../../scripts/pre-commit-lint.sh .git/hooks/pre-commit
+	@chmod +x ../../scripts/pre-commit-lint.sh
 	@echo "✓ Development dependencies installed"
-	@echo "✓ Pre-commit hooks installed successfully"
-	@echo "✓ Post-commit shellcheck hook installed"
+	@echo "✓ Pre-push hooks installed successfully"
+	@echo "✓ Pre-commit linting hook installed"
 	@echo ""
 	@echo "Hooks will now run:"
-	@echo "  - After every commit (shellcheck on changed .sh files)"
+	@echo "  - Before every commit (linting on staged .sh, .yml, .md files)"
 	@echo "  - Before every push (all validation checks)"
 	@echo ""
 	@echo "To run manually:"
-	@echo "  make test sh-commit    - Check shell scripts in last commit"
-	@echo "  make hooks run         - Run all pre-push checks"
+	@echo "  make test sh         - Check all shell scripts"
+	@echo "  make test yaml       - Check all YAML files"
+	@echo "  make test md         - Check all Markdown files"
+	@echo "  make hooks run       - Run all pre-push checks"
 	@echo ""
 	@echo "To uninstall: make hooks uninstall"
 
@@ -58,9 +60,9 @@ uninstall:
 	else \
 		echo "Pre-push hooks are not installed"; \
 	fi
-	@if [ -L ../../.git/hooks/post-commit ]; then \
-		rm ../../.git/hooks/post-commit; \
-		echo "✓ Post-commit hook uninstalled"; \
+	@if [ -L ../../.git/hooks/pre-commit ]; then \
+		rm ../../.git/hooks/pre-commit; \
+		echo "✓ Pre-commit hook uninstalled"; \
 	else \
-		echo "Post-commit hook is not installed"; \
+		echo "Pre-commit hook is not installed"; \
 	fi
