@@ -35,6 +35,19 @@ print_warning() {
     echo -e "${YELLOW}⚠ $1${NC}"
 }
 
+# List gigs for selection
+list_gigs_for_selection() {
+    local counter=1
+    for file in "$GIGS_DIR"/*.md; do
+        if [[ -f "$file" ]] && [[ "$(basename "$file")" != "_index.md" ]]; then
+            local gig_title=$(grep "^title:" "$file" | sed 's/title: "\(.*\)"/\1/')
+            local gig_date=$(grep "^date:" "$file" | sed 's/date: //')
+            echo "  $counter) $gig_title ($gig_date)"
+            ((counter++))
+        fi
+    done
+}
+
 # Download file from URL
 download_file() {
     local url="$1"
@@ -76,10 +89,12 @@ show_menu() {
     echo "3) Add standalone picture"
     echo "4) Add standalone video"
     echo "5) Add to Others (interview, mention, review)"
-    echo "6) List media"
-    echo "7) Exit"
+    echo "6) Edit Others item"
+    echo "7) List media"
+    echo "8) Exit"
+    echo "9) Edit video"
     echo ""
-    read -rp "Choose an option: " choice
+    read -rp "Choose an option: " choice || exit 0
     echo ""
     
     case $choice in
@@ -88,8 +103,10 @@ show_menu() {
         3) add_standalone_picture ;;
         4) add_standalone_video ;;
         5) add_others ;;
-        6) list_media ;;
-        7) exit 0 ;;
+        6) edit_others ;;
+        7) list_media ;;
+        8) exit 0 ;;
+        9) edit_video ;;
         *) print_error "Invalid option"; show_menu ;;
     esac
 }
@@ -157,29 +174,27 @@ add_pictures() {
             break
         fi
         
+        # Generate descriptive filename: obscvrat-{gig-slug}-performance-{counter}.jpg
+        local ext="jpg"
+        if [[ "$pic_input" =~ \.(png|gif|jpeg)$ ]]; then
+            ext="${BASH_REMATCH[1]}"
+        fi
+        descriptive_name="obscvrat-${gig_slug}-performance-${pic_counter}.${ext}"
+        
         # Get original filename or generate one
         if [[ "$pic_input" =~ ^https?:// ]]; then
-            # Extract filename from URL or use counter
-            original_name=$(basename "$pic_input" | sed 's/[?#].*//')
-            if [[ ! "$original_name" =~ \.(jpg|jpeg|png|gif)$ ]]; then
-                original_name="pic-${pic_counter}.jpg"
-            fi
-            temp_file="/tmp/$(basename "$original_name")"
+            temp_file="/tmp/temp-pic-${pic_counter}.${ext}"
             
             if download_file "$pic_input" "$temp_file"; then
-                if generate_image_versions "$temp_file" "$original_name" "$media_dir"; then
-                    # Store base name (without extension) for frontmatter
-                    base_name="${original_name%.*}"
-                    pictures+=("${base_name}.${original_name##*.}")
+                if generate_image_versions "$temp_file" "$descriptive_name" "$media_dir"; then
+                    pictures+=("$descriptive_name")
                     rm "$temp_file"
                 fi
             fi
         else
             # Local file
-            original_name=$(basename "$pic_input")
-            if generate_image_versions "$pic_input" "$original_name" "$media_dir"; then
-                base_name="${original_name%.*}"
-                pictures+=("${base_name}.${original_name##*.}")
+            if generate_image_versions "$pic_input" "$descriptive_name" "$media_dir"; then
+                pictures+=("$descriptive_name")
             fi
         fi
         ((pic_counter++))
@@ -267,6 +282,7 @@ add_video() {
     # Get YouTube URL and title
     read -rp "YouTube URL: " youtube_url
     read -rp "Video title: " video_title
+    read -rp "Video date (YYYY-MM-DD, or press Enter to skip): " video_date
     
     # Extract YouTube ID
     youtube_id=""
@@ -308,6 +324,9 @@ add_video() {
             echo "Add this to the videos list:"
             echo "    - youtube_id: \"$youtube_id\""
             echo "      title: \"$video_title\""
+            if [[ -n "$video_date" ]]; then
+                echo "      date: $video_date"
+            fi
             if [[ ${#credits[@]} -gt 0 ]]; then
                 echo "      credits:"
                 for credit in "${credits[@]}"; do
@@ -322,6 +341,9 @@ add_video() {
         else
             # Add videos section to existing media
             video_section="  videos:\n    - youtube_id: \"$youtube_id\"\n      title: \"$video_title\""
+            if [[ -n "$video_date" ]]; then
+                video_section="$video_section\n      date: $video_date"
+            fi
             if [[ ${#credits[@]} -gt 0 ]]; then
                 video_section="$video_section\n      credits:"
                 for credit in "${credits[@]}"; do
@@ -341,6 +363,10 @@ add_video() {
     else
         # Build media section with YouTube video
         media_section="media:\n  videos:\n    - youtube_id: \"$youtube_id\"\n      title: \"$video_title\""
+        
+        if [[ -n "$video_date" ]]; then
+            media_section="$media_section\n      date: $video_date"
+        fi
         
         if [[ ${#credits[@]} -gt 0 ]]; then
             media_section="$media_section\n      credits:"
@@ -509,13 +535,8 @@ add_others() {
         cat > "$OTHERS_FILE" << 'EOF'
 ---
 title: "Others"
+items: []
 ---
-
-## Interviews
-
-## Reviews
-
-## Mentions
 EOF
     fi
     
@@ -526,30 +547,211 @@ EOF
     read -rp "Type: " type_choice
     
     case $type_choice in
-        1) section="Interviews" ;;
-        2) section="Reviews" ;;
-        3) section="Mentions" ;;
+        1) item_type="interview" ;;
+        2) item_type="review" ;;
+        3) item_type="mention" ;;
         *) print_error "Invalid type"; show_menu; return ;;
     esac
     
     read -rp "Title: " title
     read -rp "URL: " url
+    read -rp "Media title (optional, e.g., magazine/website name): " media_title
     read -rp "Description (optional): " description
+    read -rp "Date (YYYY-MM-DD, optional): " item_date
     
-    # Add to appropriate section
-    if [[ -n "$description" ]]; then
-        entry="- [$title]($url) - $description"
-    else
-        entry="- [$title]($url)"
+    # Ask if related to a gig
+    echo ""
+    echo "Related to a gig? (optional)"
+    list_gigs_for_selection
+    read -rp "Gig number (or press Enter to skip): " gig_choice
+    
+    gig_slug=""
+    if [[ -n "$gig_choice" ]] && [[ "$gig_choice" =~ ^[0-9]+$ ]]; then
+        gig_files=("$GIGS_DIR"/*.md)
+        gig_files=("${gig_files[@]##*/}")
+        gig_files=("${gig_files[@]%.md}")
+        if [[ "$gig_choice" -gt 0 ]] && [[ "$gig_choice" -le "${#gig_files[@]}" ]]; then
+            gig_slug="${gig_files[$((gig_choice-1))]}"
+        fi
     fi
     
-    # Insert after section header
-    sed -i.bak "/^## $section/a\\
-$entry
-" "$OTHERS_FILE"
-    rm -f "${OTHERS_FILE}.bak"
+    # Build YAML item
+    local item_lines=()
+    item_lines+=("  - type: \"$item_type\"")
+    item_lines+=("    title: \"$title\"")
+    item_lines+=("    url: \"$url\"")
+    [[ -n "$media_title" ]] && item_lines+=("    media_title: \"$media_title\"")
+    [[ -n "$description" ]] && item_lines+=("    description: \"$description\"")
+    [[ -n "$item_date" ]] && item_lines+=("    date: $item_date")
+    [[ -n "$gig_slug" ]] && item_lines+=("    gig: \"$gig_slug\"")
     
-    print_success "Added to $section"
+    # Add to items array
+    if grep -q "^items: \[\]" "$OTHERS_FILE"; then
+        # Empty array, replace with first item
+        {
+            echo "---"
+            grep "^title:" "$OTHERS_FILE"
+            echo "items:"
+            printf '%s\n' "${item_lines[@]}"
+            echo "---"
+        } > "$OTHERS_FILE.tmp"
+        mv "$OTHERS_FILE.tmp" "$OTHERS_FILE"
+    else
+        # Append to existing items
+        local temp_file="$OTHERS_FILE.tmp"
+        while IFS= read -r line; do
+            echo "$line"
+            if [[ "$line" == "items:" ]]; then
+                printf '%s\n' "${item_lines[@]}"
+            fi
+        done < "$OTHERS_FILE" > "$temp_file"
+        mv "$temp_file" "$OTHERS_FILE"
+    fi
+    
+    print_success "Added to Others"
+    show_menu
+}
+
+# Edit Others item
+edit_others() {
+    print_header "Edit Others Item"
+    
+    if [[ ! -f "$OTHERS_FILE" ]]; then
+        print_error "No Others file found"
+        show_menu
+        return
+    fi
+    
+    # Parse items from YAML
+    local -a items_data=()
+    local current_item=""
+    local in_items=false
+    
+    while IFS= read -r line; do
+        if [[ "$line" =~ ^items: ]]; then
+            in_items=true
+            continue
+        fi
+        if [[ "$in_items" == true ]]; then
+            if [[ "$line" =~ ^---$ ]]; then
+                break
+            fi
+            if [[ "$line" =~ ^[[:space:]]*-[[:space:]]type: ]]; then
+                [[ -n "$current_item" ]] && items_data+=("$current_item")
+                current_item="$line"
+            else
+                current_item+=$'\n'"$line"
+            fi
+        fi
+    done < "$OTHERS_FILE"
+    [[ -n "$current_item" ]] && items_data+=("$current_item")
+    
+    if [[ ${#items_data[@]} -eq 0 ]]; then
+        print_error "No items found"
+        show_menu
+        return
+    fi
+    
+    # List items
+    echo "Existing items:"
+    for i in "${!items_data[@]}"; do
+        local title=$(echo "${items_data[$i]}" | grep "^[[:space:]]*title:" | head -1 | sed 's/.*title: "\(.*\)"/\1/')
+        echo "  $((i+1))) $title"
+    done
+    
+    echo ""
+    read -rp "Select item to edit (or press Enter to cancel): " item_choice
+    
+    if [[ -z "$item_choice" ]] || [[ ! "$item_choice" =~ ^[0-9]+$ ]] || [[ "$item_choice" -lt 1 ]] || [[ "$item_choice" -gt ${#items_data[@]} ]]; then
+        show_menu
+        return
+    fi
+    
+    # Extract current values
+    local idx=$((item_choice-1))
+    local item="${items_data[$idx]}"
+    local current_type=$(echo "$item" | grep "type:" | sed 's/.*type: "\(.*\)"/\1/')
+    local current_title=$(echo "$item" | grep "^[[:space:]]*title:" | head -1 | sed 's/.*title: "\(.*\)"/\1/')
+    local current_url=$(echo "$item" | grep "url:" | sed 's/.*url: "\(.*\)"/\1/')
+    local current_media_title=$(echo "$item" | grep "media_title:" | sed 's/.*media_title: "\(.*\)"/\1/')
+    local current_desc=$(echo "$item" | grep "description:" | sed 's/.*description: "\(.*\)"/\1/')
+    local current_date=$(echo "$item" | grep "date:" | sed 's/.*date: \(.*\)/\1/')
+    local current_gig=$(echo "$item" | grep "gig:" | sed 's/.*gig: "\(.*\)"/\1/')
+    
+    # Interactive edit
+    echo ""
+    print_header "Editing: $current_title"
+    
+    echo "1) Interview"
+    echo "2) Review"
+    echo "3) Mention"
+    read -rp "Type [$current_type]: " new_type
+    [[ -z "$new_type" ]] && new_type="$current_type"
+    case $new_type in
+        1|interview) new_type="interview" ;;
+        2|review) new_type="review" ;;
+        3|mention) new_type="mention" ;;
+        *) new_type="$current_type" ;;
+    esac
+    
+    read -rp "Title [$current_title]: " new_title
+    [[ -z "$new_title" ]] && new_title="$current_title"
+    
+    read -rp "URL [$current_url]: " new_url
+    [[ -z "$new_url" ]] && new_url="$current_url"
+    
+    read -rp "Media title [$current_media_title]: " new_media_title
+    [[ -z "$new_media_title" ]] && new_media_title="$current_media_title"
+    
+    read -rp "Description [$current_desc]: " new_desc
+    [[ -z "$new_desc" ]] && new_desc="$current_desc"
+    
+    read -rp "Date (YYYY-MM-DD) [$current_date]: " new_date
+    [[ -z "$new_date" ]] && new_date="$current_date"
+    
+    echo ""
+    echo "Related to a gig? (current: ${current_gig:-none})"
+    list_gigs_for_selection
+    read -rp "Gig number (or press Enter to keep current): " gig_choice
+    
+    new_gig="$current_gig"
+    if [[ -n "$gig_choice" ]]; then
+        if [[ "$gig_choice" =~ ^[0-9]+$ ]]; then
+            gig_files=("$GIGS_DIR"/*.md)
+            gig_files=("${gig_files[@]##*/}")
+            gig_files=("${gig_files[@]%.md}")
+            if [[ "$gig_choice" -gt 0 ]] && [[ "$gig_choice" -le "${#gig_files[@]}" ]]; then
+                new_gig="${gig_files[$((gig_choice-1))]}"
+            fi
+        elif [[ "$gig_choice" == "none" ]] || [[ "$gig_choice" == "0" ]]; then
+            new_gig=""
+        fi
+    fi
+    
+    # Build new item
+    local new_item="  - type: \"$new_type\"\n"
+    new_item+="    title: \"$new_title\"\n"
+    new_item+="    url: \"$new_url\"\n"
+    [[ -n "$new_media_title" ]] && new_item+="    media_title: \"$new_media_title\"\n"
+    [[ -n "$new_desc" ]] && new_item+="    description: \"$new_desc\"\n"
+    [[ -n "$new_date" ]] && new_item+="    date: $new_date\n"
+    [[ -n "$new_gig" ]] && new_item+="    gig: \"$new_gig\"\n"
+    
+    # Replace in array
+    items_data[$idx]="$new_item"
+    
+    # Rebuild file
+    {
+        echo "---"
+        echo "title: \"Others\""
+        echo "items:"
+        for item_data in "${items_data[@]}"; do
+            echo -e "$item_data"
+        done
+        echo "---"
+    } > "$OTHERS_FILE"
+    
+    print_success "Item updated"
     show_menu
 }
 
@@ -571,14 +773,157 @@ list_media() {
     echo ""
     if [[ -f "$OTHERS_FILE" ]]; then
         echo "Others:"
-        grep "^- \[" "$OTHERS_FILE" | head -5
-        echo "  (see $OTHERS_FILE for full list)"
+        local count=0
+        local in_items=false
+        while IFS= read -r line; do
+            if [[ "$line" == "items:" ]]; then
+                in_items=true
+                continue
+            fi
+            if [[ "$in_items" == true ]] && [[ "$line" =~ title:[[:space:]]+\"(.*)\" ]]; then
+                echo "  - ${BASH_REMATCH[1]}"
+                count=$((count + 1))
+                [[ $count -ge 5 ]] && break
+            fi
+        done < "$OTHERS_FILE"
+        if [[ $count -eq 0 ]]; then
+            echo "  None"
+        fi
     else
         echo "Others: None"
     fi
     
     echo ""
-    read -rp "Press Enter to continue..."
+    read -rp "Press Enter to continue..." || :
+    show_menu
+}
+
+# Edit video
+edit_video() {
+    print_header "Edit Video"
+    
+    # List all gigs with videos
+    if [[ ! -d "$GIGS_DIR" ]]; then
+        print_error "No gigs directory found"
+        show_menu
+        return
+    fi
+    
+    declare -a gigs_with_videos=()
+    for file in "$GIGS_DIR"/*.md; do
+        if [[ -f "$file" ]] && grep -q "youtube_id:" "$file"; then
+            gigs_with_videos+=("$file")
+        fi
+    done
+    
+    if [[ ${#gigs_with_videos[@]} -eq 0 ]]; then
+        print_warning "No gigs with videos found"
+        show_menu
+        return
+    fi
+    
+    echo "Gigs with videos:"
+    for i in "${!gigs_with_videos[@]}"; do
+        file="${gigs_with_videos[$i]}"
+        title=$(grep "^title:" "$file" | sed 's/title: "\(.*\)"/\1/')
+        date=$(grep "^date:" "$file" | awk '{print $2}')
+        echo "$((i+1))) $date - $title"
+    done
+    echo "0) Cancel"
+    echo ""
+    
+    read -rp "Select gig: " selection || selection="0"
+    
+    if [[ "$selection" == "0" ]]; then
+        show_menu
+        return
+    fi
+    
+    if [[ ! "$selection" =~ ^[0-9]+$ ]] || [[ "$selection" -lt 1 ]] || [[ "$selection" -gt "${#gigs_with_videos[@]}" ]]; then
+        print_error "Invalid selection"
+        show_menu
+        return
+    fi
+    
+    selected_file="${gigs_with_videos[$((selection-1))]}"
+    
+    # Extract videos section
+    echo ""
+    echo "Current videos:"
+    awk '/  videos:/,/^[a-z_]+:/ {if (!/^[a-z_]+:/ || /  videos:/) print}' "$selected_file" | grep -v "^[a-z_]*:" | sed 's/^  //'
+    
+    echo ""
+    echo "1) Add new video"
+    echo "2) Remove video"
+    echo "3) Edit video details"
+    echo "0) Cancel"
+    read -rp "Choose action: " action || action="0"
+    
+    case $action in
+        1)
+            # Add new video
+            read -rp "Video URL: " video_url || video_url=""
+            read -rp "Video title: " video_title || video_title=""
+            read -rp "Video date (YYYY-MM-DD): " video_date || video_date=""
+            
+            # Add credits
+            echo "Add credits (press Enter on credit type to finish):"
+            declare -a credits=()
+            while true; do
+                read -rp "  Credit type: " credit_type || break
+                if [[ -z "$credit_type" ]]; then
+                    break
+                fi
+                read -rp "  Name: " credit_name || credit_name=""
+                read -rp "  URL (optional): " credit_url || credit_url=""
+                
+                if [[ -n "$credit_url" ]]; then
+                    credits+=("$credit_type|$credit_name|$credit_url")
+                else
+                    credits+=("$credit_type|$credit_name|")
+                fi
+            done
+            
+            # Build video entry
+            video_entry="  - url: \"$video_url\"\n    title: \"$video_title\"\n    date: $video_date"
+            if [[ ${#credits[@]} -gt 0 ]]; then
+                video_entry="$video_entry\n    credits:"
+                for credit in "${credits[@]}"; do
+                    IFS='|' read -r type name url <<< "$credit"
+                    video_entry="$video_entry\n      - type: \"$type\"\n        name: \"$name\""
+                    if [[ -n "$url" ]]; then
+                        video_entry="$video_entry\n        url: \"$url\""
+                    fi
+                done
+            fi
+            
+            # Insert before the next frontmatter field or ---
+            awk -v entry="$video_entry" '
+                /^  videos:/ { in_videos=1; print; next }
+                in_videos && /^[a-z_]+:/ { print entry; in_videos=0 }
+                in_videos && /^---$/ { print entry; in_videos=0 }
+                { print }
+                END { if (in_videos) print entry }
+            ' "$selected_file" > "$selected_file.tmp" && mv "$selected_file.tmp" "$selected_file"
+            
+            print_success "Video added"
+            ;;
+        2)
+            # Remove video - open in editor
+            ${EDITOR:-vim} "$selected_file"
+            print_success "Edit complete"
+            ;;
+        3)
+            # Edit video - open in editor
+            ${EDITOR:-vim} "$selected_file"
+            print_success "Edit complete"
+            ;;
+        0)
+            show_menu
+            return
+            ;;
+    esac
+    
     show_menu
 }
 

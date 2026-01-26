@@ -3,9 +3,8 @@ title: "Noise Space XV"
 date: 2025-10-11
 venue: "Kalasataman Vapaakaupunki"
 location: "Helsinki"
-description: ""
-poster: "/media/gigs/2025-10-11-noise-space-xv/poster.jpg"
-event_link: "https://www.facebook.com/events/1174867227617176"
+poster: "/media/gigs/2025-10-11-noise-space-xv/obscvrat-noise-space-xv-poster-2025.jpg"
+event_link: "https://www.facebook.com/events/hermannin-rantatie-5-fi-00580-helsinki-suomi-00580-helsinki-finland/noise-space-xv/1174867227617176/"
 other_performers:
   - name: "Bryskt"
     url: "https://bryskt.org/"
@@ -19,8 +18,8 @@ media:
     author: "Roman Odjinud"
     author_url: "https://www.instagram.com/er_odjinud"
     images:
-      - DSC_9465.jpg
-      - DSC_9476.jpg
+      - obscvrat-noise-space-xv-performance-1.jpg
+      - obscvrat-noise-space-xv-performance-2.jpg
   videos:
     - youtube_id: "UbFoX9VjzX4"
       title: "Obscvrat - Live at Noise Space XV | October 11, 2025"

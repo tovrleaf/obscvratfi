@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # scripts/manage-gigs.sh - Interactive gig management tool
 
-set -euo pipefail
+set -uo pipefail
 
 GIGS_DIR="website/content/gigs"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -61,7 +61,7 @@ show_menu() {
     echo "4) Delete gig"
     echo "5) Exit"
     echo ""
-    read -rp "Choose an option: " choice
+    read -rp "Choose an option: " choice || exit 0
     echo ""
     
     case $choice in
@@ -79,10 +79,10 @@ create_gig() {
     print_header "Create New Gig"
     
     # Event name
-    read -rp "Event name (or press Enter to use venue name): " event_name
+    read -rp "Event name (or press Enter to use venue name): " event_name || true
     
     # Date
-    read -rp "Date (YYYY-MM-DD): " date
+    read -rp "Date (YYYY-MM-DD): " date || true
     if [[ ! $date =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]]; then
         print_error "Invalid date format"
         show_menu
@@ -90,7 +90,7 @@ create_gig() {
     fi
     
     # Venue
-    read -rp "Venue name: " venue
+    read -rp "Venue name: " venue || true
     if [[ -z "$venue" ]]; then
         print_error "Venue name is required"
         show_menu
@@ -106,7 +106,7 @@ create_gig() {
     fi
     
     # City
-    read -rp "City: " city
+    read -rp "City: " city || true
     if [[ -z "$city" ]]; then
         print_error "City is required"
         show_menu
@@ -114,41 +114,61 @@ create_gig() {
     fi
     
     # Description
-    read -rp "Description: " description
+    echo "Description (enter text, then type END on a new line and press Enter):"
+    description=""
+    while IFS= read -r line; do
+        if [[ "$line" == "END" ]]; then
+            break
+        fi
+        if [[ -n "$description" ]]; then
+            description+=$'\n'
+        fi
+        description+="$line"
+    done
     
     # Poster
-    read -rp "Poster image URL or path (or press Enter to skip): " poster_input
+    read -rp "Poster image URL or path (or press Enter to skip): " poster_input || true
     
     # Handle poster download if URL provided
     poster=""
     if [[ -n "$poster_input" ]]; then
+        slug=$(echo "$slug_base" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | tr -cd '[:alnum:]-')
+        poster_dir="website/assets/media/gigs/${date}-${slug}"
+        mkdir -p "$poster_dir"
+        
         if [[ "$poster_input" =~ ^https?:// ]]; then
             # It's a URL, download it
-            slug=$(echo "$slug_base" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | tr -cd '[:alnum:]-')
-            poster_dir="website/static/media/gigs/${date}-${slug}"
-            poster_path="$poster_dir/poster.jpg"
+            poster_filename="obscvrat-${slug}-poster-${date%%%-*}.jpg"
+            poster_path="$poster_dir/$poster_filename"
             
             if download_poster "$poster_input" "$poster_path"; then
-                poster="/media/gigs/${date}-${slug}/poster.jpg"
+                poster="$poster_filename"
             fi
         else
-            # It's a local path, use as-is
-            poster="$poster_input"
+            # It's a local path, copy and rename it
+            if [[ -f "$poster_input" ]]; then
+                poster_filename="obscvrat-${slug}-poster-${date%%%-*}.jpg"
+                poster_path="$poster_dir/$poster_filename"
+                cp "$poster_input" "$poster_path"
+                poster="$poster_filename"
+                print_success "Copied poster to $poster_path"
+            else
+                print_error "Poster file not found: $poster_input"
+            fi
         fi
     fi
-    
     # Event link
-    read -rp "Event link URL (or press Enter to skip): " event_url
+    read -rp "Event link URL (or press Enter to skip): " event_url || true
     
     # Other performers
     echo "Other performers (press Enter when done):"
     declare -a performers=()
     while true; do
-        read -rp "  Performer name (or press Enter to finish): " performer_name
+        read -rp "  Performer name (or press Enter to finish): " performer_name || break
         if [[ -z "$performer_name" ]]; then
             break
         fi
-        read -rp "  Performer URL (or press Enter to skip): " performer_url
+        read -rp "  Performer URL (or press Enter to skip): " performer_url || performer_url=""
         performers+=("$performer_name|$performer_url")
     done
     
@@ -160,7 +180,7 @@ create_gig() {
     # Check if file exists
     if [[ -f "$filepath" ]]; then
         print_error "Gig already exists: $filename"
-        read -rp "Overwrite? (y/N): " overwrite
+        read -rp "Overwrite? (y/N): " overwrite || overwrite="n"
         if [[ ! "$overwrite" =~ ^[Yy]$ ]]; then
             show_menu
             return
@@ -168,57 +188,45 @@ create_gig() {
     fi
     
     # Build frontmatter
-    cat > "$filepath" << 'FRONTMATTER'
----
-title: "$event_name"
-date: $date
-venue: "$venue"
-location: "$city"
-description: "$description"
-FRONTMATTER
-    
-    # Replace variables in frontmatter
-    sed -i.bak "s/\$event_name/$event_name/g; s/\$venue/$venue/g; s/\$date/$date/g; s/\$city/$city/g; s/\$description/$description/g" "$filepath"
-    rm -f "${filepath}.bak"
-    
-    # Add poster if provided
-    if [[ -n "$poster" ]]; then
-        echo "poster: \"$poster\"" >> "$filepath"
-    fi
-    
-    # Add event link if provided
-    if [[ -n "$event_url" ]]; then
-        echo "event_link: \"$event_url\"" >> "$filepath"
-    fi
-    
-    # Add performers if provided
-    if [[ ${#performers[@]} -gt 0 ]]; then
-        echo "other_performers:" >> "$filepath"
-        for performer in "${performers[@]}"; do
-            IFS='|' read -r name url <<< "$performer"
-            if [[ -n "$url" ]]; then
-                cat >> "$filepath" << PERFORMER
-  - name: "$name"
-    url: "$url"
-PERFORMER
-            else
-                echo "  - name: \"$name\"" >> "$filepath"
-            fi
-        done
-    fi
-    
-    # Close frontmatter and add body
-    cat >> "$filepath" << 'BODY'
-draft: false
----
-
-$description
-BODY
-    sed -i.bak "s/\$description/$description/g" "$filepath"
-    rm -f "${filepath}.bak"
+    {
+        echo "---"
+        echo "title: \"$event_name\""
+        echo "date: $date"
+        echo "venue: \"$venue\""
+        echo "location: \"$city\""
+        
+        # Add poster if provided
+        if [[ -n "$poster" ]]; then
+            echo "poster: \"$poster\""
+        fi
+        
+        # Add event link if provided
+        if [[ -n "$event_url" ]]; then
+            echo "event_link: \"$event_url\""
+        fi
+        
+        # Add performers if provided
+        if [[ ${#performers[@]} -gt 0 ]]; then
+            echo "other_performers:"
+            for performer in "${performers[@]}"; do
+                IFS='|' read -r name url <<< "$performer"
+                if [[ -n "$url" ]]; then
+                    echo "  - name: \"$name\""
+                    echo "    url: \"$url\""
+                else
+                    echo "  - name: \"$name\""
+                fi
+            done
+        fi
+        
+        echo "draft: false"
+        echo "---"
+        echo ""
+        echo "$description"
+    } > "$filepath"
     
     print_success "Created gig: $filename"
-    read -rp "Open in editor? (y/N): " open_editor
+    read -rp "Open in editor? (y/N): " open_editor || open_editor="n"
     if [[ "$open_editor" =~ ^[Yy]$ ]]; then
         ${EDITOR:-vim} "$filepath"
     fi
@@ -290,7 +298,7 @@ edit_gig() {
     done
     
     echo ""
-    read -rp "Select gig number (or 0 to cancel): " selection
+    read -rp "Select gig number (or 0 to cancel): " selection || true
     
     if [[ "$selection" == "0" ]]; then
         show_menu
@@ -318,10 +326,10 @@ edit_gig() {
     print_header "Edit Gig: $old_title"
     echo ""
     
-    read -rp "Event name [$old_title]: " event_name
+    read -rp "Event name [$old_title]: " event_name || true
     event_name=${event_name:-$old_title}
     
-    read -rp "Date [$old_date]: " date
+    read -rp "Date [$old_date]: " date || true
     date=${date:-$old_date}
     if [[ ! $date =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]]; then
         print_error "Invalid date format"
@@ -329,7 +337,7 @@ edit_gig() {
         return
     fi
     
-    read -rp "Venue [$old_venue]: " venue
+    read -rp "Venue [$old_venue]: " venue || true
     venue=${venue:-$old_venue}
     
     # Use event name for slug, fallback to venue
@@ -339,47 +347,117 @@ edit_gig() {
         slug_base="$event_name"
     fi
     
-    read -rp "City [$old_location]: " city
+    read -rp "City [$old_location]: " city || true
     city=${city:-$old_location}
     
-    read -rp "Description [$old_description]: " description
-    description=${description:-$old_description}
+    echo "Description (current: ${old_description:0:50}...) - type END on a new line to finish, or just END to keep current:"
+    description=""
+    while IFS= read -r line; do
+        if [[ "$line" == "END" ]]; then
+            break
+        fi
+        if [[ -n "$description" ]]; then
+            description+=$'\n'
+        fi
+        description+="$line"
+    done
+    # If empty, keep old description
+    if [[ -z "$description" ]]; then
+        description="$old_description"
+    fi
     
-    read -rp "Poster [$old_poster]: " poster_input
+    read -rp "Poster [$old_poster]: " poster_input || true
     poster_input=${poster_input:-$old_poster}
     
     # Handle poster download if URL provided
     poster=""
     if [[ -n "$poster_input" ]]; then
+        slug=$(echo "$slug_base" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | tr -cd '[:alnum:]-')
+        poster_dir="website/assets/media/gigs/${date}-${slug}"
+        mkdir -p "$poster_dir"
+        
         if [[ "$poster_input" =~ ^https?:// ]]; then
             # It's a URL, download it
-            slug=$(echo "$slug_base" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | tr -cd '[:alnum:]-')
-            poster_dir="website/static/media/gigs/${date}-${slug}"
-            poster_path="$poster_dir/poster.jpg"
+            poster_filename="obscvrat-${slug}-poster-${date%%%-*}.jpg"
+            poster_path="$poster_dir/$poster_filename"
             
             if download_poster "$poster_input" "$poster_path"; then
-                poster="/media/gigs/${date}-${slug}/poster.jpg"
+                poster="$poster_filename"
             fi
         else
-            # It's a local path, use as-is
-            poster="$poster_input"
+            # It's a local path, copy and rename it
+            if [[ -f "$poster_input" ]]; then
+                poster_filename="obscvrat-${slug}-poster-${date%%%-*}.jpg"
+                poster_path="$poster_dir/$poster_filename"
+                cp "$poster_input" "$poster_path"
+                poster="$poster_filename"
+                print_success "Copied poster to $poster_path"
+            else
+                print_error "Poster file not found: $poster_input"
+            fi
         fi
     fi
-    
     # Event link
-    read -rp "Event link URL (or press Enter to skip): " event_url
+    read -rp "Event link URL (or press Enter to skip): " event_url || true
     
-    # Other performers
-    echo "Other performers (press Enter when done):"
+    # Other performers - parse existing
+    echo ""
+    echo "Other performers:"
     declare -a performers=()
-    while true; do
-        read -rp "  Performer name (or press Enter to finish): " performer_name
-        if [[ -z "$performer_name" ]]; then
-            break
+    local performer_count=0
+    
+    # Parse existing performers from file
+    while IFS= read -r line; do
+        if [[ "$line" =~ ^[[:space:]]*-[[:space:]]name:[[:space:]]*\"(.*)\" ]]; then
+            local perf_name="${BASH_REMATCH[1]}"
+            # Read next line for URL
+            read -r next_line
+            local perf_url=""
+            if [[ "$next_line" =~ url:[[:space:]]*\"(.*)\" ]]; then
+                perf_url="${BASH_REMATCH[1]}"
+            fi
+            performers+=("$perf_name|$perf_url")
+            ((performer_count++))
+            echo "  $performer_count) $perf_name${perf_url:+ ($perf_url)}"
         fi
-        read -rp "  Performer URL (or press Enter to skip): " performer_url
-        performers+=("$performer_name|$performer_url")
-    done
+    done < "$selected_file"
+    
+    if [[ $performer_count -eq 0 ]]; then
+        echo "  (none)"
+    fi
+    
+    echo ""
+    echo "1) Add performer"
+    echo "2) Remove performer"
+    echo "3) Keep as is"
+    read -rp "Choose action: " perf_action || perf_action="3"
+    
+    case $perf_action in
+        1)
+            # Add performer
+            while true; do
+                read -rp "  Performer name (or press Enter to finish): " performer_name || break
+                if [[ -z "$performer_name" ]]; then
+                    break
+                fi
+                read -rp "  Performer URL (or press Enter to skip): " performer_url || performer_url=""
+                performers+=("$performer_name|$performer_url")
+            done
+            ;;
+        2)
+            # Remove performer
+            if [[ $performer_count -gt 0 ]]; then
+                read -rp "Enter performer number to remove: " remove_num || remove_num=""
+                if [[ "$remove_num" =~ ^[0-9]+$ ]] && [[ "$remove_num" -ge 1 ]] && [[ "$remove_num" -le $performer_count ]]; then
+                    unset 'performers[$((remove_num-1))]'
+                    performers=("${performers[@]}")  # Re-index array
+                fi
+            fi
+            ;;
+        3|*)
+            # Keep as is
+            ;;
+    esac
     
     # Generate filename
     slug=$(echo "$slug_base" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | tr -cd '[:alnum:]-')
@@ -387,54 +465,42 @@ edit_gig() {
     filepath="$GIGS_DIR/$filename"
     
     # Build updated frontmatter
-    cat > "$filepath" << 'FRONTMATTER'
----
-title: "$event_name"
-date: $date
-venue: "$venue"
-location: "$city"
-description: "$description"
-FRONTMATTER
-    
-    # Replace variables
-    sed -i.bak "s/\$event_name/$event_name/g; s/\$venue/$venue/g; s/\$date/$date/g; s/\$city/$city/g; s/\$description/$description/g" "$filepath"
-    rm -f "${filepath}.bak"
-    
-    # Add poster if provided
-    if [[ -n "$poster" ]]; then
-        echo "poster: \"$poster\"" >> "$filepath"
-    fi
-    
-    # Add event link if provided
-    if [[ -n "$event_url" ]]; then
-        echo "event_link: \"$event_url\"" >> "$filepath"
-    fi
-    
-    # Add performers if provided
-    if [[ ${#performers[@]} -gt 0 ]]; then
-        echo "other_performers:" >> "$filepath"
-        for performer in "${performers[@]}"; do
-            IFS='|' read -r name url <<< "$performer"
-            if [[ -n "$url" ]]; then
-                cat >> "$filepath" << PERFORMER
-  - name: "$name"
-    url: "$url"
-PERFORMER
-            else
-                echo "  - name: \"$name\"" >> "$filepath"
-            fi
-        done
-    fi
-    
-    # Close frontmatter and add body
-    cat >> "$filepath" << 'BODY'
-draft: false
----
-
-$description
-BODY
-    sed -i.bak "s/\$description/$description/g" "$filepath"
-    rm -f "${filepath}.bak"
+    {
+        echo "---"
+        echo "title: \"$event_name\""
+        echo "date: $date"
+        echo "venue: \"$venue\""
+        echo "location: \"$city\""
+        
+        # Add poster if provided
+        if [[ -n "$poster" ]]; then
+            echo "poster: \"$poster\""
+        fi
+        
+        # Add event link if provided
+        if [[ -n "$event_url" ]]; then
+            echo "event_link: \"$event_url\""
+        fi
+        
+        # Add performers if provided
+        if [[ ${#performers[@]} -gt 0 ]]; then
+            echo "other_performers:"
+            for performer in "${performers[@]}"; do
+                IFS='|' read -r name url <<< "$performer"
+                if [[ -n "$url" ]]; then
+                    echo "  - name: \"$name\""
+                    echo "    url: \"$url\""
+                else
+                    echo "  - name: \"$name\""
+                fi
+            done
+        fi
+        
+        echo "draft: false"
+        echo "---"
+        echo ""
+        echo "$description"
+    } > "$filepath"
     
     # Remove old file if filename changed
     if [[ "$selected_file" != "$filepath" ]]; then
@@ -477,7 +543,7 @@ delete_gig() {
     done
     
     echo ""
-    read -rp "Select gig number to delete (or 0 to cancel): " selection
+    read -rp "Select gig number to delete (or 0 to cancel): " selection || true
     
     if [[ "$selection" == "0" ]]; then
         show_menu
@@ -494,7 +560,7 @@ delete_gig() {
     filename=$(basename "$selected_file")
     
     print_warning "About to delete: $filename"
-    read -rp "Are you sure? (y/N): " confirm
+    read -rp "Are you sure? (y/N): " confirm || confirm="n"
     
     if [[ "$confirm" =~ ^[Yy]$ ]]; then
         rm "$selected_file"

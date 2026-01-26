@@ -23,7 +23,10 @@
                     {{ $gigSlug := strings.TrimSuffix "/" (strings.TrimPrefix "/gigs/" .RelPermalink) }}
                     {{ $author := .Params.media.pictures.author }}
                     {{ $authorUrl := .Params.media.pictures.author_url }}
+                    {{ $location := .Params.location }}
+                    {{ $date := .Date.Format "January 2, 2006" }}
                     {{ range $index, $image := .Params.media.pictures.images }}
+                        {{ $altText := printf "Obscvrat live at %s, %s, %s - Photo by %s" $gigTitle $location $date $author }}
                         <div class="media-item photo-item">
                             <a href="#" class="open-lightbox" 
                                data-gig="{{ $gigSlug }}" 
@@ -32,7 +35,7 @@
                                data-gig-link="{{ $gigPermalink }}"
                                data-author="{{ $author }}"
                                data-author-url="{{ $authorUrl }}">
-                                <img src="/media/gigs/{{ $gigSlug }}/{{ $image }}" alt="{{ $gigTitle }}">
+                                <img src="/media/gigs/{{ $gigSlug }}/{{ $image }}" alt="{{ $altText }}">
                             </a>
                             <div class="media-info">
                                 <p class="media-gig"><a href="{{ $gigPermalink }}">{{ $gigTitle }}</a></p>
@@ -87,7 +90,7 @@
                         <div class="media-item video-item">
                             <a href="#" class="open-video-lightbox"
                                data-youtube-id="{{ .youtube_id }}"
-                               data-title="{{ .title }}"
+                               data-title="{{ .title }}{{ if .date }} | {{ .date }}{{ end }}"
                                data-gig-title="{{ $gigTitle }}"
                                data-gig-link="{{ $gigPermalink }}"
                                {{ if .credits }}
@@ -143,9 +146,24 @@
     <section class="media-section others-section" data-type="others">
         <h2>Others</h2>
         {{ $othersPage := .Site.GetPage "/media/others" }}
-        {{ if $othersPage }}
-            <div class="others-content">
-                {{ $othersPage.Content }}
+        {{ if and $othersPage $othersPage.Params.items }}
+            <div class="others-list">
+                {{ range $othersPage.Params.items }}
+                <div class="others-item">
+                    <h3>{{ .type }}: <a href="{{ .url }}" target="_blank">{{ .title }}</a></h3>
+                    <div class="others-meta">
+                        <span class="others-info">
+                            {{ if .media_title }}{{ .media_title }}{{ if .date }} | {{ end }}{{ end }}
+                            {{ if .date }}{{ dateFormat "January 2, 2006" .date }}{{ end }}
+                            {{ if .gig }}
+                                {{ $gigPage := $.Site.GetPage (printf "/gigs/%s" .gig) }}
+                                {{ if $gigPage }} (<a href="{{ $gigPage.Permalink }}">{{ $gigPage.Title }}</a>){{ end }}
+                            {{ end }}
+                        </span>
+                    </div>
+                    {{ if .description }}<p>{{ .description }}</p>{{ end }}
+                </div>
+                {{ end }}
             </div>
         {{ else }}
             <p>No interviews, mentions, or reviews yet.</p>

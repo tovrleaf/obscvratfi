@@ -52,6 +52,26 @@
     </div>
     {{ end }}
 
+    {{ if .Params.poster }}
+    <div class="gig-poster">
+        <h2>Poster</h2>
+        {{ $gigSlug := .File.BaseFileName }}
+        {{ $posterFilename := path.Base .Params.poster }}
+        {{ $posterPath := printf "media/gigs/%s/%s" $gigSlug $posterFilename }}
+        {{ $resource := resources.Get $posterPath }}
+        {{ if $resource }}
+        <div class="media-item photo-item">
+            <a href="#" class="open-lightbox" 
+               data-image-url="{{ $resource.RelPermalink }}"
+               data-gig-title="{{ .Title }}"
+               data-gig-link="{{ .Permalink }}">
+                <img src="{{ $resource.RelPermalink }}" alt="{{ .Title }} poster">
+            </a>
+        </div>
+        {{ end }}
+    </div>
+    {{ end }}
+
     {{ if .Params.media }}
     <div class="gig-media">
         {{ if .Params.media.pictures }}
@@ -73,9 +93,12 @@
                 {{ $gigPermalink := .Permalink }}
                 {{ $author := .Params.media.pictures.author }}
                 {{ $authorUrl := .Params.media.pictures.author_url }}
+                {{ $location := .Params.location }}
+                {{ $date := .Date.Format "January 2, 2006" }}
                 {{ range .Params.media.pictures.images }}
                     {{ $imagePath := printf "media/gigs/%s/%s" $gigSlug . }}
                     {{ with resources.Get $imagePath }}
+                        {{ $altText := printf "Obscvrat live at %s, %s, %s - Photo by %s" $gigTitle $location $date $author }}
                         <div class="media-item photo-item">
                             <a href="#" class="open-lightbox" 
                                data-image-url="{{ .RelPermalink }}"
@@ -83,7 +106,7 @@
                                data-gig-link="{{ $gigPermalink }}"
                                data-author="{{ $author }}"
                                data-author-url="{{ $authorUrl }}">
-                                <img src="{{ .RelPermalink }}" alt="{{ $gigTitle }}">
+                                <img src="{{ .RelPermalink }}" alt="{{ $altText }}">
                             </a>
                         </div>
                     {{ end }}
@@ -120,6 +143,35 @@
         </section>
         {{ end }}
     </div>
+    {{ end }}
+
+    {{ $gigSlug := .File.BaseFileName }}
+    {{ $othersPage := .Site.GetPage "/media/others.md" }}
+    {{ if $othersPage }}
+        {{ $relatedItems := slice }}
+        {{ range $othersPage.Params.items }}
+            {{ if eq .gig $gigSlug }}
+                {{ $relatedItems = $relatedItems | append . }}
+            {{ end }}
+        {{ end }}
+        {{ if gt (len $relatedItems) 0 }}
+        <div class="gig-others">
+            <h2>Press & Media</h2>
+            <ul>
+            {{ range $relatedItems }}
+                <li>
+                    <strong>{{ .type }}:</strong> <a href="{{ .url }}" target="_blank">{{ .title }}</a>
+                    {{ if or .media_title .date }}
+                    <br>
+                    {{ if .media_title }}{{ .media_title }}{{ if .date }} | {{ end }}{{ end }}
+                    {{ if .date }}{{ dateFormat "January 2, 2006" .date }}{{ end }}
+                    {{ end }}
+                    {{ if .description }}<br>{{ .description }}{{ end }}
+                </li>
+            {{ end }}
+            </ul>
+        </div>
+        {{ end }}
     {{ end }}
 </article>
 

@@ -72,6 +72,12 @@ media:
   videos:
     - youtube_id: "dQw4w9WgXcQ"
       title: "Full Performance"
+      credits:
+        - type: "Recorded"
+          name: "John Doe"
+          url: "https://example.com"  # Optional
+        - type: "Mastered"
+          name: "Jane Smith"
 draft: false
 ---
 ```
@@ -125,13 +131,18 @@ draft: false
 
 **Media files:**
 ```
-# Gig-embedded media
-/static/media/gigs/2025-03-15-event-name/
+# Gig-embedded media (Hugo processes from assets)
+/assets/media/gigs/2025-03-15-event-name/
   poster.jpg              # Promotional poster (gig page only)
   pic1.jpg                # Performance photos (media page)
   pic2.jpg
-  pic1-thumb.jpg          # Generated thumbnails
-  pic2-thumb.jpg
+
+# Generated at build time by Hugo
+/public/media/gigs/2025-03-15-event-name/
+  poster.jpg
+  pic1.jpg
+  pic2.jpg
+  # Hugo generates responsive versions automatically
 
 # Standalone media
 /static/media/standalone/
@@ -172,22 +183,31 @@ draft: false
    - Optimize file sizes
 
 2. **Modal/Gallery:** SwiperJS
-   - Swipe between media items
-   - Touch/gesture support
-   - Navigation arrows + pagination
-   - Works for both pictures and videos
+   - Lightbox modal for full-size viewing
+   - Navigation arrows to browse between images/videos
+   - Click outside or X button to close
+   - Display gig info and photographer/credits
+   - Download original image button (right-aligned)
+   - Open in YouTube button for videos (right-aligned)
+   - Touch/gesture support for mobile
+   - Keyboard navigation support
 
-3. **Media Page Layout:** CSS Grid Masonry
+3. **Media Page Layout:** CSS Grid Masonry (4 columns)
    - Waterfall/Pinterest-style grid
-   - Maintain aspect ratios based on dominant ratio
-   - Separate sections: "Photos" and "Videos"
+   - 4 columns on desktop, 3 on tablet, 2 on mobile, 1 on small mobile
+   - Maintain aspect ratios (no cropping)
+   - Separate sections: "Photos", "Videos", and "Others"
    - Filter/toggle between types (default: show all)
-   - Each media set grouped by gig with link to gig page
+   - Each media item links to lightbox modal
+   - Gig name and photographer/credits shown below thumbnails
 
 4. **Video Display:**
-   - YouTube thumbnail as preview
-   - Click opens modal with embedded player
-   - Link to original YouTube video
+   - YouTube thumbnail as preview in grid
+   - Click opens modal with embedded YouTube player
+   - Video title displayed above player
+   - Credits displayed below player (e.g., "Recorded by John Doe")
+   - Open in YouTube button to view on YouTube
+   - Support for multiple credits per video (Recorded, Mastered, etc.)
 
 5. **Content Management Tool:** Interactive CLI tool
    - Create new gigs with interactive prompts
@@ -279,10 +299,10 @@ draft: false
 
 ### Positive
 - **Clear data structure:** Frontmatter clearly defines media relationships
-- **Organized files:** Gig-based folders keep media organized
-- **Build-time optimization:** Hugo generates thumbnails automatically
-- **Modern UX:** SwiperJS provides smooth, touch-friendly gallery experience
-- **Responsive layout:** Masonry grid adapts to different screen sizes
+- **Organized files:** Gig-based folders keep media organized in assets/
+- **Build-time optimization:** Hugo generates responsive images automatically from assets/
+- **Modern UX:** Lightbox modals with navigation provide smooth gallery experience
+- **Responsive layout:** Masonry grid adapts (4/3/2/1 columns) to different screen sizes
 - **Scalable:** Structure supports unlimited gigs and media
 - **SEO-friendly:** Static HTML with proper image alt tags
 - **No external dependencies:** All media in same S3 bucket
@@ -291,16 +311,20 @@ draft: false
 - **Consistent structure:** Tool enforces proper frontmatter format
 - **Fast workflow:** Create gigs in seconds with prompts
 - **Centralized media:** All media types accessible from single page
+- **Per-video credits:** Flexible credit system for any role (Recorded, Mastered, etc.)
+- **Download originals:** Users can download full-resolution images
+- **YouTube integration:** Videos open in YouTube with one click
 
 ### Negative
-- **Build time increase:** Thumbnail generation adds to Hugo build time
+- **Build time increase:** Hugo image processing adds to build time
 - **Manual media management:** Must manually add media to frontmatter after gigs
-- **Storage costs:** Original + thumbnail images increase S3 storage
+- **Storage costs:** Original images in assets/ increase repository size
 - **Browser support:** CSS Grid masonry requires modern browsers (fallback needed)
-- **SwiperJS dependency:** Adds ~50KB JavaScript library
+- **JavaScript dependency:** Lightbox modals require JavaScript enabled
 - **YouTube dependency:** Videos unavailable if YouTube is blocked/down
 - **Tool dependency:** Requires bash shell (not Windows-native)
 - **Editor requirement:** Edit functionality needs $EDITOR set
+- **Assets directory:** Images must be in assets/ for Hugo processing (not static/)
 
 ### Neutral
 - **Author per picture set:** One author attribution per gig's pictures (not per individual image)
@@ -349,26 +373,31 @@ This tool simplifies content management and ensures consistent frontmatter struc
 - [x] Auto-download posters from URLs
 - [x] Interactive edit with prefilled values
 - [x] Apply site-wide design system to gig pages
-- [x] Update README.md with gig management instructions (if needed)
+- [x] Update README.md with gig management instructions
 - [x] Create media management tool (`make media`)
 - [x] Support for standalone media items
+- [x] Implement Hugo image processing (from assets/)
+- [x] Add SwiperJS library and configuration
+- [x] Create media page template with masonry layout (4 columns)
+- [x] Add filter/toggle functionality (JavaScript) for Photos/Videos/Others
+- [x] Add CSS for responsive masonry grid (4/3/2/1 columns)
+- [x] Implement modal for full-size viewing with navigation arrows
+- [x] Add download links for original images
+- [x] Add YouTube embed support in modal
+- [x] Add per-video credits system (Recorded by, Mastered by, etc.)
+- [x] Add Open in YouTube button for videos
+- [x] Display media galleries on gig pages with same lightbox
+- [x] Add video title support
 
-**Pending (Media features):**
+**Pending:**
 - [ ] Update media tool to create standalone picture/video files
 - [ ] Display standalone media on gig pages (if linked)
-- [ ] Create Hugo shortcode for media gallery
-- [ ] Implement Hugo image processing for thumbnails
-- [ ] Add SwiperJS library and configuration
-- [ ] Create media page template with masonry layout
-- [ ] Add filter/toggle functionality (JavaScript) for Photos/Videos/Others
-- [ ] Add CSS for responsive masonry grid
-- [ ] Implement modal for full-size viewing
-- [ ] Add download links for original images
-- [ ] Add YouTube embed support in modal
 - [ ] Create Others content management (interviews, mentions, reviews)
 - [ ] Add Others section to media page
 - [ ] Test on mobile devices
 - [ ] Add fallback for browsers without CSS Grid masonry support
+- [ ] Add lazy loading for images on media page
+- [ ] Consider progressive image loading (blur-up technique)
 
 ### Hugo Image Processing Example
 ```go-html-template
@@ -434,6 +463,54 @@ items:
     date: 2024-11-20
 ---
 ```
+
+## SEO and Accessibility
+
+### File Naming Convention
+
+All media files use SEO-friendly descriptive names following this pattern:
+
+**Pattern:** `obscvrat-{gig-slug}-{type}-{counter}.{ext}`
+
+**Rules:**
+- Use hyphens as separators (not underscores or spaces)
+- All lowercase
+- Include band name (obscvrat)
+- Include gig identifier from slug
+- Include type (poster, performance)
+- Include counter for multiple files of same type
+- Keep total length reasonable (5-6 words max)
+- Use year for posters
+
+**Examples:**
+- `obscvrat-noise-space-xv-poster-2025.jpg`
+- `obscvrat-noise-space-xv-performance-1.jpg`
+- `obscvrat-noise-space-xv-performance-2.jpg`
+
+**Benefits:**
+- Improved SEO (search engines read filenames)
+- Better accessibility (screen readers can parse names)
+- Easier content management (descriptive names)
+- Consistent organization across all gigs
+
+### Alt Text Pattern
+
+All images include descriptive alt text for accessibility:
+
+**For performance photos:**
+```
+Obscvrat live at {gig_title}, {location}, {date} - Photo by {author}
+```
+
+**For posters:**
+```
+{gig_title} poster
+```
+
+**Implementation:**
+- Gig single page: `website/layouts/gigs/single.html`
+- Media page: `website/layouts/media/list.html`
+- Script generates descriptive filenames: `scripts/manage-media.sh`
 
 ### Related Decisions
 - **ADR-003:** Website hosting and static site generation (Hugo + S3)
