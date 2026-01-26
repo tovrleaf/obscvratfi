@@ -20,8 +20,9 @@ help:
 
 sh:
 	@echo "🔍 Running shellcheck on all shell scripts..."
-	@if [ -f ../../.venv/bin/pre-commit ]; then \
-		cd ../.. && .venv/bin/pre-commit run shellcheck --all-files; \
+	@if [ -f ../../.venv/bin/shellcheck ]; then \
+		cd ../.. && find scripts -name "*.sh" -type f -exec .venv/bin/shellcheck --format=gcc {} +; \
+		echo "✅ Shellcheck complete"; \
 	elif command -v shellcheck >/dev/null 2>&1; then \
 		cd ../.. && find scripts -name "*.sh" -type f -exec shellcheck --format=gcc {} +; \
 		echo "✅ Shellcheck complete"; \
@@ -35,10 +36,10 @@ sh-all: sh
 
 sh-commit:
 	@echo "🔍 Running shellcheck on shell scripts in last commit..."
-	@if [ -f ../../.venv/bin/pre-commit ]; then \
+	@if [ -f ../../.venv/bin/shellcheck ]; then \
 		cd ../.. && shell_files=$$(git diff-tree --no-commit-id --name-only -r HEAD | grep '\.sh$$'); \
 		if [ -n "$$shell_files" ]; then \
-			.venv/bin/pre-commit run shellcheck --files $$shell_files && echo "✅ Shellcheck passed" || echo "❌ Shellcheck found issues"; \
+			echo "$$shell_files" | xargs .venv/bin/shellcheck --format=gcc && echo "✅ Shellcheck passed" || echo "❌ Shellcheck found issues"; \
 		else \
 			echo "ℹ️  No shell scripts in last commit"; \
 		fi; \
@@ -57,8 +58,9 @@ sh-commit:
 
 yaml:
 	@echo "🔍 Running yamllint on all YAML files..."
-	@if [ -f ../../.venv/bin/pre-commit ]; then \
-		cd ../.. && .venv/bin/pre-commit run yamllint --all-files; \
+	@if [ -f ../../.venv/bin/yamllint ]; then \
+		cd ../.. && find . -name "*.yml" -o -name "*.yaml" | grep -v ".venv" | xargs .venv/bin/yamllint -c .github/yamllint-config.yml; \
+		echo "✅ Yamllint complete"; \
 	else \
 		echo "❌ yamllint not found"; \
 		echo "Run 'make hooks setup' to install locally"; \
@@ -69,10 +71,10 @@ yaml-all: yaml
 
 yaml-commit:
 	@echo "🔍 Running yamllint on YAML files in last commit..."
-	@if [ -f ../../.venv/bin/pre-commit ]; then \
+	@if [ -f ../../.venv/bin/yamllint ]; then \
 		cd ../.. && yaml_files=$$(git diff-tree --no-commit-id --name-only -r HEAD | grep -E '\.(yml|yaml)$$'); \
 		if [ -n "$$yaml_files" ]; then \
-			.venv/bin/pre-commit run yamllint --files $$yaml_files && echo "✅ Yamllint passed" || echo "❌ Yamllint found issues"; \
+			echo "$$yaml_files" | xargs .venv/bin/yamllint -c .github/yamllint-config.yml && echo "✅ Yamllint passed" || echo "❌ Yamllint found issues"; \
 		else \
 			echo "ℹ️  No YAML files in last commit"; \
 		fi; \
@@ -84,8 +86,9 @@ yaml-commit:
 
 md:
 	@echo "🔍 Running pymarkdown on all Markdown files..."
-	@if [ -f ../../.venv/bin/pre-commit ]; then \
-		cd ../.. && .venv/bin/pre-commit run pymarkdown --all-files; \
+	@if [ -f ../../.venv/bin/pymarkdown ]; then \
+		cd ../.. && find . -name "*.md" | grep -v ".venv" | xargs .venv/bin/pymarkdown scan; \
+		echo "✅ Pymarkdown complete"; \
 	else \
 		echo "❌ pymarkdown not found"; \
 		echo "Run 'make hooks setup' to install locally"; \
@@ -96,10 +99,10 @@ md-all: md
 
 md-commit:
 	@echo "🔍 Running pymarkdown on Markdown files in last commit..."
-	@if [ -f ../../.venv/bin/pre-commit ]; then \
+	@if [ -f ../../.venv/bin/pymarkdown ]; then \
 		cd ../.. && md_files=$$(git diff-tree --no-commit-id --name-only -r HEAD | grep '\.md$$'); \
 		if [ -n "$$md_files" ]; then \
-			.venv/bin/pre-commit run pymarkdown --files $$md_files && echo "✅ Pymarkdown passed" || echo "❌ Pymarkdown found issues"; \
+			echo "$$md_files" | xargs .venv/bin/pymarkdown scan && echo "✅ Pymarkdown passed" || echo "❌ Pymarkdown found issues"; \
 		else \
 			echo "ℹ️  No Markdown files in last commit"; \
 		fi; \
