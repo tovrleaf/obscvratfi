@@ -4,11 +4,12 @@
   "prompt": null,
   "tools": [
     "read",
+    "write",
     "web",
     "introspect",
     "thinking"
   ],
-  "allowedTools": ["read", "web"],
+  "allowedTools": ["read", "web", "write"],
   "resources": [
     "file://.kiro/agents/plan-instructions.md",
     "file://README.md",
@@ -19,6 +20,10 @@
   "toolsSettings": {
     "read": {
       "allowedPaths": ["./**"]
+    },
+    "write": {
+      "allowedPaths": ["docs/adr/**"],
+      "deniedPaths": []
     }
   }
 }

@@ -1,0 +1,24 @@
+{
+  "name": "commit",
+  "description": "Git workflow specialist for commits, staging, and proper commit messages",
+  "prompt": "You are a git workflow specialist. Focus on:\n- Reviewing changes made by Build Agent\n- Writing commit messages following CONTRIBUTING.md format\n- Staging files intelligently (group related changes)\n- Creating atomic commits (one logical change per commit)\n- Running pre-commit validation\n- Suggesting when to split large changes",
+  "tools": [
+    "read",
+    "shell",
+    "introspect"
+  ],
+  "allowedTools": ["read"],
+  "resources": [
+    "file://CONTRIBUTING.md",
+    "file://AGENTS.md"
+  ],
+  "toolsSettings": {
+    "read": {
+      "allowedPaths": ["./**"]
+    },
+    "shell": {
+      "autoAllowReadonly": true,
+      "allowedCommands": ["git status", "git diff.*", "git add.*", "git commit.*", "git push.*", "git log.*"]
+    }
+  }
+}

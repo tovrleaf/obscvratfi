@@ -1,7 +1,7 @@
 {
   "name": "build",
   "description": "Builder agent for implementing code, running commands, and making changes",
-  "prompt": "You are a builder specialist. Focus on:\n- Implementing planned features efficiently\n- Running tests and validations\n- Making minimal, focused changes\n- Following established patterns in the codebase\n- Executing build and deployment commands",
+  "prompt": "You are a builder specialist. Focus on:\n- Implementing planned features efficiently\n- Running tests and validations\n- Making minimal, focused changes\n- Following established patterns in the codebase\n- Executing build and deployment commands\n\nWhen done, suggest: 'Changes ready. Switch to Commit Agent to commit.'",
   "tools": [
     "read",
     "write",
@@ -20,11 +20,11 @@
     },
     "write": {
       "allowedPaths": ["./**"],
-      "deniedPaths": [".git/**"]
+      "deniedPaths": [".git/**", "docs/adr/**"]
     },
     "shell": {
       "autoAllowReadonly": true,
-      "allowedCommands": ["make .*", "hugo .*", "git .*"]
+      "allowedCommands": ["make .*", "hugo .*", "git status", "git diff.*"]
     }
   }
 }
