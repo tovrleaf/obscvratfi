@@ -5,8 +5,7 @@
 # Pre-commit framework for git hooks
 pre-commit>=3.5.0
 
-# Linting tools (also managed by pre-commit, but listed for transparency)
-# These are downloaded by pre-commit to ~/.cache/pre-commit/
-# shellcheck-py>=0.9.0  # Shell script linting
-# yamllint>=1.35.0      # YAML linting
-# markdownlint-cli>=0.39.0  # Markdown linting
+# Linting tools
+shellcheck-py>=0.9.0      # Shell script linting
+yamllint>=1.35.0          # YAML linting
+# markdownlint-cli>=0.39.0  # Markdown linting (Node.js based, managed by pre-commit)
