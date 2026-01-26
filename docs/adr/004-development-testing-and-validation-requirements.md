@@ -142,6 +142,37 @@ When a hook fails:
 - **Pre-push stage** (not pre-commit): Allows `git commit` to work freely but blocks `git push` if issues exist
 - Rationale: Developers can make WIP commits locally without friction, but can't push broken code to GitHub
 
+### Post-Commit Shellcheck Hook
+
+In addition to pre-push hooks, a **post-commit hook** runs shellcheck immediately after commits that modify shell scripts:
+
+**Behavior:**
+- Runs automatically after `git commit` if any `.sh` files were committed
+- Only checks shell scripts in that specific commit
+- Non-blocking (commit is already made)
+- Provides immediate feedback with fix instructions
+
+**Installation:**
+The post-commit hook is installed automatically with `make hooks setup`.
+
+**Manual Testing:**
+```bash
+# Run shellcheck on all scripts
+make test sh
+
+# Run shellcheck on scripts in last commit
+make test sh-commit
+```
+
+**Fix Workflow:**
+If shellcheck finds issues after commit:
+1. Fix the issues shown in the output
+2. Stage the fixes: `git add <files>`
+3. Amend the commit: `git commit --amend --no-edit`
+
+**Requirements:**
+- Shellcheck must be installed: `brew install shellcheck` (macOS) or via pre-commit framework
+
 ### Layer 2: Manual Functional Testing
 
 **Manual testing requirements** for changes that automated validation cannot catch.
