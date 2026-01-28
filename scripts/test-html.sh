@@ -57,10 +57,29 @@ rebuild_hugo_site() {
 
 validate_html() {
     echo "🔍 Validating HTML structure..."
-    if $PYTHON scripts/validate-html.py website/public; then
+    
+    # Check if html5lib is available
+    if ! $PYTHON -c "import html5lib" 2>/dev/null; then
+        echo "⚠️  html5lib not found, skipping HTML validation"
+        echo "   Run 'make hooks setup' to install"
         return 0
-    else
+    fi
+    
+    # Validate all HTML files
+    local errors=0
+    while IFS= read -r html_file; do
+        if ! $PYTHON -m html5lib "$html_file" >/dev/null 2>&1; then
+            echo "❌ Error in $html_file"
+            errors=$((errors + 1))
+        fi
+    done < <(find website/public -name "*.html" -type f)
+    
+    if [ $errors -gt 0 ]; then
+        echo "❌ HTML validation failed: $errors files with errors"
         return 1
+    else
+        echo "✅ HTML validation passed"
+        return 0
     fi
 }
 

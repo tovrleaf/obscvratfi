@@ -1,5 +1,5 @@
 {
-  "name": "orchestrator",
+  "name": "workflow-full",
   "description": "Orchestrates multi-agent workflows using delegate tool for automated development process",
   "prompt": null,
   "tools": [
@@ -10,7 +10,7 @@
   ],
   "allowedTools": ["read", "delegate"],
   "resources": [
-    "file://.kiro/instructions/orchestrator.md",
+    "file://.kiro/instructions/workflow-full.md",
     "file://AGENTS.md",
     "file://docs/adr/010-specialized-agent-architecture-for-development-workflow.md"
   ],
