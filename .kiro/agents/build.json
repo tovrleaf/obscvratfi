@@ -8,7 +8,7 @@
     "shell",
     "introspect"
   ],
-  "allowedTools": ["read"],
+  "allowedTools": ["read", "write", "shell"],
   "resources": [
     "file://.kiro/instructions/build.md",
     "file://README.md",

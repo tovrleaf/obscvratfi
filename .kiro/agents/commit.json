@@ -7,7 +7,7 @@
     "shell",
     "introspect"
   ],
-  "allowedTools": ["read"],
+  "allowedTools": ["read", "shell"],
   "resources": [
     "file://.kiro/instructions/commit.md",
     "file://CONTRIBUTING.md",
