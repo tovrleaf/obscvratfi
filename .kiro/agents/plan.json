@@ -7,9 +7,10 @@
     "write",
     "web",
     "introspect",
-    "thinking"
+    "thinking",
+    "bash"
   ],
-  "allowedTools": ["read", "web", "write"],
+  "allowedTools": ["read", "web", "write", "bash"],
   "resources": [
     "file://.kiro/instructions/plan.md",
     "file://README.md",
@@ -24,6 +25,9 @@
     "write": {
       "allowedPaths": ["docs/adr/**"],
       "deniedPaths": []
+    },
+    "bash": {
+      "allowedCommands": ["ls"]
     }
   }
 }

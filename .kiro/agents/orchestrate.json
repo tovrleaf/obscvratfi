@@ -1,5 +1,5 @@
 {
-  "name": "workflow-full",
+  "name": "orchestrate",
   "description": "Orchestrates multi-agent workflows using delegate tool for automated development process",
   "prompt": null,
   "tools": [

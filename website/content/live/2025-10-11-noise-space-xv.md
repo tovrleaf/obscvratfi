@@ -22,7 +22,7 @@ media:
       - obscvrat-noise-space-xv-performance-2.jpg
   videos:
     - youtube_id: "UbFoX9VjzX4"
-      title: "Obscvrat - Live at Noise Space XV | October 11, 2025"
+      title: "Obscvrat - Live at Noise Space XV"
       credits:
         - type: "Audio recorded"
           name: "Gray Ritual"

@@ -15,7 +15,7 @@
     <section class="media-section photos-section" data-type="photos">
         <h2>Photos</h2>
         <div class="media-grid">
-            {{ $gigs := where .Site.Pages "Section" "live" }}
+            {{ $gigs := (where .Site.Pages "Section" "live").ByDate.Reverse }}
             {{ range $gigs }}
                 {{ if .Params.media.pictures }}
                     {{ $gigTitle := .Title }}
@@ -40,12 +40,13 @@
                                     <img src="{{ .RelPermalink }}" alt="{{ $altText }}">
                                 </a>
                                 <div class="media-info">
-                                    <p class="media-gig"><a href="{{ $gigPermalink }}">{{ $gigTitle }}</a></p>
+                                    <h3 class="media-gig"><a href="{{ $gigPermalink }}">{{ $gigTitle }}</a></h3>
+                                    <p class="media-date">{{ $date }}</p>
                                     <p class="media-author">
                                     {{ if $authorUrl }}
-                                        Photo by <a href="{{ $authorUrl }}" target="_blank">{{ $author }}</a>
+                                        <i class="fa-solid fa-camera"></i> <a href="{{ $authorUrl }}" target="_blank">{{ $author }}</a>
                                     {{ else }}
-                                        Photo by {{ $author }}
+                                        <i class="fa-solid fa-camera"></i> {{ $author }}
                                     {{ end }}
                                 </p>
                             </div>
@@ -70,9 +71,9 @@
                         {{ end }}
                         <p class="media-author">
                             {{ if .Params.author_url }}
-                                Photo by <a href="{{ .Params.author_url }}" target="_blank">{{ .Params.author }}</a>
+                                <i class="fa-solid fa-camera"></i> <a href="{{ .Params.author_url }}" target="_blank">{{ .Params.author }}</a>
                             {{ else }}
-                                Photo by {{ .Params.author }}
+                                <i class="fa-solid fa-camera"></i> {{ .Params.author }}
                             {{ end }}
                         </p>
                     </div>
@@ -89,6 +90,7 @@
                 {{ if .Params.media.videos }}
                     {{ $gigTitle := .Title }}
                     {{ $gigPermalink := .Permalink }}
+                    {{ $gigDate := .Date.Format "January 2, 2006" }}
                     {{ range .Params.media.videos }}
                         <div class="media-item video-item">
                             <a href="#" class="open-video-lightbox"
@@ -103,22 +105,9 @@
                                 <div class="play-icon">▶</div>
                             </a>
                             <div class="media-info">
-                                {{ if .title }}<p class="media-title">{{ .title }}</p>{{ end }}
-                                <p class="media-gig"><a href="{{ $gigPermalink }}">{{ $gigTitle }}</a></p>
-                                {{ if .credits }}
-                                <div class="video-credits">
-                                    {{ range .credits }}
-                                        <p class="credit-item">
-                                            {{ .type }} by
-                                            {{ if .url }}
-                                                <a href="{{ .url }}" target="_blank">{{ .name }}</a>
-                                            {{ else }}
-                                                {{ .name }}
-                                            {{ end }}
-                                        </p>
-                                    {{ end }}
-                                </div>
-                                {{ end }}
+                                <h3 class="media-gig"><a href="{{ $gigPermalink }}">{{ $gigTitle }}</a></h3>
+                                <p class="media-date">{{ $gigDate }}</p>
+                                {{ if .title }}<h3 class="media-title">{{ .title }}</h3>{{ end }}
                             </div>
                         </div>
                     {{ end }}
@@ -218,6 +207,13 @@
     position: relative;
     break-inside: avoid;
     margin-bottom: 1rem;
+    overflow: hidden;
+}
+
+.media-item a {
+    display: block;
+    position: relative;
+    overflow: hidden;
 }
 
 .media-item img {
@@ -225,6 +221,12 @@
     height: auto;
     display: block;
     border: 1px solid var(--border-color);
+    transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.media-item:hover img {
+    transform: scale(1.05);
+    filter: blur(2px) brightness(0.5);
 }
 
 .media-item video {
@@ -232,11 +234,6 @@
     height: auto;
     display: block;
     border: 1px solid var(--border-color);
-}
-
-.media-item a {
-    display: block;
-    position: relative;
 }
 
 .play-icon {
@@ -251,24 +248,88 @@
 }
 
 .media-info {
-    margin-top: 0.5rem;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 1rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
     font-size: 0.85rem;
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.media-item:hover .media-info {
+    opacity: 1;
 }
 
 .media-title {
-    font-weight: bold;
-    margin-bottom: 0.25rem;
+    font-weight: normal;
+    margin-bottom: 0.5rem;
+    color: var(--primary-color);
+    text-shadow: 0 0 8px rgba(0, 0, 0, 0.9), 0 0 4px rgba(0, 0, 0, 0.9);
+    font-size: 0.85rem;
+}
+
+.video-item .media-title {
+    background: rgba(0, 0, 0, 0.8);
+    padding: 0.5rem;
 }
 
 .media-gig {
-    color: var(--secondary-color);
-    margin-bottom: 0.25rem;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+    text-shadow: 0 0 8px rgba(0, 0, 0, 0.9), 0 0 4px rgba(0, 0, 0, 0.9);
+    font-size: 0.85rem;
+    font-weight: normal;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 0.5rem;
+}
+
+.media-gig a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.media-date {
+    font-family: var(--font-display);
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+    text-shadow: 0 0 8px rgba(0, 0, 0, 0.9), 0 0 4px rgba(0, 0, 0, 0.9);
+    font-size: 0.9rem;
+}
+
+.video-item .media-date {
+    background: rgba(0, 0, 0, 0.8);
+    padding: 0.5rem;
+}
+
+.photo-item .media-date {
+    padding-bottom: 0.5rem;
+    border-bottom: 1px dotted rgba(255, 255, 255, 0.3);
+    max-width: 60%;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .media-author {
-    color: var(--secondary-color);
-    font-style: italic;
+    color: var(--primary-color);
+    text-shadow: 0 0 8px rgba(0, 0, 0, 0.9), 0 0 4px rgba(0, 0, 0, 0.9);
+    white-space: nowrap;
 }
+
+.media-author a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
 
 .others-content {
     max-width: 800px;
@@ -502,7 +563,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <img src="/media/live/${gig}/${image}" alt="${gigTitle}">
                     <div class="swiper-modal-info">
                         <div class="swiper-modal-info-left">
-                            <p><strong>Gig:</strong> <a href="${gigLink}">${gigTitle}</a></p>
+                            <p><strong>Live @</strong> <a href="${gigLink}">${gigTitle}</a></p>
                             <p><strong>Photo by:</strong> ${authorUrl ? `<a href="${authorUrl}" target="_blank">${author}</a>` : author}</p>
                         </div>
                         <a href="/media/live/${gig}/${image}" download class="download-btn">Download</a>
@@ -567,7 +628,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class="swiper-modal-info">
                         <div class="swiper-modal-info-left">
                             ${title ? `<p><strong>Title:</strong> ${title}</p>` : ''}
-                            <p><strong>Gig:</strong> <a href="${gigLink}">${gigTitle}</a></p>
+                            <p><strong>Live @</strong> <a href="${gigLink}">${gigTitle}</a></p>
                             ${creditsHtml}
                         </div>
                         <a href="https://www.youtube.com/watch?v=${youtubeId}" target="_blank" class="download-btn">Open</a>
