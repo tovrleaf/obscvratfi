@@ -13,8 +13,8 @@
 
 - id: html-validation
   name: html-validation
-  description: Validate generated HTML structure for errors (not warnings)
-  entry: bash -c 'if command -v html5validator &> /dev/null; then find website/public -name "*.html" -type f -exec html5validator --show-warnings off {} +; fi'
+  description: Validate generated HTML structure using html5lib (pure Python)
+  entry: python3 scripts/validate-html.py website/public
   language: system
   pass_filenames: false
   always_run: true

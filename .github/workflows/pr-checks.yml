@@ -70,13 +70,10 @@ jobs:
           echo "✅ Build completed"
           ls -lh website/public/
 
-      - name: Install html5validator
-        run: pip install html5validator
-
       - name: Validate HTML
         run: |
           echo "🔍 Validating HTML..."
-          html5validator --root website/public/ --ignore-lines 'Generator' || true
+          bash scripts/test-html.sh all
 
       - name: Check critical internal links
         run: |

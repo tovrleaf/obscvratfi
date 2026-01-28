@@ -1,0 +1,25 @@
+{
+  "name": "commit",
+  "description": "Git workflow specialist for commits, staging, proper commit messages, and pushing to remote",
+  "prompt": null,
+  "tools": [
+    "read",
+    "shell",
+    "introspect"
+  ],
+  "allowedTools": ["read", "shell"],
+  "resources": [
+    "file://.kiro/instructions/commit.md",
+    "file://CONTRIBUTING.md",
+    "file://AGENTS.md"
+  ],
+  "toolsSettings": {
+    "read": {
+      "allowedPaths": ["./**"]
+    },
+    "shell": {
+      "autoAllowReadonly": true,
+      "allowedCommands": ["git status", "git diff.*", "git add.*", "git commit.*", "git push.*", "git log.*", "gh pr.*"]
+    }
+  }
+}

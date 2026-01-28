@@ -12,7 +12,7 @@ The project has a GitHub Actions CI/CD pipeline (see ADR-003) that validates all
 - Markdown linting (markdownlint)
 - TOML linting (tomli)
 - Hugo build validation
-- HTML validation (html5validator)
+- HTML validation (html5lib)
 - Secret scanning (TruffleHog)
 - Critical link validation
 
@@ -87,7 +87,7 @@ We will implement a two-layer testing approach:
    - Catches: template errors, broken links in content
    - Uses: Local Hugo installation
 
-6. **HTML Validation (html5validator)**
+6. **HTML Validation (html5lib)**
    - Validates: Generated HTML (errors only, not warnings)
    - Catches: HTML structure problems
 

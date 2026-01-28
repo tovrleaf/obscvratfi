@@ -1,0 +1,32 @@
+{
+  "name": "test",
+  "description": "Testing specialist for running validation checks before commits and pushes",
+  "prompt": null,
+  "tools": [
+    "read",
+    "shell",
+    "introspect"
+  ],
+  "allowedTools": ["read", "shell"],
+  "resources": [
+    "file://.kiro/instructions/test.md",
+    "file://docs/adr/004-development-testing-and-validation-requirements.md",
+    "file://AGENTS.md",
+    "file://Makefile"
+  ],
+  "toolsSettings": {
+    "read": {
+      "allowedPaths": ["./**"]
+    },
+    "shell": {
+      "autoAllowReadonly": true,
+      "allowedCommands": [
+        "make test.*",
+        "make hooks.*",
+        "git status",
+        "git diff.*",
+        "git log.*"
+      ]
+    }
+  }
+}

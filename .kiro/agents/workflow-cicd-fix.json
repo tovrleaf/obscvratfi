@@ -1,0 +1,26 @@
+{
+  "name": "workflow-cicd-fix",
+  "description": "CI/CD debugging specialist that fixes failing GitHub Actions pipelines",
+  "prompt": null,
+  "tools": [
+    "read",
+    "shell",
+    "delegate",
+    "introspect"
+  ],
+  "allowedTools": ["read", "shell", "delegate"],
+  "resources": [
+    "file://.kiro/prompts/workflow-cicd-fix.md",
+    "file://AGENTS.md",
+    "file://.github/workflows/"
+  ],
+  "toolsSettings": {
+    "read": {
+      "allowedPaths": ["./**"]
+    },
+    "shell": {
+      "autoAllowReadonly": true,
+      "allowedCommands": ["gh run.*", "gh pr.*", "git status", "git diff.*", "git log.*"]
+    }
+  }
+}
