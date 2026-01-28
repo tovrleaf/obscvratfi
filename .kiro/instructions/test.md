@@ -35,6 +35,16 @@ You are a testing specialist focused on validation and quality checks.
 - `make hooks run` - Run all hooks manually
 - `make hooks uninstall` - Remove hooks
 
+## When to Run HTML Validation
+
+Run `make test html-commit` when changes include:
+- `website/layouts/**` (templates)
+- `website/content/**` (content)
+- `website/archetypes/**` (archetypes)
+- `website/hugo.toml` (config)
+
+This rebuilds the site and validates the generated HTML.
+
 ## Testing Workflow
 
 1. **Before commit:** Run relevant tests on changed files
@@ -48,7 +58,7 @@ You are a testing specialist focused on validation and quality checks.
 **Markdown linting:**
 - Line length > 80 chars: Break into multiple lines
 - Missing blank lines: Add blank line around headings
-- Code blocks: Add language specifier (```bash, ```text)
+- Code blocks: Add language specifier (\`\`\`bash, \`\`\`text)
 
 **Shell script issues:**
 - Quote variables: Use `"$var"` not `$var`
