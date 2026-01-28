@@ -25,7 +25,8 @@
     },
     "shell": {
       "autoAllowReadonly": true,
-      "allowedCommands": ["make .*", "hugo .*", "git status", "git diff.*", "git mv.*", "mv.*", "mkdir.*"]
+      "allowedCommands": ["make .*", "hugo .*", "git status", "git diff.*", "git mv.*", "mv.*", "mkdir.*"],
+      "deniedCommands": ["git commit.*", "git push.*"]
     }
   }
 }
