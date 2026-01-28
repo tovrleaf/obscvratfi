@@ -1,3 +1,34 @@
+{{/*
+    Media Page Template
+    
+    Design Patterns:
+    ----------------
+    
+    HOVER EFFECTS (Photos & Videos):
+    - scale(1.05) - Subtle zoom on hover, contained by overflow:hidden
+    - blur(2px) - Softens image to emphasize text overlay
+    - brightness(0.5) - Dims to 50% for better text contrast
+    - opacity 0→1 transition on .media-info overlay
+    
+    TEXT OVERLAYS:
+    - Photos: Dark background (rgba(0,0,0,0.8)) only on event title
+    - Videos: Dark background on all text elements (title, date, venue)
+    - Text shadows: 0 0 8px and 0 0 4px for readability on any background
+    - No underlines on hover overlay links
+    
+    TYPOGRAPHY:
+    - Event names: h3 tags, normal weight
+    - Dates: Fira Mono (var(--font-display)), 0.9rem
+    - Photo credits: Camera icon (fa-camera) + photographer name
+    - Dotted separator: Only between date and photographer (photos only)
+    
+    OTHERS SECTION:
+    - Date first (Fira Mono, secondary color)
+    - 4ch spacing before title
+    - Type in superscript after title
+    - Description indented below if present
+*/}}
+
 {{ define "main" }}
 <section class="media-page">
     <h1>{{ .Title }}</h1>
@@ -142,18 +173,9 @@
             <div class="others-list">
                 {{ range $othersPage.Params.items }}
                 <div class="others-item">
-                    <h3>{{ .type }}: <a href="{{ .url }}" target="_blank">{{ .title }}</a></h3>
-                    <div class="others-meta">
-                        <span class="others-info">
-                            {{ if .media_title }}{{ .media_title }}{{ if .date }} | {{ end }}{{ end }}
-                            {{ if .date }}{{ dateFormat "January 2, 2006" .date }}{{ end }}
-                            {{ if .gig }}
-                                {{ $gigPage := $.Site.GetPage (printf "/live/%s" .gig) }}
-                                {{ if $gigPage }} (<a href="{{ $gigPage.Permalink }}">{{ $gigPage.Title }}</a>){{ end }}
-                            {{ end }}
-                        </span>
-                    </div>
-                    {{ if .description }}<p>{{ .description }}</p>{{ end }}
+                    <span class="others-date">{{ dateFormat "January 2, 2006" .date }}</span>
+                    <a href="{{ .url }}" target="_blank" class="others-title">{{ .title }}</a><sup class="others-type">{{ .type }}</sup>
+                    {{ if .description }}<p class="others-description">{{ .description }}</p>{{ end }}
                 </div>
                 {{ end }}
             </div>
@@ -164,6 +186,18 @@
 </section>
 
 <style>
+/* 
+   Media Page Styles
+   
+   Key Design Values:
+   - Hover zoom: scale(1.05)
+   - Hover blur: 2px
+   - Hover dim: brightness(0.5) - 50% darker
+   - Dark overlay: rgba(0,0,0,0.8)
+   - Text shadow: 0 0 8px + 0 0 4px for strong contrast
+   - Tab spacing: 4ch (Others section)
+*/
+
 .media-filters {
     margin: 2rem 0;
     display: flex;
@@ -333,6 +367,40 @@
 
 .others-content {
     max-width: 800px;
+}
+
+.others-item {
+    margin-bottom: 1.5rem;
+}
+
+.others-date {
+    font-family: var(--font-display);
+    color: var(--secondary-color);
+    font-size: 0.9rem;
+    display: inline-block;
+    margin-right: 4ch;
+}
+
+.others-title {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.others-title:hover {
+    color: var(--accent-color);
+}
+
+.others-type {
+    color: var(--secondary-color);
+    font-size: 0.7rem;
+    margin-left: 0.3rem;
+}
+
+.others-description {
+    margin-top: 0.5rem;
+    margin-left: calc(4ch + 10rem);
+    color: var(--secondary-color);
+    font-size: 0.9rem;
 }
 
 .others-content h2 {
