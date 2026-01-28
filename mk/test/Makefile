@@ -117,11 +117,13 @@ md-commit:
 	fi
 
 html:
-	@echo "🔍 Running html5lib on all HTML files..."
-	@if [ -f ../../.venv/bin/python3 ]; then \
-		cd ../.. && chmod +x scripts/test-html.sh && scripts/test-html.sh all; \
+	@echo "🔍 Running HTML validation on all files..."
+	@if [ -f ../../.venv/bin/python ]; then \
+		cd ../.. && .venv/bin/python scripts/validate-html.py website/public; \
+	elif command -v python3 >/dev/null 2>&1; then \
+		cd ../.. && python3 scripts/validate-html.py website/public; \
 	else \
-		echo "❌ Python venv not found"; \
+		echo "❌ Python not found"; \
 		echo "Run 'make hooks setup' to install locally"; \
 		exit 1; \
 	fi
@@ -129,11 +131,13 @@ html:
 html-all: html
 
 html-commit:
-	@echo "🔍 Running html5lib on HTML from changed files..."
-	@if [ -f ../../.venv/bin/python3 ]; then \
+	@echo "🔍 Running HTML validation on changed files..."
+	@if [ -f ../../.venv/bin/python ]; then \
+		cd ../.. && chmod +x scripts/test-html.sh && scripts/test-html.sh changed; \
+	elif command -v python3 >/dev/null 2>&1; then \
 		cd ../.. && chmod +x scripts/test-html.sh && scripts/test-html.sh changed; \
 	else \
-		echo "❌ Python venv not found"; \
+		echo "❌ Python not found"; \
 		echo "Run 'make hooks setup' to install locally"; \
 		exit 1; \
 	fi

@@ -41,14 +41,14 @@ repos:
         stages: [push]
         exclude: ^website/(archetypes|README.md)
 
-      # HTML validation (errors only)
+      # HTML validation with change detection
       - id: html-validation
         name: html-validation
-        description: Validate generated HTML structure
-        entry: bash -c 'if command -v html5validator &> /dev/null; then find website/public -name "*.html" -type f -exec html5validator --show-warnings off {} +; fi'
-        language: system
+        description: Validate HTML using html5lib (pure Python)
+        entry: scripts/test-html.sh
+        language: script
         pass_filenames: false
-        always_run: true
+        files: ^website/(layouts/|content/|archetypes/|hugo\.toml)
         stages: [push]
 
       # Custom link validation
