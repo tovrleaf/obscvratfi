@@ -70,13 +70,10 @@ jobs:
           echo "✅ Build completed"
           ls -lh website/public/
 
-      - name: Install html5lib
-        run: pip install html5lib
-
       - name: Validate HTML
         run: |
           echo "🔍 Validating HTML..."
-          python3 scripts/validate-html.py website/public
+          bash scripts/test-html.sh all
 
       - name: Check critical internal links
         run: |
