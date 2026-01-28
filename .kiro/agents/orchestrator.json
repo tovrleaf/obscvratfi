@@ -1,0 +1,26 @@
+{
+  "name": "orchestrator",
+  "description": "Orchestrates multi-agent workflows using delegate tool for automated development process",
+  "prompt": null,
+  "tools": [
+    "read",
+    "delegate",
+    "shell",
+    "introspect"
+  ],
+  "allowedTools": ["read", "delegate"],
+  "resources": [
+    "file://.kiro/instructions/orchestrator.md",
+    "file://AGENTS.md",
+    "file://docs/adr/010-specialized-agent-architecture-for-development-workflow.md"
+  ],
+  "toolsSettings": {
+    "read": {
+      "allowedPaths": ["./**"]
+    },
+    "shell": {
+      "autoAllowReadonly": true,
+      "allowedCommands": ["git status", "git log.*", "git diff.*"]
+    }
+  }
+}
