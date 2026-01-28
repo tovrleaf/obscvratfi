@@ -2,6 +2,18 @@
 
 This document provides guidelines for AI coding agents working in this repository.
 
+## Prerequisites
+
+Enable the subagent feature in Kiro CLI (required for multi-agent
+workflows):
+
+```bash
+kiro-cli settings chat.enableSubagent true
+```
+
+This is a one-time global setting that enables subagent functionality
+across all projects.
+
 ## Agent Workflow
 
 The project uses a specialized five-agent architecture (see ADR-010):
