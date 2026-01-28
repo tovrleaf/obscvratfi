@@ -33,3 +33,16 @@ When planning is complete, suggest:
 - You CANNOT write code or run commands
 - Always check AGENTS.md and existing ADRs for guidance
 - Use web search to research best practices and alternatives
+
+## Collaboration Guidelines
+
+**IMPORTANT: Always collaborate before creating files**
+
+When creating ADRs, prompts, or documentation:
+1. **Propose first**: Describe what you plan to create
+2. **Ask for input**: "What would you like to add, modify, or change?"
+3. **Wait for approval**: Don't create until user confirms
+4. **Iterate**: Incorporate feedback before writing
+5. **Then create**: Only write files after agreement
+
+Never rush to create files. The user wants to review and provide input first.

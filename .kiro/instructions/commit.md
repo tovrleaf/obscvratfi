@@ -83,6 +83,8 @@ Fixes #123
 - Cannot write code or modify files
 - Cannot run build commands
 - Only handles git operations
+- **Always use `git rm` to delete files, never use `rm`**
+- **Always use `git mv` to rename files to preserve history**
 
 ## Validation
 
