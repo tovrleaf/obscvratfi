@@ -4,7 +4,7 @@ This document provides guidelines for AI coding agents working in this repositor
 
 ## Agent Workflow
 
-The project uses a specialized four-agent architecture (see ADR-010):
+The project uses a specialized five-agent architecture (see ADR-010):
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -12,39 +12,34 @@ The project uses a specialized four-agent architecture (see ADR-010):
 └────────────────────────────┬────────────────────────────────────┘
                              │
                              ▼
-                    ┌────────────────┐
-                    │  PLAN AGENT    │  Architecture & Research
-                    │                │  • Creates ADRs
-                    │  Read + Write  │  • Researches alternatives
-                    │  (docs/adr/)   │  • Breaks down tasks
-                    │  + Web Search  │  • Designs solutions
-                    └────────┬───────┘
+                  ┌──────────────────────┐
+                  │ ORCHESTRATOR AGENT   │  Workflow Coordination
+                  │                      │  • Delegates to agents
+                  │  Read Only           │  • Monitors progress
+                  │  + Delegate Tool     │  • Handles errors
+                  │  + Git Status/Diff   │  • Reports status
+                  └──────────┬───────────┘
                              │
-                             ▼
-                    ┌────────────────┐
-                    │  BUILD AGENT   │  Implementation
-                    │                │  • Writes code
-                    │  Read + Write  │  • Runs tests
-                    │  (except ADRs) │  • Builds site
-                    │  + Shell       │  • Makes changes
-                    └────────┬───────┘
-                             │
-                             ▼
-                    ┌────────────────┐
-                    │  TEST AGENT    │  Validation (Optional)
-                    │                │  • Runs linters
-                    │  Read Only     │  • Validates builds
-                    │  + Test Cmds   │  • Checks for secrets
-                    └────────┬───────┘
+              ┌──────────────┼──────────────┐
+              │              │              │
+              ▼              ▼              ▼
+     ┌────────────────┐ ┌────────────────┐ ┌────────────────┐
+     │  PLAN AGENT    │ │  BUILD AGENT   │ │  TEST AGENT    │
+     │                │ │                │ │                │
+     │  Read + Write  │ │  Read + Write  │ │  Read Only     │
+     │  (docs/adr/)   │ │  (except ADRs) │ │  + Test Cmds   │
+     │  + Web Search  │ │  + Shell       │ │                │
+     └────────────────┘ └────────────────┘ └────────────────┘
+              │              │              │
+              └──────────────┼──────────────┘
                              │
                              ▼
                     ┌────────────────┐
                     │ COMMIT AGENT   │  Git Workflow
                     │                │  • Reviews changes
-                    │  Read Only     │  • Creates atomic commits
-                    │  + Git Cmds    │  • Writes commit messages
+                    │  Read Only     │  • Creates commits
+                    │  + Git Cmds    │  • Writes messages
                     │  + Push/PR     │  • Pushes to remote
-                    │                │  • Creates pull requests
                     └────────┬───────┘
                              │
                              ▼
@@ -52,21 +47,56 @@ The project uses a specialized four-agent architecture (see ADR-010):
                     │   COMPLETED    │
                     └────────────────┘
 
+Agent Responsibilities:
+───────────────────────
+
+ORCHESTRATOR - Coordinates multi-agent workflows
+  • Delegates tasks to specialized agents
+  • Monitors progress and handles errors
+  • Manages test-fix-retest loops
+  • Reports final status to user
+
+PLAN - Architecture & Research
+  • Creates ADRs
+  • Researches alternatives
+  • Breaks down tasks
+  • Designs solutions
+
+BUILD - Implementation
+  • Writes code
+  • Runs tests
+  • Builds site
+  • Makes changes
+
+TEST - Validation (Optional)
+  • Runs linters
+  • Validates builds
+  • Checks for secrets
+
+COMMIT - Git Workflow
+  • Reviews changes
+  • Creates atomic commits
+  • Writes commit messages
+  • Pushes to remote
+  • Creates pull requests
+
 Flow Examples:
 ─────────────
 
-Simple change:
+Automated full workflow (via Orchestrator):
+  User → Orchestrator → Plan → Build → Test → Commit → Done
+                         └──────┴──────┴──────┴────────┘
+                         (orchestrator delegates to each)
+
+Manual simple change:
   User → Build Agent → Commit Agent → Done
 
-With architecture decision:
+Manual with architecture decision:
   User → Plan Agent → Build Agent → Commit Agent → Done
 
-With validation:
+Manual with validation:
   User → Build Agent → Test Agent → Commit Agent → Done
        └─────────────────┘ (if tests fail, back to Build)
-
-Full workflow:
-  User → Plan Agent → Build Agent → Test Agent → Commit Agent → Done
 ```
 
 ## Project Overview
