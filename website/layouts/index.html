@@ -25,60 +25,51 @@
         </div>
     </section>
     
-    {{ if .Site.GetPage "/gigs" }}
-    <section class="latest-gigs featured-section">
-        <h2>Upcoming Live Performances</h2>
+    <!-- Latest Live Performances -->
+    <section class="terminal-section terminal-left">
+        <div class="terminal-title">LIVE</div>
+        <div class="terminal-header">
+            <span class="tab"></span><span class="tab"></span><span class="tab"></span><a href="/live/" class="terminal-link-right">view all</a>
+        </div>
         {{ $live := where .Site.Pages "Section" "live" }}
         {{ $live := where $live "Kind" "page" }}
         {{ $sortedLive := sort $live "Date" "desc" }}
-        {{ $latestLive := first 3 $sortedLive }}
+        {{ $latestLive := first 5 $sortedLive }}
         {{ if $latestLive }}
-            <div class="gigs-grid">
-            {{ range $latestLive }}
-                <div class="gig-card">
-                    <div class="gig-date">{{ .Date | dateFormat "Jan 02" }}</div>
-                    <div class="gig-info">
-                        <h3><a href="{{ .Permalink }}">{{ .Title }}</a></h3>
-                        <p class="gig-location">{{ .Params.venue }}, {{ .Params.location }}</p>
-                    </div>
-                </div>
+        <div class="terminal-list">
+            {{ range $index, $item := $latestLive }}
+            <span class="terminal-item">
+                <a href="{{ .Permalink }}" class="terminal-row-link"><span class="tab"></span><span class="tab"></span><span class="w1">{{ .Date | dateFormat "Jan 02" }}{{ $day := .Date.Day }}{{ $spaces := mod (add $day $index) 3 | add 1 }}{{ range seq $spaces }}<span class="tab"></span>{{ end }}&#8669;</span><span class="tab"></span><span class="w2">{{ .Title }}</span><span class="tab"></span><span class="w3">{{ .Params.location }}</span></a>
+            </span><br />
             {{ end }}
-            </div>
-            <div class="section-footer">
-                <a href="/gigs/" class="view-all">View all gigs →</a>
-            </div>
-        {{ else }}
-            <p class="no-content">No gigs scheduled yet.</p>
+        </div>
         {{ end }}
     </section>
-    {{ end }}
 
-    {{ if .Site.GetPage "/albums" }}
-    <section class="recent-albums featured-section">
-        <h2>Recent Releases</h2>
+    <!-- Latest Albums -->
+    <section class="terminal-section terminal-right">
+        <div class="terminal-title terminal-title-right">ALBUMS</div>
+        <div class="terminal-header terminal-header-right">
+            <a href="/albums/" class="terminal-link-right">view all</a><span class="tab"></span><span class="tab"></span><span class="tab"></span>
+        </div>
         {{ $albums := where .Site.Pages "Section" "albums" }}
         {{ $sortedAlbums := sort $albums "Date" "desc" }}
-        {{ $recentAlbums := first 2 $sortedAlbums }}
+        {{ $recentAlbums := first 5 $sortedAlbums }}
         {{ if $recentAlbums }}
-            <div class="albums-grid">
-            {{ range $recentAlbums }}
-                <div class="album-preview">
-                    <h3><a href="{{ .Permalink }}">{{ .Title }}</a></h3>
-                    {{ if .Params.description }}<p class="album-desc">{{ .Params.description }}</p>{{ end }}
-                    {{ if .Date }}<p class="album-date">Released {{ .Date | dateFormat "January 2006" }}</p>{{ end }}
-                </div>
+        <div class="terminal-list terminal-list-right">
+            {{ range $index, $item := $recentAlbums }}
+            <span class="terminal-item">
+                <a href="{{ .Permalink }}" class="terminal-row-link"><span class="w2">{{ .Title }}</span><span class="tab"></span><span class="tab"></span><span class="w1">&#8668;{{ $day := .Date.Day }}{{ $spaces := mod (add $day $index) 3 | add 1 }}{{ range seq $spaces }}<span class="tab"></span>{{ end }}{{ .Date | dateFormat "02 Jan" }}</span><span class="tab"></span><span class="tab"></span></a>
+            </span><br />
             {{ end }}
-            </div>
-            <div class="section-footer">
-                <a href="/albums/" class="view-all">Explore all music →</a>
-            </div>
+        </div>
         {{ end }}
     </section>
-    {{ end }}
+
+    <div style="clear: both; margin-bottom: 4rem;"></div>
 
     <section class="about-preview featured-section">
         <h2>About Obscvrat</h2>
-        <!-- Test change for HTML validation -->
         {{ $aboutPage := .Site.GetPage "/about" }}
         {{ if $aboutPage }}
             <p>{{ $aboutPage.Summary }}</p>
