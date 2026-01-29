@@ -204,11 +204,10 @@
 
 /* Gigs grid */
 .gigs-grid {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
     gap: 2rem;
     margin-top: 2rem;
-    max-width: 800px;
 }
 
 .gig-item {
@@ -231,7 +230,6 @@
     flex-shrink: 0;
     width: 200px;
     aspect-ratio: 1 / 1;
-    border: 1px solid var(--border-color);
 }
 
 .gig-overlay {
@@ -258,8 +256,15 @@
     padding: 0.5rem 0.5rem 0.5rem 4rem;
     position: relative;
     clip-path: polygon(0 0, 100% 0, 100% 100%, 95% 100%, 95% 90%, 85% 90%, 85% 100%, 8% 100%, 0 70%);
-    white-space: nowrap;
     background: linear-gradient(to right, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.3) 40%, rgba(0, 0, 0, 0.7) 100%);
+    white-space: nowrap;
+}
+
+@media (max-width: 1200px) {
+    .gig-date {
+        white-space: normal;
+        word-wrap: break-word;
+    }
 }
 
 .gig-date strong,
@@ -324,12 +329,23 @@
 }
 
 @media (max-width: 768px) {
+    .gigs-grid {
+        grid-template-columns: 1fr;
+    }
+    
     .gig-link {
         flex-direction: column;
     }
     
     .gig-poster {
         width: 100%;
+    }
+    
+    .gig-venue {
+        background: rgba(0, 0, 0, 0.5);
+        padding: 0.5rem;
+        margin-left: 2rem;
+        text-align: center;
     }
 }
 
