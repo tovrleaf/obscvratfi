@@ -174,7 +174,9 @@
                 {{ range $othersPage.Params.items }}
                 <div class="others-item">
                     <span class="others-date">{{ dateFormat "January 2, 2006" .date }}</span>
-                    <a href="{{ .url }}" target="_blank" class="others-title">{{ .title }}</a><sup class="others-type">{{ .type }}</sup>
+                    <a href="{{ .url }}" target="_blank" class="others-title">
+                        {{ if .media_title }}<span class="others-media-title">{{ .media_title }}</span> ‣ {{ end }}<strong>{{ .title }}</strong>
+                    </a><sup class="others-type">{{ .type }}</sup>
                     {{ if .description }}<p class="others-description">{{ .description }}</p>{{ end }}
                 </div>
                 {{ end }}
@@ -388,6 +390,10 @@
 
 .others-title:hover {
     color: var(--accent-color);
+}
+
+.others-media-title {
+    font-family: var(--font-display);
 }
 
 .others-type {
