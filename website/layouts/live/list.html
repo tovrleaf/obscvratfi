@@ -1,27 +1,368 @@
 {{ define "main" }}
-<section class="gigs-list">
+<section class="gigs-page">
     <h1>{{ .Title }}</h1>
     {{ if .Content }}<div class="intro">{{ .Content }}</div>{{ end }}
     
-    {{ $live := where .Pages "Kind" "page" }}
-    {{ $sortedLive := sort $live "Date" "desc" }}
-    {{ if $sortedLive }}
-        {{ range $sortedLive.GroupByDate "2006" }}
-        <section class="year-group">
-            <h2>{{ .Key }}</h2>
-            <ul class="live">
-            {{ range .Pages }}
-                <li>
-                    <a href="{{ .Permalink }}">
-                        {{ .Date | dateFormat "Jan 02" }}: {{ .Title }} @ {{ .Params.venue }}, {{ .Params.location }}
-                    </a>
-                </li>
+    <!-- Year filter buttons -->
+    <div class="gigs-filters">
+        <button class="filter-btn active" data-year="all">
+            All
+            <span aria-hidden class="filter-btn__glitch">All</span>
+        </button>
+        {{ $years := slice }}
+        {{ range where .Pages "Kind" "page" }}
+            {{ $year := .Date.Format "2006" }}
+            {{ if not (in $years $year) }}
+                {{ $years = $years | append $year }}
             {{ end }}
-            </ul>
-        </section>
         {{ end }}
-    {{ else }}
-        <p>No gigs scheduled yet.</p>
-    {{ end }}
+        {{ range sort $years "value" "desc" }}
+            <button class="filter-btn" data-year="{{ . }}">
+                {{ . }}
+                <span aria-hidden class="filter-btn__glitch">{{ . }}</span>
+            </button>
+        {{ end }}
+    </div>
+    
+    <!-- Gigs grid -->
+    <div class="gigs-grid">
+        {{ $live := where .Pages "Kind" "page" }}
+        {{ $sortedLive := sort $live "Date" "desc" }}
+        {{ range $sortedLive }}
+            {{ $gigSlug := strings.TrimSuffix "/" (strings.TrimPrefix "/live/" .RelPermalink) }}
+            {{ $year := .Date.Format "2006" }}
+            <div class="gig-item" data-year="{{ $year }}">
+                <a href="{{ .Permalink }}" class="gig-link">
+                    {{ if .Params.poster }}
+                        <div class="gig-poster">
+                            <img src="/media/live/{{ $gigSlug }}/{{ .Params.poster }}" alt="{{ .Title }} poster">
+                            <div class="gig-overlay">
+                                <span class="gig-date">{{ .Date.Format "January 2, 2006" }} <span class="gig-title-inline">{{ .Title }}</span></span>
+                                <p class="gig-venue">{{ .Params.venue }}, {{ .Params.location }}</p>
+                            </div>
+                        </div>
+                    {{ end }}
+                </a>
+            </div>
+        {{ end }}
+    </div>
 </section>
+
+<style>
+/* Filter buttons with glitch effect */
+.gigs-filters {
+    margin: 2rem 0;
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    --primary: rgba(255, 255, 255, 0.1);
+    --shadow-primary: rgba(100, 100, 100, 0.5);
+    --shadow-secondary: rgba(150, 150, 150, 0.3);
+    --clip: polygon(0 0, 100% 0, 100% 100%, 95% 100%, 95% 90%, 85% 90%, 85% 100%, 8% 100%, 0 70%);
+    --shimmy-distance: 5;
+    --clip-one: polygon(0 2%, 100% 2%, 100% 95%, 95% 95%, 95% 90%, 85% 90%, 85% 95%, 8% 95%, 0 70%);
+    --clip-two: polygon(0 78%, 100% 78%, 100% 100%, 95% 100%, 95% 90%, 85% 90%, 85% 100%, 8% 100%, 0 78%);
+    --clip-three: polygon(0 44%, 100% 44%, 100% 54%, 95% 54%, 95% 54%, 85% 54%, 85% 54%, 8% 54%, 0 54%);
+    --clip-four: polygon(0 0, 100% 0, 100% 0, 95% 0, 95% 0, 85% 0, 85% 0, 8% 0, 0 0);
+    --clip-five: polygon(0 0, 100% 0, 100% 0, 95% 0, 95% 0, 85% 0, 85% 0, 8% 0, 0 0);
+    --clip-six: polygon(0 40%, 100% 40%, 100% 85%, 95% 85%, 95% 85%, 85% 85%, 85% 85%, 8% 85%, 0 70%);
+    --clip-seven: polygon(0 63%, 100% 63%, 100% 80%, 95% 80%, 95% 80%, 85% 80%, 85% 80%, 8% 80%, 0 70%);
+    
+    background: transparent;
+    color: var(--primary-color);
+    border: 0;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    font-family: var(--font-display);
+    position: relative;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    outline: transparent;
+}
+
+.filter-btn:after,
+.filter-btn:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    clip-path: var(--clip);
+    z-index: -1;
+}
+
+.filter-btn:before {
+    background: var(--shadow-primary);
+    transform: translate(2px, 0);
+}
+
+.filter-btn:after {
+    background: var(--primary);
+}
+
+.filter-btn:hover:after {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.filter-btn.active:after {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.filter-btn__glitch {
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: var(--shadow-primary);
+    text-shadow: 2px 2px var(--shadow-primary), -2px -2px var(--shadow-secondary);
+    clip-path: var(--clip);
+    animation: glitch 2s infinite;
+    display: none;
+}
+
+.filter-btn:hover .filter-btn__glitch {
+    display: block;
+}
+
+.filter-btn__glitch:before {
+    content: '';
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    bottom: 2px;
+    left: 2px;
+    clip-path: var(--clip);
+    background: var(--primary);
+    z-index: -1;
+}
+
+@keyframes glitch {
+    0% {
+        clip-path: var(--clip-one);
+    }
+    2%, 8% {
+        clip-path: var(--clip-two);
+        transform: translate(calc(var(--shimmy-distance) * -1%), 0);
+    }
+    6% {
+        clip-path: var(--clip-two);
+        transform: translate(calc(var(--shimmy-distance) * 1%), 0);
+    }
+    9% {
+        clip-path: var(--clip-two);
+        transform: translate(0, 0);
+    }
+    10% {
+        clip-path: var(--clip-three);
+        transform: translate(calc(var(--shimmy-distance) * 1%), 0);
+    }
+    13% {
+        clip-path: var(--clip-three);
+        transform: translate(0, 0);
+    }
+    14%, 21% {
+        clip-path: var(--clip-four);
+        transform: translate(calc(var(--shimmy-distance) * 1%), 0);
+    }
+    25% {
+        clip-path: var(--clip-five);
+        transform: translate(calc(var(--shimmy-distance) * 1%), 0);
+    }
+    30% {
+        clip-path: var(--clip-five);
+        transform: translate(calc(var(--shimmy-distance) * -1%), 0);
+    }
+    35%, 45% {
+        clip-path: var(--clip-six);
+        transform: translate(calc(var(--shimmy-distance) * -1%));
+    }
+    40% {
+        clip-path: var(--clip-six);
+        transform: translate(calc(var(--shimmy-distance) * 1%));
+    }
+    50% {
+        clip-path: var(--clip-six);
+        transform: translate(0, 0);
+    }
+    55% {
+        clip-path: var(--clip-seven);
+        transform: translate(calc(var(--shimmy-distance) * 1%), 0);
+    }
+    60% {
+        clip-path: var(--clip-seven);
+        transform: translate(0, 0);
+    }
+    31%, 61%, 100% {
+        clip-path: var(--clip-four);
+    }
+}
+
+/* Gigs grid */
+.gigs-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    margin-top: 2rem;
+    max-width: 800px;
+}
+
+.gig-item {
+    transition: opacity 0.3s ease;
+}
+
+.gig-item.hidden {
+    display: none;
+}
+
+.gig-link {
+    display: flex;
+    gap: 2rem;
+    text-decoration: none;
+    color: inherit;
+}
+
+.gig-poster {
+    position: relative;
+    flex-shrink: 0;
+    width: 200px;
+    aspect-ratio: 1 / 1;
+    border: 1px solid var(--border-color);
+}
+
+.gig-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    z-index: 2;
+    transform: translateY(0.5em);
+}
+
+.gig-date {
+    --primary: rgba(255, 255, 255, 0.1);
+    --shadow-primary: rgba(100, 100, 100, 0.5);
+    font-family: var(--font-body);
+    font-weight: normal;
+    color: var(--primary-color);
+    font-size: 0.9rem;
+    display: block;
+    margin-bottom: 0.5rem;
+    margin-left: 2rem;
+    padding: 0.5rem 0.5rem 0.5rem 4rem;
+    position: relative;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 95% 100%, 95% 90%, 85% 90%, 85% 100%, 8% 100%, 0 70%);
+    white-space: nowrap;
+    background: linear-gradient(to right, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.3) 40%, rgba(0, 0, 0, 0.7) 100%);
+}
+
+.gig-date strong,
+.gig-date .gig-title-inline {
+    margin-left: 4ch;
+    font-weight: normal;
+    font-family: var(--font-display);
+    position: relative;
+    z-index: 1;
+}
+
+.gig-date::before {
+    display: none;
+}
+
+.gig-date::after {
+    display: none;
+}
+
+.gig-title {
+    font-size: 1.1rem;
+    font-weight: normal;
+    margin: 0;
+    padding-left: 4ch;
+    color: var(--primary-color);
+}
+
+.gig-poster::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle, transparent 30%, rgba(0, 0, 0, 0.7) 100%);
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    z-index: 1;
+}
+
+.gig-link:hover .gig-poster::after {
+    opacity: 0;
+}
+
+.gig-poster img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(100%);
+    transition: filter 0.3s ease;
+}
+
+.gig-link:hover .gig-poster img {
+    filter: grayscale(0%);
+}
+
+.gig-venue {
+    color: var(--secondary-color);
+    font-size: 0.9rem;
+    margin: 0;
+    padding-left: 23ch;
+}
+
+@media (max-width: 768px) {
+    .gig-link {
+        flex-direction: column;
+    }
+    
+    .gig-poster {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .gigs-grid {
+        gap: 1.5rem;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const gigItems = document.querySelectorAll('.gig-item');
+    
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const year = this.dataset.year;
+            
+            // Update active button
+            filterBtns.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Filter gigs
+            gigItems.forEach(item => {
+                if (year === 'all' || item.dataset.year === year) {
+                    item.classList.remove('hidden');
+                } else {
+                    item.classList.add('hidden');
+                }
+            });
+        });
+    });
+});
+</script>
 {{ end }}
