@@ -20,7 +20,7 @@ BASE_URL="http://localhost:1313"
 CRITICAL_LINKS=(
   "/"
   "/about/"
-  "/gigs/"
+  "/live/"
   "/albums/"
   "/feed.xml"
   "/sitemap.xml"

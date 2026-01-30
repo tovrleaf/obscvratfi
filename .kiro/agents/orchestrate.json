@@ -1,14 +1,14 @@
 {
-  "name": "workflow-full",
+  "name": "orchestrate",
   "description": "Orchestrates multi-agent workflows using delegate tool for automated development process",
   "prompt": null,
   "tools": [
     "read",
-    "delegate",
+    "use_subagents",
     "shell",
     "introspect"
   ],
-  "allowedTools": ["read", "delegate"],
+  "allowedTools": ["read", "use_subagents"],
   "resources": [
     "file://.kiro/instructions/workflow-full.md",
     "file://AGENTS.md",

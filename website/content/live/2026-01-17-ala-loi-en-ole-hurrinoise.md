@@ -1,6 +1,6 @@
 ---
 title: "Älä löi en ole hurrinoise"
-date: 2025-01-17
+date: 2026-01-17
 venue: "Äänen Lumo"
 location: "Helsinki"
 poster: "obscvrat-ala-loi-en-ole-hurrinoise-poster-2025.jpg"

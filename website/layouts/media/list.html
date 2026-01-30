@@ -1,3 +1,34 @@
+{{/*
+    Media Page Template
+    
+    Design Patterns:
+    ----------------
+    
+    HOVER EFFECTS (Photos & Videos):
+    - scale(1.05) - Subtle zoom on hover, contained by overflow:hidden
+    - blur(2px) - Softens image to emphasize text overlay
+    - brightness(0.5) - Dims to 50% for better text contrast
+    - opacity 0→1 transition on .media-info overlay
+    
+    TEXT OVERLAYS:
+    - Photos: Dark background (rgba(0,0,0,0.8)) only on event title
+    - Videos: Dark background on all text elements (title, date, venue)
+    - Text shadows: 0 0 8px and 0 0 4px for readability on any background
+    - No underlines on hover overlay links
+    
+    TYPOGRAPHY:
+    - Event names: h3 tags, normal weight
+    - Dates: Fira Mono (var(--font-display)), 0.9rem
+    - Photo credits: Camera icon (fa-camera) + photographer name
+    - Dotted separator: Only between date and photographer (photos only)
+    
+    OTHERS SECTION:
+    - Date first (Fira Mono, secondary color)
+    - 4ch spacing before title
+    - Type in superscript after title
+    - Description indented below if present
+*/}}
+
 {{ define "main" }}
 <section class="media-page">
     <h1>{{ .Title }}</h1>
@@ -5,17 +36,29 @@
     
     <!-- Filter buttons -->
     <div class="media-filters">
-        <button class="filter-btn active" data-filter="all">All</button>
-        <button class="filter-btn" data-filter="photos">Photos</button>
-        <button class="filter-btn" data-filter="videos">Videos</button>
-        <button class="filter-btn" data-filter="others">Others</button>
+        <button class="filter-btn active" data-filter="all">
+            All
+            <span aria-hidden class="filter-btn__glitch">All</span>
+        </button>
+        <button class="filter-btn" data-filter="photos">
+            Photos
+            <span aria-hidden class="filter-btn__glitch">Photos</span>
+        </button>
+        <button class="filter-btn" data-filter="videos">
+            Videos
+            <span aria-hidden class="filter-btn__glitch">Videos</span>
+        </button>
+        <button class="filter-btn" data-filter="others">
+            Others
+            <span aria-hidden class="filter-btn__glitch">Others</span>
+        </button>
     </div>
     
     <!-- Photos Section -->
     <section class="media-section photos-section" data-type="photos">
         <h2>Photos</h2>
         <div class="media-grid">
-            {{ $gigs := where .Site.Pages "Section" "live" }}
+            {{ $gigs := (where .Site.Pages "Section" "live").ByDate.Reverse }}
             {{ range $gigs }}
                 {{ if .Params.media.pictures }}
                     {{ $gigTitle := .Title }}
@@ -40,12 +83,13 @@
                                     <img src="{{ .RelPermalink }}" alt="{{ $altText }}">
                                 </a>
                                 <div class="media-info">
-                                    <p class="media-gig"><a href="{{ $gigPermalink }}">{{ $gigTitle }}</a></p>
+                                    <h3 class="media-gig"><a href="{{ $gigPermalink }}">{{ $gigTitle }}</a></h3>
+                                    <p class="media-date">{{ $date }}</p>
                                     <p class="media-author">
                                     {{ if $authorUrl }}
-                                        Photo by <a href="{{ $authorUrl }}" target="_blank">{{ $author }}</a>
+                                        <i class="fa-solid fa-camera"></i> <a href="{{ $authorUrl }}" target="_blank">{{ $author }}</a>
                                     {{ else }}
-                                        Photo by {{ $author }}
+                                        <i class="fa-solid fa-camera"></i> {{ $author }}
                                     {{ end }}
                                 </p>
                             </div>
@@ -70,9 +114,9 @@
                         {{ end }}
                         <p class="media-author">
                             {{ if .Params.author_url }}
-                                Photo by <a href="{{ .Params.author_url }}" target="_blank">{{ .Params.author }}</a>
+                                <i class="fa-solid fa-camera"></i> <a href="{{ .Params.author_url }}" target="_blank">{{ .Params.author }}</a>
                             {{ else }}
-                                Photo by {{ .Params.author }}
+                                <i class="fa-solid fa-camera"></i> {{ .Params.author }}
                             {{ end }}
                         </p>
                     </div>
@@ -89,6 +133,7 @@
                 {{ if .Params.media.videos }}
                     {{ $gigTitle := .Title }}
                     {{ $gigPermalink := .Permalink }}
+                    {{ $gigDate := .Date.Format "January 2, 2006" }}
                     {{ range .Params.media.videos }}
                         <div class="media-item video-item">
                             <a href="#" class="open-video-lightbox"
@@ -103,22 +148,9 @@
                                 <div class="play-icon">▶</div>
                             </a>
                             <div class="media-info">
-                                {{ if .title }}<p class="media-title">{{ .title }}</p>{{ end }}
-                                <p class="media-gig"><a href="{{ $gigPermalink }}">{{ $gigTitle }}</a></p>
-                                {{ if .credits }}
-                                <div class="video-credits">
-                                    {{ range .credits }}
-                                        <p class="credit-item">
-                                            {{ .type }} by
-                                            {{ if .url }}
-                                                <a href="{{ .url }}" target="_blank">{{ .name }}</a>
-                                            {{ else }}
-                                                {{ .name }}
-                                            {{ end }}
-                                        </p>
-                                    {{ end }}
-                                </div>
-                                {{ end }}
+                                <h3 class="media-gig"><a href="{{ $gigPermalink }}">{{ $gigTitle }}</a></h3>
+                                <p class="media-date">{{ $gigDate }}</p>
+                                {{ if .title }}<h3 class="media-title">{{ .title }}</h3>{{ end }}
                             </div>
                         </div>
                     {{ end }}
@@ -153,18 +185,11 @@
             <div class="others-list">
                 {{ range $othersPage.Params.items }}
                 <div class="others-item">
-                    <h3>{{ .type }}: <a href="{{ .url }}" target="_blank">{{ .title }}</a></h3>
-                    <div class="others-meta">
-                        <span class="others-info">
-                            {{ if .media_title }}{{ .media_title }}{{ if .date }} | {{ end }}{{ end }}
-                            {{ if .date }}{{ dateFormat "January 2, 2006" .date }}{{ end }}
-                            {{ if .gig }}
-                                {{ $gigPage := $.Site.GetPage (printf "/live/%s" .gig) }}
-                                {{ if $gigPage }} (<a href="{{ $gigPage.Permalink }}">{{ $gigPage.Title }}</a>){{ end }}
-                            {{ end }}
-                        </span>
-                    </div>
-                    {{ if .description }}<p>{{ .description }}</p>{{ end }}
+                    <span class="others-date">{{ dateFormat "January 2, 2006" .date }}</span>
+                    <a href="{{ .url }}" target="_blank" class="others-title">
+                        {{ if .media_title }}<span class="others-media-title">{{ .media_title }}</span> ‣ {{ end }}<strong>{{ .title }}</strong>
+                    </a><sup class="others-type">{{ .type }}</sup>
+                    {{ if .description }}<p class="others-description">{{ .description }}</p>{{ end }}
                 </div>
                 {{ end }}
             </div>
@@ -175,6 +200,18 @@
 </section>
 
 <style>
+/* 
+   Media Page Styles
+   
+   Key Design Values:
+   - Hover zoom: scale(1.05)
+   - Hover blur: 2px
+   - Hover dim: brightness(0.5) - 50% darker
+   - Dark overlay: rgba(0,0,0,0.8)
+   - Text shadow: 0 0 8px + 0 0 4px for strong contrast
+   - Tab spacing: 4ch (Others section)
+*/
+
 .media-filters {
     margin: 2rem 0;
     display: flex;
@@ -182,22 +219,148 @@
 }
 
 .filter-btn {
-    background: var(--bg-secondary);
+    --primary: rgba(255, 255, 255, 0.1);
+    --shadow-primary: rgba(100, 100, 100, 0.5);
+    --shadow-secondary: rgba(150, 150, 150, 0.3);
+    --clip: polygon(0 0, 100% 0, 100% 100%, 95% 100%, 95% 90%, 85% 90%, 85% 100%, 8% 100%, 0 70%);
+    --shimmy-distance: 5;
+    --clip-one: polygon(0 2%, 100% 2%, 100% 95%, 95% 95%, 95% 90%, 85% 90%, 85% 95%, 8% 95%, 0 70%);
+    --clip-two: polygon(0 78%, 100% 78%, 100% 100%, 95% 100%, 95% 90%, 85% 90%, 85% 100%, 8% 100%, 0 78%);
+    --clip-three: polygon(0 44%, 100% 44%, 100% 54%, 95% 54%, 95% 54%, 85% 54%, 85% 54%, 8% 54%, 0 54%);
+    --clip-four: polygon(0 0, 100% 0, 100% 0, 95% 0, 95% 0, 85% 0, 85% 0, 8% 0, 0 0);
+    --clip-five: polygon(0 0, 100% 0, 100% 0, 95% 0, 95% 0, 85% 0, 85% 0, 8% 0, 0 0);
+    --clip-six: polygon(0 40%, 100% 40%, 100% 85%, 95% 85%, 95% 85%, 85% 85%, 85% 85%, 8% 85%, 0 70%);
+    --clip-seven: polygon(0 63%, 100% 63%, 100% 80%, 95% 80%, 95% 80%, 85% 80%, 85% 80%, 8% 80%, 0 70%);
+    
+    background: transparent;
     color: var(--primary-color);
-    border: 1px solid var(--border-color);
+    border: 0;
     padding: 0.5rem 1rem;
     cursor: pointer;
     font-family: var(--font-display);
-    transition: all 0.3s;
+    position: relative;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    outline: transparent;
 }
 
-.filter-btn:hover {
-    background: var(--accent-color);
+.filter-btn:after,
+.filter-btn:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    clip-path: var(--clip);
+    z-index: -1;
 }
 
-.filter-btn.active {
-    background: var(--accent-color);
-    border-color: var(--primary-color);
+.filter-btn:before {
+    background: var(--shadow-primary);
+    transform: translate(2px, 0);
+}
+
+.filter-btn:after {
+    background: var(--primary);
+}
+
+.filter-btn:hover:after {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.filter-btn.active:after {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.filter-btn__glitch {
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: var(--shadow-primary);
+    text-shadow: 2px 2px var(--shadow-primary), -2px -2px var(--shadow-secondary);
+    clip-path: var(--clip);
+    animation: glitch 2s infinite;
+    display: none;
+}
+
+.filter-btn:hover .filter-btn__glitch {
+    display: block;
+}
+
+.filter-btn__glitch:before {
+    content: '';
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    bottom: 2px;
+    left: 2px;
+    clip-path: var(--clip);
+    background: var(--primary);
+    z-index: -1;
+}
+
+@keyframes glitch {
+    0% {
+        clip-path: var(--clip-one);
+    }
+    2%, 8% {
+        clip-path: var(--clip-two);
+        transform: translate(calc(var(--shimmy-distance) * -1%), 0);
+    }
+    6% {
+        clip-path: var(--clip-two);
+        transform: translate(calc(var(--shimmy-distance) * 1%), 0);
+    }
+    9% {
+        clip-path: var(--clip-two);
+        transform: translate(0, 0);
+    }
+    10% {
+        clip-path: var(--clip-three);
+        transform: translate(calc(var(--shimmy-distance) * 1%), 0);
+    }
+    13% {
+        clip-path: var(--clip-three);
+        transform: translate(0, 0);
+    }
+    14%, 21% {
+        clip-path: var(--clip-four);
+        transform: translate(calc(var(--shimmy-distance) * 1%), 0);
+    }
+    25% {
+        clip-path: var(--clip-five);
+        transform: translate(calc(var(--shimmy-distance) * 1%), 0);
+    }
+    30% {
+        clip-path: var(--clip-five);
+        transform: translate(calc(var(--shimmy-distance) * -1%), 0);
+    }
+    35%, 45% {
+        clip-path: var(--clip-six);
+        transform: translate(calc(var(--shimmy-distance) * -1%));
+    }
+    40% {
+        clip-path: var(--clip-six);
+        transform: translate(calc(var(--shimmy-distance) * 1%));
+    }
+    50% {
+        clip-path: var(--clip-six);
+        transform: translate(0, 0);
+    }
+    55% {
+        clip-path: var(--clip-seven);
+        transform: translate(calc(var(--shimmy-distance) * 1%), 0);
+    }
+    60% {
+        clip-path: var(--clip-seven);
+        transform: translate(0, 0);
+    }
+    31%, 61%, 100% {
+        clip-path: var(--clip-four);
+    }
 }
 
 .media-section {
@@ -218,25 +381,31 @@
     position: relative;
     break-inside: avoid;
     margin-bottom: 1rem;
+    overflow: hidden;
+}
+
+.media-item a {
+    display: block;
+    position: relative;
+    overflow: hidden;
 }
 
 .media-item img {
     width: 100%;
     height: auto;
     display: block;
-    border: 1px solid var(--border-color);
+    transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.media-item:hover img {
+    transform: scale(1.05);
+    filter: blur(2px) brightness(0.5);
 }
 
 .media-item video {
     width: 100%;
     height: auto;
     display: block;
-    border: 1px solid var(--border-color);
-}
-
-.media-item a {
-    display: block;
-    position: relative;
 }
 
 .play-icon {
@@ -251,27 +420,129 @@
 }
 
 .media-info {
-    margin-top: 0.5rem;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 1rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
     font-size: 0.85rem;
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.media-item:hover .media-info {
+    opacity: 1;
 }
 
 .media-title {
-    font-weight: bold;
-    margin-bottom: 0.25rem;
+    font-weight: normal;
+    margin-bottom: 0.5rem;
+    color: var(--primary-color);
+    text-shadow: 0 0 8px rgba(0, 0, 0, 0.9), 0 0 4px rgba(0, 0, 0, 0.9);
+    font-size: 0.85rem;
+}
+
+.video-item .media-title {
+    background: rgba(0, 0, 0, 0.8);
+    padding: 0.5rem;
 }
 
 .media-gig {
-    color: var(--secondary-color);
-    margin-bottom: 0.25rem;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+    text-shadow: 0 0 8px rgba(0, 0, 0, 0.9), 0 0 4px rgba(0, 0, 0, 0.9);
+    font-size: 0.85rem;
+    font-weight: normal;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 0.5rem;
+}
+
+.media-gig a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.media-date {
+    font-family: var(--font-display);
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+    text-shadow: 0 0 8px rgba(0, 0, 0, 0.9), 0 0 4px rgba(0, 0, 0, 0.9);
+    font-size: 0.9rem;
+}
+
+.video-item .media-date {
+    background: rgba(0, 0, 0, 0.8);
+    padding: 0.5rem;
+}
+
+.photo-item .media-date {
+    padding-bottom: 0.5rem;
+    border-bottom: 1px dotted rgba(255, 255, 255, 0.3);
+    max-width: 60%;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .media-author {
-    color: var(--secondary-color);
-    font-style: italic;
+    color: var(--primary-color);
+    text-shadow: 0 0 8px rgba(0, 0, 0, 0.9), 0 0 4px rgba(0, 0, 0, 0.9);
+    white-space: nowrap;
 }
+
+.media-author a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
 
 .others-content {
     max-width: 800px;
+}
+
+.others-item {
+    margin-bottom: 1.5rem;
+}
+
+.others-date {
+    font-family: var(--font-display);
+    color: var(--secondary-color);
+    font-size: 0.9rem;
+    display: inline-block;
+    margin-right: 4ch;
+}
+
+.others-title {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.others-title:hover {
+    color: var(--accent-color);
+}
+
+.others-media-title {
+    font-family: var(--font-display);
+}
+
+.others-type {
+    color: var(--secondary-color);
+    font-size: 0.7rem;
+    margin-left: 0.3rem;
+}
+
+.others-description {
+    margin-top: 0.5rem;
+    margin-left: calc(4ch + 10rem);
+    color: var(--secondary-color);
+    font-size: 0.9rem;
 }
 
 .others-content h2 {
@@ -502,7 +773,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <img src="/media/live/${gig}/${image}" alt="${gigTitle}">
                     <div class="swiper-modal-info">
                         <div class="swiper-modal-info-left">
-                            <p><strong>Gig:</strong> <a href="${gigLink}">${gigTitle}</a></p>
+                            <p><strong>Live @</strong> <a href="${gigLink}">${gigTitle}</a></p>
                             <p><strong>Photo by:</strong> ${authorUrl ? `<a href="${authorUrl}" target="_blank">${author}</a>` : author}</p>
                         </div>
                         <a href="/media/live/${gig}/${image}" download class="download-btn">Download</a>
@@ -567,7 +838,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class="swiper-modal-info">
                         <div class="swiper-modal-info-left">
                             ${title ? `<p><strong>Title:</strong> ${title}</p>` : ''}
-                            <p><strong>Gig:</strong> <a href="${gigLink}">${gigTitle}</a></p>
+                            <p><strong>Live @</strong> <a href="${gigLink}">${gigTitle}</a></p>
                             ${creditsHtml}
                         </div>
                         <a href="https://www.youtube.com/watch?v=${youtubeId}" target="_blank" class="download-btn">Open</a>

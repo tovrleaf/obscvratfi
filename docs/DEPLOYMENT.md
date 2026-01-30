@@ -165,7 +165,7 @@ curl https://obscvrat.fi/css/style.css | head -10
 
 ```bash
 # Check all critical pages return 200
-for page in / /about/ /gigs/ /albums/ /feed.xml /sitemap.xml; do
+for page in / /about/ /gigs/ /music/ /feed.xml /sitemap.xml; do
   STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://obscvrat.fi$page)
   echo "$page: $STATUS"
 done
