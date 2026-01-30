@@ -94,7 +94,7 @@ jobs:
           check_link "index.html" || ((errors++))
           check_link "about/index.html" || ((errors++))
           check_link "live/index.html" || ((errors++))
-          check_link "albums/index.html" || ((errors++))
+          check_link "music/index.html" || ((errors++))
           check_link "feed.xml" || ((errors++))
           check_link "sitemap.xml" || ((errors++))
 
