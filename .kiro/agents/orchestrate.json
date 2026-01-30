@@ -3,7 +3,7 @@
   "description": "Orchestrates multi-agent workflows using delegate tool for automated development process",
   "prompt": null,
   "tools": [
-    "use_subagents",
+    "use_subagent",
     "introspect"
   ],
   "allowedTools": ["read", "shell"],
