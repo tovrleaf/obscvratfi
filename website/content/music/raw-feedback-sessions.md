@@ -3,6 +3,12 @@ title: "Raw Feedback Sessions"
 date: 2023-03-10
 bandcamp_album: "3333333"
 description: "Unprocessed live feedback and synthesis experiments"
+release_type: "album"
+cover: "https://i.discogs.com/v9oXT2VY702i0cJp5gkHp_LqzNM9QaiaVlQ9OF4-GT4/rs:fit/g:sm/q:90/h:600/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTMzODU3/Nzk2LTE3NDYwODQ3/NjYtOTIwMC5qcGVn.jpeg"
+artists: ["Obscvrat", "Guest Artist"]
+label: "Underground Tapes"
+format: "Cassette + Digital, 4 tracks"
+country: "Finland"
 draft: false
 ---
 
