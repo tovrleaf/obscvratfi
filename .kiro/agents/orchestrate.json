@@ -11,14 +11,5 @@
     "file://.kiro/instructions/workflow-full.md",
     "file://AGENTS.md",
     "file://docs/adr/010-specialized-agent-architecture-for-development-workflow.md"
-  ],
-  "toolsSettings": {
-    "read": {
-      "allowedPaths": ["./**"]
-    },
-    "shell": {
-      "autoAllowReadonly": true,
-      "allowedCommands": ["git status", "git log.*", "git diff.*"]
-    }
-  }
+  ]
 }
