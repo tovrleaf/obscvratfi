@@ -3,12 +3,10 @@
   "description": "Orchestrates multi-agent workflows using delegate tool for automated development process",
   "prompt": null,
   "tools": [
-    "read",
     "use_subagents",
-    "shell",
     "introspect"
   ],
-  "allowedTools": ["read", "use_subagents"],
+  "allowedTools": ["read", "shell"],
   "resources": [
     "file://.kiro/instructions/workflow-full.md",
     "file://AGENTS.md",
