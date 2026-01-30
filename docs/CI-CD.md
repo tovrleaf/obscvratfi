@@ -58,7 +58,7 @@ Builds the Hugo site and validates output.
 - `/` - Homepage
 - `/about/` - About page
 - `/gigs/` - Gigs listing
-- `/albums/` - Albums listing
+- `/music/` - Music listing
 - `/feed.xml` - RSS feed
 - `/sitemap.xml` - XML sitemap
 

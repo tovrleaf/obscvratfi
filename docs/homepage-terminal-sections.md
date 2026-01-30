@@ -2,7 +2,7 @@
 
 ## Overview
 
-The homepage features two terminal-style sections displaying latest live performances and albums with a monospace aesthetic, selective borders, and alternating colors.
+The homepage features two terminal-style sections displaying latest live performances and music with a monospace aesthetic, selective borders, and alternating colors.
 
 ## Layout
 
@@ -12,7 +12,7 @@ The homepage features two terminal-style sections displaying latest live perform
 - **Content alignment**: Left-aligned
 - **Indentation**: 2 tabs before content
 
-### ALBUMS Section (Right)
+### MUSIC Section (Right)
 - **Position**: Right side (float: right), margin-right: 12ch
 - **Borders**: Top + right only
 - **Content alignment**: Right-aligned
@@ -21,16 +21,16 @@ The homepage features two terminal-style sections displaying latest live perform
 ## Date Formatting
 
 - **LIVE**: `Jan 17` format (month first)
-- **ALBUMS**: `17 Jan` format (day first)
+- **MUSIC**: `17 Jan` format (day first)
 - **Separators**:
   - LIVE: `&#8669;` (⇝ Rightwards Dashed Arrow)
-  - ALBUMS: `&#8668;` (⇜ Leftwards Dashed Arrow)
+  - MUSIC: `&#8668;` (⇜ Leftwards Dashed Arrow)
 
 ## Variable Spacing
 
 Spacing around separators varies per row (1-3 tabs) to break monotony:
 - **LIVE**: 1-3 tabs BEFORE arrow
-- **ALBUMS**: 1-3 tabs AFTER arrow
+- **MUSIC**: 1-3 tabs AFTER arrow
 - **Formula**: `(date.Day + index) mod 3 + 1`
   - Uses day of month + row index for pseudo-random variation
 
@@ -56,7 +56,7 @@ Creates a checkerboard pattern across rows and columns.
 
 Borders extend beyond content using padding:
 - **LIVE**: `padding-right: 12ch` on `.terminal-list`
-- **ALBUMS**: `padding-left: 12ch` on `.terminal-list-right`
+- **MUSIC**: `padding-left: 12ch` on `.terminal-list-right`
 
 ## HTML Structure
 
@@ -82,11 +82,11 @@ Borders extend beyond content using padding:
     </div>
 </section>
 
-<!-- ALBUMS Section -->
+<!-- MUSIC Section -->
 <section class="terminal-section terminal-right">
-    <div class="terminal-title terminal-title-right">ALBUMS</div>
+    <div class="terminal-title terminal-title-right">MUSIC</div>
     <div class="terminal-header terminal-header-right">
-        <a href="/albums/">view all</a>
+        <a href="/music/">view all</a>
         <span class="tab"></span><span class="tab"></span><span class="tab"></span>
     </div>
     <div class="terminal-list terminal-list-right">
@@ -113,7 +113,7 @@ Borders extend beyond content using padding:
 - `.terminal-title` - Section title (above border)
 - `.terminal-header` - "view all" link container (below border with top border)
 - `.terminal-list` - Content container (padding-right: 12ch for LIVE)
-- `.terminal-list-right` - Right-aligned list (padding-left: 12ch for ALBUMS)
+- `.terminal-list-right` - Right-aligned list (padding-left: 12ch for MUSIC)
 - `.terminal-item` - Individual row (span with display: inline !important)
 - `.terminal-row-link` - Clickable row link (entire row is clickable)
 

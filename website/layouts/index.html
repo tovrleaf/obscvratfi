@@ -46,13 +46,13 @@
         {{ end }}
     </section>
 
-    <!-- Latest Albums -->
+    <!-- Latest Music -->
     <section class="terminal-section terminal-right">
-        <div class="terminal-title terminal-title-right">ALBUMS</div>
+        <div class="terminal-title terminal-title-right">MUSIC</div>
         <div class="terminal-header terminal-header-right">
-            <a href="/albums/" class="terminal-link-right">view all</a><span class="tab"></span><span class="tab"></span><span class="tab"></span>
+            <a href="/music/" class="terminal-link-right">view all</a><span class="tab"></span><span class="tab"></span><span class="tab"></span>
         </div>
-        {{ $albums := where .Site.Pages "Section" "albums" }}
+        {{ $albums := where .Site.Pages "Section" "music" }}
         {{ $sortedAlbums := sort $albums "Date" "desc" }}
         {{ $recentAlbums := first 5 $sortedAlbums }}
         {{ if $recentAlbums }}

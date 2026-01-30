@@ -163,16 +163,16 @@ For complete CI/CD documentation, see `docs/CI-CD.md`.
 website/
 ├── archetypes/          # Content templates for new posts
 │   ├── gigs.md         # Template for new gig listings
-│   └── albums.md       # Template for new album pages
+│   └── music.md       # Template for new music pages
 ├── content/            # All site content in Markdown
 │   ├── about/          # About page
 │   ├── live/           # Gig listings and details
-│   └── albums/         # Album releases and details
+│   └── music/         # Music releases and details
 ├── layouts/            # Hugo templates
 │   ├── baseof.html     # Base template with styling
 │   ├── index.html      # Homepage
 │   ├── about/          # About page templates
-│   ├── albums/         # Album page templates
+│   ├── music/         # Music page templates
 │   ├── live/           # Gig page templates
 │   ├── _default/       # Default templates
 │   ├── partials/       # Reusable template components
@@ -219,25 +219,25 @@ website/
    - `ticket_link`: Optional link to ticket purchasing
    - `draft`: Set to `false` to publish, `true` to keep as draft
 
-### Adding a New Album Release
+### Adding a New Music Release
 
 1. **Using the archetype:**
    ```bash
-   hugo new albums/album-slug-name.md
+   hugo new music/music-slug-name.md
    ```
 
 2. **Manual creation:**
-   Create a file in `website/content/albums/` with:
+   Create a file in `website/content/music/` with:
 
    ```markdown
    ---
-   title: "Album Title"
+   title: "Music Title"
    date: 2024-06-15
    bandcamp_album: "1111111"
-   description: "Album description"
+   description: "Music description"
    ---
 
-   Detailed album information, track listing, and production notes.
+   Detailed music information, track listing, and production notes.
    ```
 
 3. **Fields:**
