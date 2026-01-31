@@ -37,7 +37,7 @@ if [ -n "$md_files" ]; then
     echo ""
     echo "🔍 Running pymarkdown on staged Markdown files..."
     if [ -f .venv/bin/pymarkdown ]; then
-        echo "$md_files" | xargs .venv/bin/pymarkdown scan || has_issues=1
+        echo "$md_files" | xargs .venv/bin/pymarkdown --config .pymarkdownlnt scan || has_issues=1
     else
         echo "⚠️  pymarkdown not found, skipping"
     fi

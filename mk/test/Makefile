@@ -91,7 +91,7 @@ yaml-commit:
 md:
 	@echo "🔍 Running pymarkdown on all Markdown files..."
 	@if [ -f ../../.venv/bin/pymarkdown ]; then \
-		cd ../.. && find . -name "*.md" | grep -v ".venv" | xargs .venv/bin/pymarkdown scan; \
+		cd ../.. && find . -name "*.md" | grep -v ".venv" | xargs .venv/bin/pymarkdown --config .pymarkdownlnt scan; \
 		echo "✅ Pymarkdown complete"; \
 	else \
 		echo "❌ pymarkdown not found"; \
@@ -106,7 +106,7 @@ md-commit:
 	@if [ -f ../../.venv/bin/pymarkdown ]; then \
 		cd ../.. && md_files=$$(git diff-tree --no-commit-id --name-only -r HEAD | grep '\.md$$'); \
 		if [ -n "$$md_files" ]; then \
-			echo "$$md_files" | xargs .venv/bin/pymarkdown scan && echo "✅ Pymarkdown passed" || echo "❌ Pymarkdown found issues"; \
+			echo "$$md_files" | xargs .venv/bin/pymarkdown --config .pymarkdownlnt scan && echo "✅ Pymarkdown passed" || echo "❌ Pymarkdown found issues"; \
 		else \
 			echo "ℹ️  No Markdown files in last commit"; \
 		fi; \
