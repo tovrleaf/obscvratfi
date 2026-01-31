@@ -27,7 +27,7 @@
             </div>
             
             <div class="album-meta">
-                <p><strong>Label:</strong> {{ .Params.label }}</p>
+                <p><strong>Label:</strong> {{ if .Params.label_url }}<a href="{{ .Params.label_url }}" target="_blank" rel="noopener">{{ .Params.label }}</a>{{ else }}{{ .Params.label }}{{ end }}{{ if .Params.catalog_number }} – {{ .Params.catalog_number }}{{ end }}</p>
                 <p><strong>Format:</strong> {{ .Params.format }}</p>
                 <p><strong>Country:</strong> {{ .Params.country }}</p>
                 <p><strong>Released:</strong> {{ .Date.Format "2 Jan 2006" }}</p>
@@ -159,6 +159,17 @@
 
 .album-meta strong {
     color: var(--primary-color);
+}
+
+.album-meta a {
+    color: var(--primary-color);
+    text-decoration: none;
+    border-bottom: 1px solid var(--border-color);
+    transition: border-color 0.3s ease;
+}
+
+.album-meta a:hover {
+    border-bottom-color: var(--primary-color);
 }
 
 .album-links {
