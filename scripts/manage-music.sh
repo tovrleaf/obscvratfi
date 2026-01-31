@@ -3,11 +3,19 @@
 
 set -uo pipefail
 
-MUSIC_DIR="website/content/music"
+MUSIC_DIR="website/data/music"
+CONTENT_DIR="website/content/music"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 cd "$PROJECT_ROOT"
+
+# Check if yq is installed
+if ! command -v yq &> /dev/null; then
+    echo "Error: yq is not installed"
+    echo "Install with: brew install yq"
+    exit 1
+fi
 
 # Colors
 RED='\033[0;31m'
@@ -176,7 +184,7 @@ add_release() {
     local temp_desc=$(mktemp)
     echo "# Enter description below (lines starting with # are ignored)" > "$temp_desc"
     ${EDITOR:-vim} "$temp_desc"
-    description=$(grep -v '^#' "$temp_desc" | sed '/^$/d')
+    content=$(grep -v '^#' "$temp_desc" | sed '/^$/d')
     rm "$temp_desc"
     
     # Release type
@@ -244,7 +252,7 @@ add_release() {
     
     # Generate slug and filename
     slug=$(generate_slug "$title")
-    filename="${slug}.md"
+    filename="${slug}.yaml"
     filepath="$MUSIC_DIR/$filename"
     
     # Check if file exists
@@ -263,12 +271,13 @@ add_release() {
         cover=$(handle_cover "$cover_input" "$slug")
     fi
     
-    # Create the file
+    # Create YAML file
     {
-        echo "---"
         echo "title: \"$title\""
         echo "date: $date"
         echo "release_type: \"$release_type\""
+        echo "content: |"
+        echo "$content" | sed 's/^/  /'
         
         if [[ -n "$artists_input" ]]; then
             format_artists "$artists_input"
@@ -276,45 +285,25 @@ add_release() {
         
         echo "label: \"$label\""
         
-        if [[ -n "$label_url" ]]; then
-            echo "label_url: \"$label_url\""
-        fi
-        
-        if [[ -n "$catalog_number" ]]; then
-            echo "catalog_number: \"$catalog_number\""
-        fi
-        
-        if [[ -n "$format" ]]; then
-            echo "format: \"$format\""
-        fi
-        
-        if [[ -n "$country" ]]; then
-            echo "country: \"$country\""
-        fi
-        
-        if [[ -n "$cover" ]]; then
-            echo "cover: \"$cover\""
-        fi
-        
-        if [[ -n "$bandcamp_album" ]]; then
-            echo "bandcamp_album: \"$bandcamp_album\""
-        fi
-        
-        if [[ -n "$bandcamp_url" ]]; then
-            echo "bandcamp_url: \"$bandcamp_url\""
-        fi
-        
-        if [[ -n "$discogs_url" ]]; then
-            echo "discogs_url: \"$discogs_url\""
-        fi
+        [[ -n "$label_url" ]] && echo "label_url: \"$label_url\""
+        [[ -n "$catalog_number" ]] && echo "catalog_number: \"$catalog_number\""
+        [[ -n "$format" ]] && echo "format: \"$format\""
+        [[ -n "$country" ]] && echo "country: \"$country\""
+        [[ -n "$cover" ]] && echo "cover: \"$cover\""
+        [[ -n "$bandcamp_album" ]] && echo "bandcamp_album: \"$bandcamp_album\""
+        [[ -n "$bandcamp_url" ]] && echo "bandcamp_url: \"$bandcamp_url\""
+        [[ -n "$discogs_url" ]] && echo "discogs_url: \"$discogs_url\""
         
         echo "draft: false"
-        echo "---"
-        echo ""
-        echo "$description"
     } > "$filepath"
     
-    print_success "Created release: $filename"
+    print_success "Created YAML: $filename"
+    
+    # Generate markdown from YAML
+    print_warning "Generating markdown..."
+    "$SCRIPT_DIR/generate-markdown.sh" music
+    
+    print_success "Release added successfully"
     show_menu
 }
 
@@ -332,14 +321,14 @@ edit_release() {
     echo ""
     local -a files=()
     local count=1
-    for file in "$MUSIC_DIR"/*.md; do
+    for file in "$MUSIC_DIR"/*.yaml; do
         if [[ -f "$file" ]]; then
             filename=$(basename "$file")
             if [[ "$filename" == "_index.md" ]]; then
                 continue
             fi
             files+=("$file")
-            title=$(grep "^title:" "$file" | sed 's/title: "\(.*\)"/\1/')
+            title=$(yq eval '.title' "$file")
             echo -e "${GREEN}$count)${NC} $filename - $title"
             ((count++))
         fi
@@ -362,17 +351,17 @@ edit_release() {
     selected_file="${files[$((selection-1))]}"
     print_success "Editing: $(basename "$selected_file")"
     
-    # Extract current values
-    local current_title=$(grep "^title:" "$selected_file" | sed 's/title: "\(.*\)"/\1/')
-    local current_date=$(grep "^date:" "$selected_file" | sed 's/date: \(.*\)/\1/')
-    local current_bandcamp_album=$(grep "^bandcamp_album:" "$selected_file" | sed 's/bandcamp_album: "\(.*\)"/\1/')
-    local current_bandcamp_url=$(grep "^bandcamp_url:" "$selected_file" | sed 's/bandcamp_url: "\(.*\)"/\1/')
-    local current_discogs_url=$(grep "^discogs_url:" "$selected_file" | sed 's/discogs_url: "\(.*\)"/\1/')
-    local current_label=$(grep "^label:" "$selected_file" | sed 's/label: "\(.*\)"/\1/')
-    local current_label_url=$(grep "^label_url:" "$selected_file" | sed 's/label_url: "\(.*\)"/\1/')
-    local current_catalog_number=$(grep "^catalog_number:" "$selected_file" | sed 's/catalog_number: "\(.*\)"/\1/')
-    local current_format=$(grep "^format:" "$selected_file" | sed 's/format: "\(.*\)"/\1/')
-    local current_country=$(grep "^country:" "$selected_file" | sed 's/country: "\(.*\)"/\1/')
+    # Extract current values using yq
+    local current_title=$(yq eval '.title' "$selected_file")
+    local current_date=$(yq eval '.date' "$selected_file")
+    local current_bandcamp_album=$(yq eval '.bandcamp_album // ""' "$selected_file")
+    local current_bandcamp_url=$(yq eval '.bandcamp_url // ""' "$selected_file")
+    local current_discogs_url=$(yq eval '.discogs_url // ""' "$selected_file")
+    local current_label=$(yq eval '.label // ""' "$selected_file")
+    local current_label_url=$(yq eval '.label_url // ""' "$selected_file")
+    local current_catalog_number=$(yq eval '.catalog_number // ""' "$selected_file")
+    local current_format=$(yq eval '.format // ""' "$selected_file")
+    local current_country=$(yq eval '.country // ""' "$selected_file")
     
     echo ""
     echo "Leave blank to keep current value, or type new value:"
@@ -419,17 +408,66 @@ edit_release() {
     read -rp "Country [$current_country]: " new_country || true
     new_country="${new_country:-$current_country}"
     
-    # Update file
-    sed -i '' "s|^title:.*|title: \"$new_title\"|" "$selected_file"
-    sed -i '' "s|^date:.*|date: $new_date|" "$selected_file"
-    sed -i '' "s|^bandcamp_album:.*|bandcamp_album: \"$new_bandcamp_album\"|" "$selected_file"
-    sed -i '' "s|^bandcamp_url:.*|bandcamp_url: \"$new_bandcamp_url\"|" "$selected_file"
-    sed -i '' "s|^discogs_url:.*|discogs_url: \"$new_discogs_url\"|" "$selected_file"
-    sed -i '' "s|^label:.*|label: \"$new_label\"|" "$selected_file"
-    sed -i '' "s|^label_url:.*|label_url: \"$new_label_url\"|" "$selected_file"
-    sed -i '' "s|^catalog_number:.*|catalog_number: \"$new_catalog_number\"|" "$selected_file"
-    sed -i '' "s|^format:.*|format: \"$new_format\"|" "$selected_file"
-    sed -i '' "s|^country:.*|country: \"$new_country\"|" "$selected_file"
+    # Edit content
+    local current_content=$(yq eval '.content // ""' "$selected_file")
+    echo ""
+    echo "Current content: ${current_content:0:60}..."
+    read -rp "Edit content? (y/N): " edit_desc || edit_desc="n"
+    new_content="$current_content"
+    if [[ "$edit_desc" =~ ^[Yy]$ ]]; then
+        local temp_desc=$(mktemp)
+        echo "$current_content" > "$temp_desc"
+        ${EDITOR:-vim} "$temp_desc"
+        new_content=$(cat "$temp_desc")
+        rm "$temp_desc"
+    fi
+    
+    # Update YAML file using yq (with proper escaping)
+    yq eval -i ".title = \"$new_title\"" "$selected_file"
+    yq eval -i ".date = \"$new_date\"" "$selected_file"
+    
+    if [[ -n "$new_bandcamp_album" ]]; then
+        yq eval -i ".bandcamp_album = \"$new_bandcamp_album\"" "$selected_file"
+    fi
+    
+    if [[ -n "$new_bandcamp_url" ]]; then
+        yq eval -i ".bandcamp_url = \"$new_bandcamp_url\"" "$selected_file"
+    fi
+    
+    if [[ -n "$new_discogs_url" ]]; then
+        yq eval -i ".discogs_url = \"$new_discogs_url\"" "$selected_file"
+    fi
+    
+    if [[ -n "$new_label" ]]; then
+        yq eval -i ".label = \"$new_label\"" "$selected_file"
+    fi
+    
+    if [[ -n "$new_label_url" ]]; then
+        yq eval -i ".label_url = \"$new_label_url\"" "$selected_file"
+    fi
+    
+    if [[ -n "$new_catalog_number" ]]; then
+        yq eval -i ".catalog_number = \"$new_catalog_number\"" "$selected_file"
+    fi
+    
+    if [[ -n "$new_format" ]]; then
+        yq eval -i ".format = \"$new_format\"" "$selected_file"
+    fi
+    
+    if [[ -n "$new_country" ]]; then
+        yq eval -i ".country = \"$new_country\"" "$selected_file"
+    fi
+    
+    if [[ -n "$new_content" ]]; then
+        yq eval -i ".content = \"$new_content\"" "$selected_file"
+    fi
+    
+    print_success "Updated YAML file"
+    
+    # Generate markdown from YAML
+    print_warning "Generating markdown..."
+    "$SCRIPT_DIR/generate-markdown.sh" music
+
     
     print_success "Updated release"
     show_menu
@@ -449,14 +487,14 @@ remove_release() {
     echo ""
     local -a files=()
     local count=1
-    for file in "$MUSIC_DIR"/*.md; do
+    for file in "$MUSIC_DIR"/*.yaml; do
         if [[ -f "$file" ]]; then
             filename=$(basename "$file")
             if [[ "$filename" == "_index.md" ]]; then
                 continue
             fi
             files+=("$file")
-            title=$(grep "^title:" "$file" | sed 's/title: "\(.*\)"/\1/')
+            title=$(yq eval '.title' "$file")
             echo -e "${GREEN}$count)${NC} $filename - $title"
             ((count++))
         fi
@@ -484,7 +522,13 @@ remove_release() {
     
     if [[ "$confirm" =~ ^[Yy]$ ]]; then
         rm "$selected_file"
-        print_success "Deleted: $filename"
+        print_success "Deleted YAML: $filename"
+        
+        # Regenerate markdown
+        print_warning "Regenerating markdown..."
+        "$SCRIPT_DIR/generate-markdown.sh" music
+        
+        print_success "Release removed successfully"
     else
         print_warning "Cancelled"
     fi
@@ -504,16 +548,16 @@ list_releases() {
     
     echo ""
     local count=1
-    for file in "$MUSIC_DIR"/*.md; do
+    for file in "$MUSIC_DIR"/*.yaml; do
         if [[ -f "$file" ]]; then
             filename=$(basename "$file")
             if [[ "$filename" == "_index.md" ]]; then
                 continue
             fi
             
-            title=$(grep "^title:" "$file" | sed 's/title: "\(.*\)"/\1/')
-            date=$(grep "^date:" "$file" | sed 's/date: \(.*\)/\1/')
-            label=$(grep "^label:" "$file" | sed 's/label: "\(.*\)"/\1/')
+            title=$(yq eval '.title' "$file")
+            date=$(yq eval '.date' "$file")
+            label=$(yq eval '.label // ""' "$file")
             
             echo -e "${GREEN}$count)${NC} $date - $title"
             echo "   Label: $label"

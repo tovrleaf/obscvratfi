@@ -5,11 +5,18 @@ set -euo pipefail
 
 LIVE_DIR="website/content/live"
 MEDIA_DIR="website/assets/media"
-OTHERS_FILE="website/content/media/others.md"
+OTHERS_FILE="website/data/media/others.yaml"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 cd "$PROJECT_ROOT"
+
+# Check if yq is installed
+if ! command -v yq &> /dev/null; then
+    echo "Error: yq is not installed"
+    echo "Install with: brew install yq"
+    exit 1
+fi
 
 # Colors
 RED='\033[0;31m'
@@ -38,7 +45,7 @@ print_warning() {
 # List live performances for selection
 list_live_for_selection() {
     local counter=1
-    for file in "$LIVE_DIR"/*.md; do
+    for file in "$LIVE_DIR"/*.yaml; do
         if [[ -f "$file" ]] && [[ "$(basename "$file")" != "_index.md" ]]; then
             local gig_title=$(grep "^title:" "$file" | sed 's/title: "\(.*\)"/\1/')
             local gig_date=$(grep "^date:" "$file" | sed 's/date: //')
@@ -125,7 +132,7 @@ add_pictures() {
     echo ""
     local -a files=()
     local count=1
-    for file in "$LIVE_DIR"/*.md; do
+    for file in "$LIVE_DIR"/*.yaml; do
         if [[ -f "$file" ]]; then
             filename=$(basename "$file")
             if [[ "$filename" == "_index.md" ]]; then
@@ -230,6 +237,10 @@ add_pictures() {
         awk -v media="$media_section" '/^draft:/ {printf "%s\n", media} {print}' "$selected_file" > "${selected_file}.tmp"
         mv "${selected_file}.tmp" "$selected_file"
         print_success "Added ${#pictures[@]} pictures to live performance"
+    
+    # Generate markdown from YAML
+    print_warning "Generating markdown..."
+    "$SCRIPT_DIR/generate-markdown.sh" live
     fi
     
     show_menu
@@ -249,7 +260,7 @@ add_video() {
     echo ""
     local -a files=()
     local count=1
-    for file in "$LIVE_DIR"/*.md; do
+    for file in "$LIVE_DIR"/*.yaml; do
         if [[ -f "$file" ]]; then
             filename=$(basename "$file")
             if [[ "$filename" == "_index.md" ]]; then
@@ -359,6 +370,10 @@ add_video() {
             awk -v videos="$video_section" '/^draft:/ {printf "%s\n", videos} {print}' "$selected_file" > "${selected_file}.tmp"
             mv "${selected_file}.tmp" "$selected_file"
             print_success "Added video to live performance"
+    
+    # Generate markdown from YAML
+    print_warning "Generating markdown..."
+    "$SCRIPT_DIR/generate-markdown.sh" live
         fi
     else
         # Build media section with YouTube video
@@ -383,6 +398,10 @@ add_video() {
         awk -v media="$media_section" '/^draft:/ {printf "%s\n", media} {print}' "$selected_file" > "${selected_file}.tmp"
         mv "${selected_file}.tmp" "$selected_file"
         print_success "Added YouTube video to live performance"
+    
+    # Generate markdown from YAML
+    print_warning "Generating markdown..."
+    "$SCRIPT_DIR/generate-markdown.sh" live
     fi
     
     show_menu
@@ -406,7 +425,7 @@ add_standalone_picture() {
     # Generate filename
     slug=$(echo "$title" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | tr -cd '[:alnum:]-')
     date=$(date +%Y-%m-%d)
-    filename="${date}-${slug}.md"
+    filename="${date}-${slug}.yaml"
     content_file="website/content/media/pictures/$filename"
     
     mkdir -p "$(dirname "$content_file")"
@@ -494,7 +513,7 @@ add_standalone_video() {
     # Generate filename
     slug=$(echo "$title" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | tr -cd '[:alnum:]-')
     date=$(date +%Y-%m-%d)
-    filename="${date}-${slug}.md"
+    filename="${date}-${slug}.yaml"
     content_file="website/content/media/videos/$filename"
     
     mkdir -p "$(dirname "$content_file")"
@@ -567,7 +586,7 @@ EOF
     
     gig_slug=""
     if [[ -n "$live_choice" ]] && [[ "$live_choice" =~ ^[0-9]+$ ]]; then
-        gig_files=("$LIVE_DIR"/*.md)
+        gig_files=("$LIVE_DIR"/*.yaml)
         gig_files=("${gig_files[@]##*/}")
         gig_files=("${gig_files[@]%.md}")
         if [[ "$live_choice" -gt 0 ]] && [[ "$live_choice" -le "${#gig_files[@]}" ]]; then
@@ -609,6 +628,10 @@ EOF
     fi
     
     print_success "Added to Others"
+    
+    # Generate markdown from YAML
+    print_warning "Generating markdown..."
+    "$SCRIPT_DIR/generate-markdown.sh" media
     show_menu
 }
 
@@ -717,7 +740,7 @@ edit_others() {
     new_gig="$current_gig"
     if [[ -n "$live_choice" ]]; then
         if [[ "$live_choice" =~ ^[0-9]+$ ]]; then
-            gig_files=("$LIVE_DIR"/*.md)
+            gig_files=("$LIVE_DIR"/*.yaml)
             gig_files=("${gig_files[@]##*/}")
             gig_files=("${gig_files[@]%.md}")
             if [[ "$live_choice" -gt 0 ]] && [[ "$live_choice" -le "${#gig_files[@]}" ]]; then
@@ -761,7 +784,7 @@ list_media() {
     
     echo ""
     echo "Gig Media:"
-    for file in "$LIVE_DIR"/*.md; do
+    for file in "$LIVE_DIR"/*.yaml; do
         if [[ -f "$file" ]] && [[ "$(basename "$file")" != "_index.md" ]]; then
             if grep -q "^media:" "$file"; then
                 title=$(grep "^title:" "$file" | sed 's/title: "\(.*\)"/\1/')
@@ -810,7 +833,7 @@ edit_video() {
     fi
     
     declare -a gigs_with_videos=()
-    for file in "$LIVE_DIR"/*.md; do
+    for file in "$LIVE_DIR"/*.yaml; do
         if [[ -f "$file" ]] && grep -q "youtube_id:" "$file"; then
             gigs_with_videos+=("$file")
         fi

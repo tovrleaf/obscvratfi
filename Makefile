@@ -2,6 +2,7 @@
 
 # Include all modular makefiles
 include mk/adr.mk
+include mk/generate.mk
 include mk/hooks.mk
 include mk/live.mk
 include mk/media.mk
@@ -20,6 +21,7 @@ help: ## Show this help
 	@echo "  make live                      - Manage live performances"
 	@echo "  make media                     - Manage media (pictures, videos)"
 	@echo "  make music                     - Manage music/albums"
+	@echo "  make generate                  - Generate markdown from YAML data"
 	@echo ""
 	@echo "Website:"
 	@echo "  make serve                     - Run dev server"
