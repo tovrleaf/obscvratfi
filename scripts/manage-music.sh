@@ -419,17 +419,6 @@ edit_release() {
     read -rp "Country [$current_country]: " new_country || true
     new_country="${new_country:-$current_country}"
     
-    # Edit description in editor
-    echo ""
-    read -rp "Edit description in editor? (y/N): " edit_desc || edit_desc="n"
-    if [[ "$edit_desc" =~ ^[Yy]$ ]]; then
-        local temp_desc=$(mktemp)
-        awk '/^---$/,/^---$/{if (!/^---$/) next} /^---$/&&++n==2{flag=1;next} flag' "$selected_file" > "$temp_desc"
-        ${EDITOR:-vim} "$temp_desc"
-        new_description=$(cat "$temp_desc")
-        rm "$temp_desc"
-    fi
-    
     # Update file
     sed -i '' "s|^title:.*|title: \"$new_title\"|" "$selected_file"
     sed -i '' "s|^date:.*|date: $new_date|" "$selected_file"
@@ -441,12 +430,6 @@ edit_release() {
     sed -i '' "s|^catalog_number:.*|catalog_number: \"$new_catalog_number\"|" "$selected_file"
     sed -i '' "s|^format:.*|format: \"$new_format\"|" "$selected_file"
     sed -i '' "s|^country:.*|country: \"$new_country\"|" "$selected_file"
-    
-    # Update description if edited
-    if [[ -n "$new_description" ]]; then
-        awk -v desc="$new_description" '/^---$/&&++n==2{print; print ""; print desc; flag=1; next} !flag' "$selected_file" > "$selected_file.tmp"
-        mv "$selected_file.tmp" "$selected_file"
-    fi
     
     print_success "Updated release"
     show_menu

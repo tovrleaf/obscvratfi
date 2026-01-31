@@ -15,14 +15,22 @@ format: "Cassette, Recycled Tape, C90"
 country: "Finland"
 ---
 
-**Fractured Frequencies** explores the sonic potential of error, malfunction, and digital corruption. Through heavy processing and feedback chains, this work celebrates the unintended beauty of broken systems and audio artifacts.
+Fractured Frequencies
+====================
 
-### Tracklist
+**Fractured Frequencies** explores the sonic potential of error, malfunction,
+and digital corruption. Through heavy processing and feedback chains, this work
+celebrates the unintended beauty of broken systems and audio artifacts.
+
+Tracklist
+---------
 
 1. Digital Decay (8:42)
 2. Circuit Collapse (6:15)
 3. System Failure (10:23)
 
-### Release Information
+Release Information
+-------------------
 
-Limited edition digital release with extended soundscape versions included as bonus tracks.
+Limited edition digital release with extended soundscape versions included as
+bonus tracks.
