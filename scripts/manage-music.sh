@@ -54,6 +54,14 @@ validate_bandcamp_url() {
     return 0
 }
 
+# Extract Bandcamp album ID from URL
+extract_bandcamp_id() {
+    local url="$1"
+    local html=$(curl -sL "$url")
+    local id=$(echo "$html" | grep -o 'album=[0-9]*' | head -1 | cut -d= -f2)
+    echo "$id"
+}
+
 # Validate Discogs URL
 validate_discogs_url() {
     if [[ ! $1 =~ ^https://www\.discogs\.com/release/.* ]]; then
@@ -183,30 +191,28 @@ add_release() {
     esac
     
     # Artists (comma-separated)
-    read -rp "Artists (comma-separated): " artists_input || true
+    read -rp "Artists (comma-separated) [Obscvrat]: " artists_input || true
+    artists_input="${artists_input:-Obscvrat}"
     
     # Label (required)
-    read -rp "Label: " label || true
-    if [[ -z "$label" ]]; then
-        print_error "Label is required"
-        show_menu
-        return
-    fi
+    read -rp "Label [Self-Released]: " label || true
+    label="${label:-Self-Released}"
     
     # Label URL (optional)
     read -rp "Label URL (optional): " label_url || true
+    
+    # Catalog number (optional)
+    read -rp "Catalog number (optional): " catalog_number || true
     
     # Format
     read -rp "Format (e.g., 'Digital Album, 3 tracks'): " format || true
     
     # Country
-    read -rp "Country: " country || true
+    read -rp "Country [Finland]: " country || true
+    country="${country:-Finland}"
     
     # Cover image
     read -rp "Cover image (URL or local path, optional): " cover_input || true
-    
-    # Bandcamp album ID
-    read -rp "Bandcamp album ID: " bandcamp_album || true
     
     # Bandcamp URL
     read -rp "Bandcamp URL: " bandcamp_url || true
@@ -214,6 +220,18 @@ add_release() {
         print_error "Invalid Bandcamp URL format"
         show_menu
         return
+    fi
+    
+    # Auto-extract Bandcamp album ID from URL
+    bandcamp_album=""
+    if [[ -n "$bandcamp_url" ]]; then
+        print_warning "Extracting Bandcamp album ID from URL..."
+        bandcamp_album=$(extract_bandcamp_id "$bandcamp_url")
+        if [[ -n "$bandcamp_album" ]]; then
+            print_success "Found album ID: $bandcamp_album"
+        else
+            print_error "Could not extract album ID from URL"
+        fi
     fi
     
     # Discogs URL
@@ -260,6 +278,10 @@ add_release() {
         
         if [[ -n "$label_url" ]]; then
             echo "label_url: \"$label_url\""
+        fi
+        
+        if [[ -n "$catalog_number" ]]; then
+            echo "catalog_number: \"$catalog_number\""
         fi
         
         if [[ -n "$format" ]]; then
@@ -338,10 +360,95 @@ edit_release() {
     fi
     
     selected_file="${files[$((selection-1))]}"
+    print_success "Editing: $(basename "$selected_file")"
     
-    print_success "Opening $selected_file in editor"
-    ${EDITOR:-vim} "$selected_file"
+    # Extract current values
+    local current_title=$(grep "^title:" "$selected_file" | sed 's/title: "\(.*\)"/\1/')
+    local current_date=$(grep "^date:" "$selected_file" | sed 's/date: \(.*\)/\1/')
+    local current_bandcamp_album=$(grep "^bandcamp_album:" "$selected_file" | sed 's/bandcamp_album: "\(.*\)"/\1/')
+    local current_bandcamp_url=$(grep "^bandcamp_url:" "$selected_file" | sed 's/bandcamp_url: "\(.*\)"/\1/')
+    local current_discogs_url=$(grep "^discogs_url:" "$selected_file" | sed 's/discogs_url: "\(.*\)"/\1/')
+    local current_label=$(grep "^label:" "$selected_file" | sed 's/label: "\(.*\)"/\1/')
+    local current_label_url=$(grep "^label_url:" "$selected_file" | sed 's/label_url: "\(.*\)"/\1/')
+    local current_catalog_number=$(grep "^catalog_number:" "$selected_file" | sed 's/catalog_number: "\(.*\)"/\1/')
+    local current_format=$(grep "^format:" "$selected_file" | sed 's/format: "\(.*\)"/\1/')
+    local current_country=$(grep "^country:" "$selected_file" | sed 's/country: "\(.*\)"/\1/')
     
+    echo ""
+    echo "Leave blank to keep current value, or type new value:"
+    echo ""
+    
+    # Edit fields
+    read -rp "Title [$current_title]: " new_title || true
+    new_title="${new_title:-$current_title}"
+    
+    read -rp "Date [$current_date]: " new_date || true
+    new_date="${new_date:-$current_date}"
+    
+    read -rp "Bandcamp URL [$current_bandcamp_url]: " new_bandcamp_url || true
+    new_bandcamp_url="${new_bandcamp_url:-$current_bandcamp_url}"
+    
+    # Auto-extract Bandcamp album ID from URL if changed
+    new_bandcamp_album="$current_bandcamp_album"
+    if [[ "$new_bandcamp_url" != "$current_bandcamp_url" && -n "$new_bandcamp_url" ]]; then
+        print_warning "Extracting Bandcamp album ID from URL..."
+        new_bandcamp_album=$(extract_bandcamp_id "$new_bandcamp_url")
+        if [[ -n "$new_bandcamp_album" ]]; then
+            print_success "Found album ID: $new_bandcamp_album"
+        else
+            print_error "Could not extract album ID from URL"
+            new_bandcamp_album="$current_bandcamp_album"
+        fi
+    fi
+    
+    read -rp "Discogs URL [$current_discogs_url]: " new_discogs_url || true
+    new_discogs_url="${new_discogs_url:-$current_discogs_url}"
+    
+    read -rp "Label [$current_label]: " new_label || true
+    new_label="${new_label:-$current_label}"
+    
+    read -rp "Label URL [$current_label_url]: " new_label_url || true
+    new_label_url="${new_label_url:-$current_label_url}"
+    
+    read -rp "Catalog number [$current_catalog_number]: " new_catalog_number || true
+    new_catalog_number="${new_catalog_number:-$current_catalog_number}"
+    
+    read -rp "Format [$current_format]: " new_format || true
+    new_format="${new_format:-$current_format}"
+    
+    read -rp "Country [$current_country]: " new_country || true
+    new_country="${new_country:-$current_country}"
+    
+    # Edit description in editor
+    echo ""
+    read -rp "Edit description in editor? (y/N): " edit_desc || edit_desc="n"
+    if [[ "$edit_desc" =~ ^[Yy]$ ]]; then
+        local temp_desc=$(mktemp)
+        awk '/^---$/,/^---$/{if (!/^---$/) next} /^---$/&&++n==2{flag=1;next} flag' "$selected_file" > "$temp_desc"
+        ${EDITOR:-vim} "$temp_desc"
+        new_description=$(cat "$temp_desc")
+        rm "$temp_desc"
+    fi
+    
+    # Update file
+    sed -i '' "s|^title:.*|title: \"$new_title\"|" "$selected_file"
+    sed -i '' "s|^date:.*|date: $new_date|" "$selected_file"
+    sed -i '' "s|^bandcamp_album:.*|bandcamp_album: \"$new_bandcamp_album\"|" "$selected_file"
+    sed -i '' "s|^bandcamp_url:.*|bandcamp_url: \"$new_bandcamp_url\"|" "$selected_file"
+    sed -i '' "s|^discogs_url:.*|discogs_url: \"$new_discogs_url\"|" "$selected_file"
+    sed -i '' "s|^label:.*|label: \"$new_label\"|" "$selected_file"
+    sed -i '' "s|^label_url:.*|label_url: \"$new_label_url\"|" "$selected_file"
+    sed -i '' "s|^catalog_number:.*|catalog_number: \"$new_catalog_number\"|" "$selected_file"
+    sed -i '' "s|^format:.*|format: \"$new_format\"|" "$selected_file"
+    sed -i '' "s|^country:.*|country: \"$new_country\"|" "$selected_file"
+    
+    # Update description if edited
+    if [[ -n "$new_description" ]]; then
+        awk -v desc="$new_description" '/^---$/&&++n==2{print; print ""; print desc; flag=1; next} !flag' "$selected_file" > "$selected_file.tmp"
+        mv "$selected_file.tmp" "$selected_file"
+    fi
+    
+    print_success "Updated release"
     show_menu
 }
 
