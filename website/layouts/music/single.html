@@ -43,7 +43,7 @@
             
             {{ if .Content }}
             <div class="album-content">
-                {{ .Content }}
+                {{ .Content | safeHTML }}
             </div>
             {{ end }}
             
@@ -222,6 +222,21 @@
     font-size: 0.9rem;
     line-height: 1.8;
     color: var(--primary-color);
+}
+
+.album-content p {
+    margin-bottom: 1rem;
+}
+
+.album-content a {
+    color: var(--accent-color);
+    text-decoration: none;
+    border-bottom: 1px solid var(--accent-color);
+    transition: opacity 0.3s ease;
+}
+
+.album-content a:hover {
+    opacity: 0.7;
 }
 
 .back-link {

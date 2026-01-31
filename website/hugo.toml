@@ -76,7 +76,7 @@ style = "github"
 noClasses = false
 
 [markup.goldmark.renderer]
-unsafe = false
+unsafe = true
 
 # Menu configuration (for navigation)
 [menu]
