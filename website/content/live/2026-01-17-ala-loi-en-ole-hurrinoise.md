@@ -27,5 +27,4 @@ media:
 draft: false
 ---
 
-En kväll av hyllning för finlandssvensk noise i all sitt mångfald.
-
+<p>En kväll av hyllning för finlandssvensk noise i all sitt mångfald.</p>

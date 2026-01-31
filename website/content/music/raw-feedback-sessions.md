@@ -12,27 +12,27 @@ country: "Finland"
 draft: false
 ---
 
-**Raw Feedback Sessions** documents a series of live studio experiments exploring the boundaries between intentional composition and accidental discovery. These unedited recordings capture the raw sonic potential of feedback loops, analog synthesis, and real-time manipulation.
+<p>**Raw Feedback Sessions** documents a series of live studio experiments exploring the boundaries between intentional composition and accidental discovery. These unedited recordings capture the raw sonic potential of feedback loops, analog synthesis, and real-time manipulation.</p>
 
-## Recording Sessions
+<p>## Recording Sessions</p>
 
-This collection spans sessions from January to March 2023, capturing the creative process without extensive post-production. Each track represents a focused exploration of specific sonic territories.
+<p>This collection spans sessions from January to March 2023, capturing the creative process without extensive post-production. Each track represents a focused exploration of specific sonic territories.</p>
 
-## Tracks
+<p>## Tracks</p>
 
-1. **Oscillation Study #1** - Pure sine wave feedback at various frequencies
-2. **Resonance Decay** - Capturing the harmonic characteristics of different materials
-3. **Circuit Bending Sessions** - Intentional electronic circuit manipulation
-4. **Environmental Feedback** - Processing sounds from urban environments
-5. **Analog Cascade** - Series of synthesizers feeding into each other
+<p>1. **Oscillation Study #1** - Pure sine wave feedback at various frequencies<br>
+2. **Resonance Decay** - Capturing the harmonic characteristics of different materials<br>
+3. **Circuit Bending Sessions** - Intentional electronic circuit manipulation<br>
+4. **Environmental Feedback** - Processing sounds from urban environments<br>
+5. **Analog Cascade** - Series of synthesizers feeding into each other</p>
 
-## Technical Notes
+<p>## Technical Notes</p>
 
-- Recorded directly to stereo tape with minimal monitoring
-- No digital editing; tracks are presented as recorded
-- Analog warmth and tape compression intact
-- Raw, unpolished aesthetic celebrating imperfection
+<p>- Recorded directly to stereo tape with minimal monitoring<br>
+- No digital editing; tracks are presented as recorded<br>
+- Analog warmth and tape compression intact<br>
+- Raw, unpolished aesthetic celebrating imperfection</p>
 
-## Listen & Download
+<p>## Listen & Download</p>
 
-Available now on Bandcamp with high-quality audio formats (FLAC, WAV, MP3).
+<p>Available now on Bandcamp with high-quality audio formats (FLAC, WAV, MP3).</p>

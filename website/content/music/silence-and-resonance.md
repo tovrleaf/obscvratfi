@@ -9,18 +9,19 @@ artists: ["Obscvrat"]
 label: "Noise Records"
 format: "Digital Album, 12 tracks"
 country: "Finland"
+draft: false
 ---
 
-**Silence & Resonance** documents a series of performances exploring the boundaries between active sound and receptive silence. Recorded across multiple venues and environments, this collection examines how acoustic properties shape our perception of emptiness and presence.
+<p>**Silence & Resonance** documents a series of performances exploring the boundaries between active sound and receptive silence. Recorded across multiple venues and environments, this collection examines how acoustic properties shape our perception of emptiness and presence.</p>
 
-### Track Information
+<p>### Track Information</p>
 
-This album contains 12 pieces exploring:
-- The texture of architectural silence
-- Processing and transformation of minimal field recordings
-- The resonant properties of different spaces
-- Layered electronic and acoustic sources
+<p>This album contains 12 pieces exploring:<br>
+- The texture of architectural silence<br>
+- Processing and transformation of minimal field recordings<br>
+- The resonant properties of different spaces<br>
+- Layered electronic and acoustic sources</p>
 
-### Recording Notes
+<p>### Recording Notes</p>
 
-Recorded between March and May 2024 at various locations throughout Helsinki, with post-production processing applied to emphasize spatial qualities and subtle timbral variations.
+<p>Recorded between March and May 2024 at various locations throughout Helsinki, with post-production processing applied to emphasize spatial qualities and subtle timbral variations.</p>
