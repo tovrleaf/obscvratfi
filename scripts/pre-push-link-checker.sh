@@ -21,7 +21,8 @@ CRITICAL_LINKS=(
   "/"
   "/about/"
   "/live/"
-  "/albums/"
+  "/music/"
+  "/media/"
   "/feed.xml"
   "/sitemap.xml"
 )

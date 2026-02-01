@@ -1,22 +1,39 @@
 # Architecture Decision Records
 
-This directory contains Architecture Decision Records (ADRs) for the Obscvrat band website project.
+This directory contains Architecture Decision Records (ADRs) for the
+Obscvrat band website project.
 
 ## What are ADRs?
 
-ADRs document significant architectural and technical decisions made during the project's development. Each ADR describes the context, the decision made, alternatives considered, and consequences.
+ADRs document significant architectural and technical decisions made
+during the project's development. Each ADR describes the context, the
+decision made, alternatives considered, and consequences.
 
 ## ADR Index
 
-| ADR | Title | Status | Date |
-|-----|-------|--------|------|
-| [000](000-use-adr-for-architecture-decisions.md) | Use Architecture Decision Records | Accepted | 2025-12-27 |
-| [001](001-adr-template.md) | ADR Template Structure | Accepted | 2025-12-27 |
-| [002](002-decision-making-workflow.md) | Decision-Making Workflow | Accepted | 2025-12-27 |
-| [003](003-website-hosting-static-site-generation-seo-strategy.md) | Website Hosting, Static Site Generation & SEO Strategy | Accepted | 2025-12-27 |
-| [004](004-instagram-feed-integration-dynamic-content-strategy.md) | Instagram Feed Integration & Dynamic Content Strategy | Accepted | 2025-12-27 |
-| [005](005-local-pre-commit-hooks-for-development-validation.md) | Local Pre-Commit Hooks for Development Validation | Accepted | 2025-12-30 |
-| [006](006-repository-branch-protection-with-github-rulesets.md) | Repository Branch Protection with GitHub Rulesets | Accepted | 2025-12-30 |
+- **[000](000-use-adr-for-architecture-decisions.md)** - Use ADRs
+  (Accepted, 2025-12-27)
+- **[001](001-adr-template.md)** - ADR Template (Accepted, 2025-12-27)
+- **[002](002-decision-making-workflow.md)** - Decision Workflow
+  (Accepted, 2025-12-27)
+- **[003](003-website-hosting-static-site-generation-seo-strategy.md)**
+  \- Hosting & SEO (Accepted, 2025-12-27)
+- **[004](004-instagram-feed-integration-dynamic-content-strategy.md)**
+  \- Instagram Feed (Accepted, 2025-12-27)
+- **[005](005-local-pre-commit-hooks-for-development-validation.md)**
+  \- Pre-Commit Hooks (Accepted, 2025-12-30)
+- **[006](006-repository-branch-protection-with-github-rulesets.md)**
+  \- Branch Protection (Accepted, 2025-12-30)
+- **[007](007-homepage-design-system-dark-minimal-asymmetric.md)**
+  \- Design System (Accepted, 2025-01-09)
+- **[008](008-typo-font-custom-typography-for-body-text.md)** - Typo
+  Font (Accepted, 2025-01-10)
+- **[009](009-live-performance-media-management-pictures-videos-data-structure.md)**
+  \- Media Management (Proposed, 2026-01-24)
+- **[010](010-specialized-agent-architecture-for-development-workflow.md)**
+  \- Agent Architecture (Accepted, 2026-01-26)
+- **[011](011-yaml-data-files-for-content-management.md)** - YAML Data
+  Files (Accepted, 2026-01-31)
 
 ## Creating a New ADR
 
@@ -27,6 +44,7 @@ make adr-new TITLE="Your Decision Title"
 ```
 
 This will:
+
 - Create a new ADR file with the next sequential number
 - Use the standard template
 - Fill in the date automatically

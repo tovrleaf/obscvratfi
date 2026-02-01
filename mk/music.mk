@@ -1,5 +1,4 @@
 .PHONY: music
 
-music: ## Manage music/albums (placeholder for future)
-	@echo "Music/album management not yet implemented"
-	@echo "This will manage content in website/content/albums/"
+music: ## Manage music releases
+	@./scripts/manage-music.sh

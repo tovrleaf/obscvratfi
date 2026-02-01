@@ -3,11 +3,19 @@
 
 set -uo pipefail
 
-LIVE_DIR="website/content/live"
+LIVE_DIR="website/data/live"
+CONTENT_DIR="website/content/live"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 cd "$PROJECT_ROOT"
+
+# Check if yq is installed
+if ! command -v yq &> /dev/null; then
+    echo "Error: yq is not installed"
+    echo "Install with: brew install yq"
+    exit 1
+fi
 
 # Colors
 RED='\033[0;31m'
@@ -174,7 +182,7 @@ create_live() {
     
     # Generate filename
     slug=$(echo "$slug_base" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | tr -cd '[:alnum:]-')
-    filename="${date}-${slug}.md"
+    filename="${date}-${slug}.yaml"
     filepath="$LIVE_DIR/$filename"
     
     # Check if file exists
@@ -226,6 +234,10 @@ create_live() {
     } > "$filepath"
     
     print_success "Created live performance: $filename"
+    
+    # Generate markdown from YAML
+    print_warning "Generating markdown..."
+    "$SCRIPT_DIR/generate-markdown.sh" live
     read -rp "Open in editor? (y/N): " open_editor || open_editor="n"
     if [[ "$open_editor" =~ ^[Yy]$ ]]; then
         ${EDITOR:-vim} "$filepath"
@@ -246,7 +258,7 @@ list_live() {
     
     echo ""
     local count=1
-    for file in "$LIVE_DIR"/*.md; do
+    for file in "$LIVE_DIR"/*.yaml; do
         if [[ -f "$file" ]]; then
             filename=$(basename "$file")
             # Skip _index.md files
@@ -255,7 +267,7 @@ list_live() {
             fi
             # Extract date and title from filename
             date_part=$(echo "$filename" | cut -d'-' -f1-3)
-            title=$(grep "^title:" "$file" | sed 's/title: "\(.*\)"/\1/')
+            title=$(yq eval '.title' "$file")
             location=$(grep "^location:" "$file" | sed 's/location: "\(.*\)"/\1/')
             
             echo -e "${GREEN}$count)${NC} $date_part - $title ($location)"
@@ -283,7 +295,7 @@ edit_live() {
     echo ""
     local -a files=()
     local count=1
-    for file in "$LIVE_DIR"/*.md; do
+    for file in "$LIVE_DIR"/*.yaml; do
         if [[ -f "$file" ]]; then
             filename=$(basename "$file")
             # Skip _index.md files
@@ -291,7 +303,7 @@ edit_live() {
                 continue
             fi
             files+=("$file")
-            title=$(grep "^title:" "$file" | sed 's/title: "\(.*\)"/\1/')
+            title=$(yq eval '.title' "$file")
             echo -e "${GREEN}$count)${NC} $filename - $title"
             ((count++))
         fi
@@ -313,13 +325,13 @@ edit_live() {
     
     selected_file="${files[$((selection-1))]}"
     
-    # Parse existing values
-    local old_title=$(grep "^title:" "$selected_file" | sed 's/title: "\(.*\)"/\1/')
-    local old_date=$(grep "^date:" "$selected_file" | sed 's/date: \(.*\)/\1/')
-    local old_venue=$(grep "^venue:" "$selected_file" | sed 's/venue: "\(.*\)"/\1/')
-    local old_location=$(grep "^location:" "$selected_file" | sed 's/location: "\(.*\)"/\1/')
-    local old_description=$(grep "^description:" "$selected_file" | sed 's/description: "\(.*\)"/\1/')
-    local old_poster=$(grep "^poster:" "$selected_file" | sed 's/poster: "\(.*\)"/\1/')
+    # Parse existing values using yq
+    local old_title=$(yq eval '.title' "$selected_file")
+    local old_date=$(yq eval '.date' "$selected_file")
+    local old_venue=$(yq eval '.venue' "$selected_file")
+    local old_location=$(yq eval '.location' "$selected_file")
+    local old_description=$(yq eval '.description // ""' "$selected_file")
+    local old_poster=$(yq eval '.poster // ""' "$selected_file")
     
     # Interactive edit with prefilled values
     echo ""
@@ -461,7 +473,7 @@ edit_live() {
     
     # Generate filename
     slug=$(echo "$slug_base" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | tr -cd '[:alnum:]-')
-    filename="${date}-${slug}.md"
+    filename="${date}-${slug}.yaml"
     filepath="$LIVE_DIR/$filename"
     
     # Build updated frontmatter
@@ -506,8 +518,16 @@ edit_live() {
     if [[ "$selected_file" != "$filepath" ]]; then
         rm "$selected_file"
         print_success "Updated and renamed: $(basename "$filepath")"
+    
+    # Generate markdown from YAML
+    print_warning "Generating markdown..."
+    "$SCRIPT_DIR/generate-markdown.sh" live
     else
         print_success "Updated: $(basename "$filepath")"
+    
+    # Generate markdown from YAML
+    print_warning "Generating markdown..."
+    "$SCRIPT_DIR/generate-markdown.sh" live
     fi
     
     show_menu
@@ -527,7 +547,7 @@ delete_live() {
     echo ""
     local -a files=()
     local count=1
-    for file in "$LIVE_DIR"/*.md; do
+    for file in "$LIVE_DIR"/*.yaml; do
         if [[ -f "$file" ]]; then
             filename=$(basename "$file")
             # Skip _index.md files
@@ -536,7 +556,7 @@ delete_live() {
             fi
             files+=("$file")
             filename=$(basename "$file")
-            title=$(grep "^title:" "$file" | sed 's/title: "\(.*\)"/\1/')
+            title=$(yq eval '.title' "$file")
             echo -e "${GREEN}$count)${NC} $filename - $title"
             ((count++))
         fi
@@ -565,6 +585,10 @@ delete_live() {
     if [[ "$confirm" =~ ^[Yy]$ ]]; then
         rm "$selected_file"
         print_success "Deleted: $filename"
+    
+    # Generate markdown from YAML
+    print_warning "Generating markdown..."
+    "$SCRIPT_DIR/generate-markdown.sh" live
     else
         print_warning "Cancelled"
     fi

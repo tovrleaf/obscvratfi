@@ -3,24 +3,13 @@
   "description": "Orchestrates multi-agent workflows using delegate tool for automated development process",
   "prompt": null,
   "tools": [
-    "read",
-    "use_subagents",
-    "shell",
+    "use_subagent",
     "introspect"
   ],
-  "allowedTools": ["read", "use_subagents"],
+  "allowedTools": ["read", "shell"],
   "resources": [
     "file://.kiro/instructions/workflow-full.md",
     "file://AGENTS.md",
     "file://docs/adr/010-specialized-agent-architecture-for-development-workflow.md"
-  ],
-  "toolsSettings": {
-    "read": {
-      "allowedPaths": ["./**"]
-    },
-    "shell": {
-      "autoAllowReadonly": true,
-      "allowedCommands": ["git status", "git log.*", "git diff.*"]
-    }
-  }
+  ]
 }
