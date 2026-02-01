@@ -362,6 +362,7 @@ edit_release() {
     local current_catalog_number=$(yq eval '.catalog_number // ""' "$selected_file")
     local current_format=$(yq eval '.format // ""' "$selected_file")
     local current_country=$(yq eval '.country // ""' "$selected_file")
+    local current_artists=$(yq eval '.artists | join(", ")' "$selected_file")
     
     echo ""
     echo "Leave blank to keep current value, or type new value:"
@@ -373,6 +374,9 @@ edit_release() {
     
     read -rp "Date [$current_date]: " new_date || true
     new_date="${new_date:-$current_date}"
+    
+    read -rp "Artists (comma-separated) [$current_artists]: " new_artists || true
+    new_artists="${new_artists:-$current_artists}"
     
     read -rp "Bandcamp URL [$current_bandcamp_url]: " new_bandcamp_url || true
     new_bandcamp_url="${new_bandcamp_url:-$current_bandcamp_url}"
@@ -408,6 +412,47 @@ edit_release() {
     read -rp "Country [$current_country]: " new_country || true
     new_country="${new_country:-$current_country}"
     
+    # Edit cover
+    local current_cover=$(yq eval '.cover // ""' "$selected_file")
+    echo ""
+    if [[ -n "$current_cover" ]]; then
+        echo "Current cover: ${current_cover:0:60}..."
+    else
+        echo "No cover image set"
+    fi
+    read -rp "Cover image URL (or press Enter to keep current): " cover_input || true
+    
+    # Handle cover download if URL provided
+    new_cover="$current_cover"
+    if [[ -n "$cover_input" && "$cover_input" != "$current_cover" ]]; then
+        if [[ "$cover_input" =~ ^https?:// ]]; then
+            # Generate slug from title for filename
+            local slug=$(echo "$new_title" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | tr -cd '[:alnum:]-' | tr '/' '-')
+            local cover_dir="website/static/images/music"
+            mkdir -p "$cover_dir"
+            
+            # Determine file extension from URL or default to jpg
+            local ext="jpg"
+            if [[ "$cover_input" =~ \.(png|jpg|jpeg|gif|webp)(\?|$) ]]; then
+                ext="${BASH_REMATCH[1]}"
+            fi
+            
+            local cover_filename="${slug}-cover.${ext}"
+            local cover_path="$cover_dir/$cover_filename"
+            
+            # Download the image
+            if curl -sL "$cover_input" -o "$cover_path"; then
+                new_cover="/images/music/$cover_filename"
+                print_success "Downloaded cover to $cover_path" >&2
+            else
+                print_error "Failed to download cover from $cover_input" >&2
+                new_cover="$current_cover"
+            fi
+        else
+            new_cover="$cover_input"
+        fi
+    fi
+    
     # Edit content
     local current_content=$(yq eval '.content // ""' "$selected_file")
     echo ""
@@ -425,6 +470,18 @@ edit_release() {
     # Update YAML file using yq (with proper escaping)
     yq eval -i ".title = \"$new_title\"" "$selected_file"
     yq eval -i ".date = \"$new_date\"" "$selected_file"
+    
+    # Update artists array
+    if [[ -n "$new_artists" ]]; then
+        # Clear existing artists array
+        yq eval -i 'del(.artists)' "$selected_file"
+        # Add each artist
+        IFS=',' read -ra ARTISTS <<< "$new_artists"
+        for artist in "${ARTISTS[@]}"; do
+            artist=$(echo "$artist" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+            yq eval -i ".artists += [\"$artist\"]" "$selected_file"
+        done
+    fi
     
     if [[ -n "$new_bandcamp_album" ]]; then
         yq eval -i ".bandcamp_album = \"$new_bandcamp_album\"" "$selected_file"
@@ -456,6 +513,10 @@ edit_release() {
     
     if [[ -n "$new_country" ]]; then
         yq eval -i ".country = \"$new_country\"" "$selected_file"
+    fi
+    
+    if [[ -n "$new_cover" ]]; then
+        yq eval -i ".cover = \"$new_cover\"" "$selected_file"
     fi
     
     if [[ -n "$new_content" ]]; then
