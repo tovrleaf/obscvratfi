@@ -19,28 +19,56 @@
         </button>
     </div>
     
-    <!-- Music grid -->
-    <div class="music-grid">
-        {{ $music := where .Pages "Kind" "page" }}
-        {{ $sortedMusic := sort $music "Date" "desc" }}
-        {{ range $sortedMusic }}
-            {{ $type := .Params.release_type | default "album" }}
-            <div class="music-item" data-type="{{ $type }}">
-                <a href="{{ .Permalink }}" class="music-link">
-                    {{ if .Params.cover }}
-                        <div class="music-cover">
-                            <img src="{{ .Params.cover }}" alt="{{ .Title }} cover">
-                        </div>
-                        <div class="music-info">
-                            <h3 class="music-title">{{ .Title }}</h3>
-                            <p class="music-artists">{{ delimit .Params.artists ", " }}</p>
-                            <p class="music-meta">{{ .Date.Format "2006" }} | {{ .Params.label }}</p>
-                        </div>
-                    {{ end }}
-                </a>
-            </div>
-        {{ end }}
-    </div>
+    <!-- Albums Section -->
+    <section class="music-section albums-section" data-type="album">
+        <h2>Albums</h2>
+        <div class="music-grid">
+            {{ $music := where .Pages "Kind" "page" }}
+            {{ $albums := where $music ".Params.release_type" "album" }}
+            {{ $sortedAlbums := sort $albums "Date" "desc" }}
+            {{ range $sortedAlbums }}
+                <div class="music-item" data-type="album">
+                    <a href="{{ .Permalink }}" class="music-link">
+                        {{ if .Params.cover }}
+                            <div class="music-cover">
+                                <img src="{{ .Params.cover }}" alt="{{ .Title }} cover">
+                            </div>
+                            <div class="music-info">
+                                <h3 class="music-title">{{ .Title }}</h3>
+                                <p class="music-artists">by {{ delimit .Params.artists ", " }}</p>
+                                <p class="music-meta">{{ .Date.Format "2006" }} | {{ .Params.label }}</p>
+                            </div>
+                        {{ end }}
+                    </a>
+                </div>
+            {{ end }}
+        </div>
+    </section>
+    
+    <!-- Compilations Section -->
+    <section class="music-section compilations-section" data-type="compilation">
+        <h2>Compilations</h2>
+        <div class="music-grid">
+            {{ $compilations := where $music ".Params.release_type" "compilation" }}
+            {{ $sortedCompilations := sort $compilations "Date" "desc" }}
+            {{ range $sortedCompilations }}
+                <div class="music-item" data-type="compilation">
+                    <a href="{{ .Permalink }}" class="music-link">
+                        {{ if .Params.cover }}
+                            <div class="music-cover">
+                                <img src="{{ .Params.cover }}" alt="{{ .Title }} cover">
+                            </div>
+                            <div class="music-info">
+                                <h3 class="music-title">{{ .Title }}</h3>
+                                <p class="music-artists">by {{ delimit .Params.artists ", " }}</p>
+                                <p class="music-meta">{{ .Date.Format "2006" }} | {{ .Params.label }}</p>
+                            </div>
+                        {{ end }}
+                    </a>
+                </div>
+            {{ end }}
+        </div>
+    </section>
 </section>
 
 <style>
@@ -198,11 +226,25 @@
 }
 
 /* Music grid */
+.music-section {
+    margin-bottom: 3rem;
+}
+
+.music-section h2 {
+    font-family: var(--font-body);
+    font-size: 1.8rem;
+    color: var(--primary-color);
+    margin: 2rem 0 1.5rem 0;
+}
+
+.music-section.hidden {
+    display: none;
+}
+
 .music-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 2rem;
-    margin-top: 2rem;
 }
 
 .music-item {
@@ -306,7 +348,7 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const filterBtns = document.querySelectorAll('.filter-btn');
-    const musicItems = document.querySelectorAll('.music-item');
+    const musicSections = document.querySelectorAll('.music-section');
     
     filterBtns.forEach(btn => {
         btn.addEventListener('click', function() {
@@ -316,12 +358,12 @@ document.addEventListener('DOMContentLoaded', function() {
             filterBtns.forEach(b => b.classList.remove('active'));
             this.classList.add('active');
             
-            // Filter music
-            musicItems.forEach(item => {
-                if (type === 'all' || item.dataset.type === type) {
-                    item.classList.remove('hidden');
+            // Filter sections
+            musicSections.forEach(section => {
+                if (type === 'all' || section.dataset.type === type) {
+                    section.classList.remove('hidden');
                 } else {
-                    item.classList.add('hidden');
+                    section.classList.add('hidden');
                 }
             });
         });
