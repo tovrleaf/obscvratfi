@@ -2,15 +2,14 @@
 <section class="about-page">
     <h1>{{ .Title }}</h1>
     
-    <div class="about-content">
-        {{ .Content | safeHTML }}
-    </div>
+    {{ .Content | safeHTML }}
 </section>
 
 <style>
 .about-page {
-    max-width: 700px;
+    max-width: 900px;
     margin: 0 auto;
+    padding-left: 2rem;
 }
 
 .about-page h1 {
@@ -20,13 +19,15 @@
     margin-bottom: 3rem;
 }
 
-.about-content {
+.about-page > * {
     font-family: var(--font-body);
     color: var(--primary-color);
     line-height: 1.9;
+    max-width: 650px;
+    margin-left: 15%;
 }
 
-.about-content h2 {
+.about-page h2 {
     font-family: var(--font-body);
     font-size: 1.8rem;
     color: var(--primary-color);
@@ -34,83 +35,78 @@
     margin-bottom: 1rem;
 }
 
-.about-content h3 {
+.about-page h3 {
     font-family: var(--font-display);
-    font-size: 0.85rem;
+    font-size: 0.75rem;
     color: var(--accent-color);
     text-transform: uppercase;
     letter-spacing: 0.15em;
-    margin-top: 1rem;
+    margin-top: 3rem;
     margin-bottom: 2rem;
     font-weight: 400;
+    margin-left: -15%;
+    padding-right: 2rem;
+    text-align: right;
+    width: 15%;
+    position: relative;
+    opacity: 0.75;
+    float: left;
 }
 
-.about-content p {
+.about-page h3 + * {
+    margin-top: 0;
+    clear: both;
+}
+
+.about-page p {
     margin-bottom: 1.8rem;
     color: var(--primary-color);
+    text-indent: 2ch;
 }
 
-.about-content ul,
-.about-content ol {
+.about-page p:first-of-type,
+.about-page h3 + p,
+.about-page blockquote + p,
+.about-page .two-columns p {
+    text-indent: 0;
+}
+
+.about-page ul,
+.about-page ol {
     margin-left: 2rem;
     margin-bottom: 1.2rem;
 }
 
-.about-content li {
+.about-page li {
     margin-bottom: 0.6rem;
     color: var(--primary-color);
 }
 
-.about-content strong {
+.about-page strong {
     color: var(--primary-color);
     font-weight: 600;
 }
 
-.about-content em {
+.about-page em {
     color: var(--secondary-color);
     font-style: italic;
 }
 
-.about-content img {
-    width: 100%;
-    height: auto;
-    margin: 2.5rem 0;
-    box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.8);
-}
-
-.about-content .two-columns {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
-    margin: 0 0 1.8rem 0;
-}
-
-.about-content .two-columns p {
-    margin-bottom: 0;
-}
-
-@media (max-width: 768px) {
-    .about-content .two-columns {
-        grid-template-columns: 1fr;
-        gap: 1.8rem;
-    }
-}
-
-.about-content a {
+.about-page a {
     color: var(--secondary-color);
     text-decoration: none;
     border-bottom: 1px solid var(--border-color);
     transition: border-color 0.3s;
 }
 
-.about-content a:hover {
+.about-page a:hover {
     border-color: var(--secondary-color);
 }
 
-.about-content blockquote {
+.about-page blockquote {
     font-family: var(--font-display);
-    font-size: 1.1rem;
-    color: var(--secondary-color);
+    font-size: 1rem;
+    color: var(--primary-color);
     text-transform: uppercase;
     letter-spacing: 0.1em;
     line-height: 1.4;
@@ -119,10 +115,59 @@
     text-align: center;
     position: relative;
     overflow: hidden;
+    max-width: 650px;
+    width: 100%;
+    background-image: url('/images/about/obscvrat-harsh-noise-experimental.jpg');
+    background-size: cover;
+    background-position: center;
+    box-shadow: 
+        inset 120px 0 100px -40px #000,
+        inset -120px 0 100px -40px #000,
+        inset 0 60px 80px -30px rgba(0, 0, 0, 0.7),
+        inset 0 -60px 80px -30px rgba(0, 0, 0, 0.7);
 }
 
-.about-content blockquote::before,
-.about-content blockquote::after {
+.about-page blockquote .quote-text {
+    position: relative;
+    z-index: 10;
+    display: inline-block;
+}
+
+.about-page blockquote:nth-of-type(1) {
+    background-position: 55% 38%;
+    background-size: 280%;
+}
+
+.about-page blockquote:nth-of-type(2) {
+    background-position: 50% 42.5%;
+    background-size: 310%;
+}
+
+.about-page blockquote:nth-of-type(3) {
+    background-position: 30% 70%;
+    background-size: 220%;
+}
+
+.about-page img {
+    width: 100%;
+    height: auto;
+    margin: 2.5rem 0;
+    box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.8);
+}
+
+.about-page .two-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin: 0 0 1.8rem 0;
+}
+
+.about-page .two-columns p {
+    margin-bottom: 0;
+}
+
+.about-page blockquote::before,
+.about-page blockquote::after {
     content: '';
     position: absolute;
     width: 100%;
@@ -130,46 +175,48 @@
     background: var(--border-color);
     left: 0;
     overflow: hidden;
+    bottom: 0;
+    z-index: 2;
 }
 
-.about-content blockquote::before {
+.about-page blockquote::before {
     top: 0;
 }
 
-.about-content blockquote::after {
+.about-page blockquote::after {
     bottom: 0;
 }
 
 /* Different animation delays for each blockquote */
-.about-content blockquote:nth-of-type(1)::before {
+.about-page blockquote:nth-of-type(1)::before {
     animation: shimmerLine 12s infinite;
 }
 
-.about-content blockquote:nth-of-type(1)::after {
+.about-page blockquote:nth-of-type(1)::after {
     animation: shimmerLine 12s infinite reverse;
 }
 
-.about-content blockquote:nth-of-type(2)::before {
+.about-page blockquote:nth-of-type(2)::before {
     animation: shimmerLine 12s infinite 3s;
 }
 
-.about-content blockquote:nth-of-type(2)::after {
+.about-page blockquote:nth-of-type(2)::after {
     animation: shimmerLine 12s infinite reverse 3s;
 }
 
-.about-content blockquote:nth-of-type(3)::before {
+.about-page blockquote:nth-of-type(3)::before {
     animation: shimmerLine 12s infinite 6s;
 }
 
-.about-content blockquote:nth-of-type(3)::after {
+.about-page blockquote:nth-of-type(3)::after {
     animation: shimmerLine 12s infinite reverse 6s;
 }
 
-.about-content blockquote:nth-of-type(4)::before {
+.about-page blockquote:nth-of-type(4)::before {
     animation: shimmerLine 12s infinite 9s;
 }
 
-.about-content blockquote:nth-of-type(4)::after {
+.about-page blockquote:nth-of-type(4)::after {
     animation: shimmerLine 12s infinite reverse 9s;
 }
 
@@ -200,23 +247,53 @@
     }
 }
 
-.about-content blockquote p {
+.about-page blockquote p {
     margin: 0;
     position: relative;
-    z-index: 1;
+    z-index: 10;
+}
+
+@media (max-width: 1100px) {
+    .about-page {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    
+    .about-page > * {
+        margin-left: 0;
+        max-width: 100%;
+    }
+    
+    .about-page h3 {
+        font-size: 0.85rem;
+        position: static;
+        float: none;
+        margin-left: 0;
+        text-align: left;
+        padding-right: 0;
+        width: auto;
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+        opacity: 1;
+    }
+    
+    .about-page h3 + * {
+        clear: none;
+    }
 }
 
 @media (max-width: 768px) {
-    .about-page h1 {
-        font-size: 2rem;
+    .about-page blockquote {
+        font-size: 0.95rem;
     }
     
-    .about-content h2 {
-        font-size: 1.5rem;
+    .about-page .two-columns {
+        grid-template-columns: 1fr;
+        gap: 1.8rem;
     }
     
-    .about-content h3 {
-        font-size: 1.2rem;
+    .about-page p {
+        text-indent: 0;
     }
 }
 </style>

@@ -2,21 +2,21 @@
 title: "About"
 ---
 
-> HARSH NOISE<br>AUDIO RITUAL
-
 Obscvrat is a harsh noise and experimental sound project rooted in putrid underground. Grounded in sewers of obscurity, voltage, and vermin instinct, Obscvrat channels raw electrical pressure into immersive sonic environments where structure collapses and texture becomes narrative.
 
-> CAUSTIC HEMORRHAGING<br>ANALOG FILTH
+> <span class="quote-text">HARSH NOISE<br>AUDIO RITUAL</span>
 
 ### Origin
 
 <div class="two-columns">
 
-Emerging from a background in noise culture, and black metal aesthetics, Obscvrat rejects polish in favor of abrasion. Recordings are built from crumbling textures, infected field recordings, broken circuits, and analog filth—designed not to entertain, but to confront.
+Emerging from a background in noise culture, and black metal aesthetics, Obscvrat rejects polish in favor of abrasion. Recordings are built from crumbling textures, infected field recordings, broken circuits, and analog filth—
 
 Each set functions as a **controlled collapse**: from distorted signal chains, unstable feedback systems, field recordings, and fractured rhythms—designed to a ritual of corrosion, pestilence, and repetition.
 
 </div>
+
+> <span class="quote-text">CAUSTIC HEMORRHAGING<br>ANALOG FILTH</span>
 
 ### Etymology
 
@@ -26,11 +26,9 @@ Obscvrat navigates cracks in systems—technological, social, and aesthetic—tu
 
 ![Obscvrat harsh noise experimental sound project](/images/about/obscvrat-harsh-noise-experimental.jpg)
 
-> Rats don't die, they multiply.
-
 ### Symbol
 
-Lyrically absent but conceptually dense, Obscvrat explores themes of entropy, and post-industrial decay.
+No words. Only weight.
 
 <div class="two-columns">
 
@@ -40,8 +38,11 @@ Obscvrat exists outside genre convenience—too harsh for ambient, too abstract 
 
 </div>
 
-> ANTI-PRODUCT<br>MOVING ARCHIVE
+> <span class="quote-text">Rats don't die, they multiply.</span>
 
 ### Position
 
 In a culture obsessed with clarity and optimization, Obscvrat insists on noise, friction, and the rodenticide's curse.
+
+This is<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;n&nbsp;o&nbsp;i&nbsp;s&nbsp;e.
