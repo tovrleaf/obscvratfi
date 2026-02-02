@@ -15,3 +15,61 @@ on:
 permissions:
   id-token: write   # Required for OIDC
   contents: write   # Required to create releases
+
+jobs:
+  deploy:
+    name: Deploy to S3 and CloudFront
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ secrets.AWS_REGION }}
+          role-session-name: GitHubActionsDeployment
+      
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v3
+        with:
+          hugo-version: '0.128.2'
+          extended: true
+      
+      - name: Build site
+        run: |
+          cd website
+          hugo --minify --baseURL="https://obscvrat.fi"
+      
+      - name: Sync to S3
+        run: |
+          aws s3 sync website/public/ s3://${{ secrets.S3_BUCKET_NAME }}/ \
+            --delete \
+            --cache-control "public, max-age=3600"
+      
+      - name: Invalidate CloudFront cache
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
+            --paths "/*"
+      
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          chmod +x scripts/create-github-release.sh
+          scripts/create-github-release.sh
+        env:
+          GH_TOKEN: ${{ github.token }}
+      
+      - name: Deployment summary
+        run: |
+          echo "✅ Deployment complete!"
+          echo "🌐 Website: https://obscvrat.fi"
+          echo "📦 S3 Bucket: ${{ secrets.S3_BUCKET_NAME }}"
+          echo "🔄 CloudFront invalidation created"
+          if [[ "${{ github.ref }}" == refs/tags/v* ]]; then
+            echo "🏷️  GitHub Release created"
+          fi
+
