@@ -12,6 +12,9 @@ TODO.md
 website/hugo
 website/LICENSE
 
+# Generated version data for Hugo (copied from CHANGELOG.md)
+website/data/changelog.txt
+
 # IDE and editor
 .vscode/
 .idea/

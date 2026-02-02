@@ -1,0 +1,22 @@
+{{- /* Extract version from data/changelog.txt */ -}}
+{{- $changelog := "" -}}
+{{- with resources.Get "data/changelog.txt" -}}
+    {{- $changelog = .Content -}}
+{{- else -}}
+    {{- with os.ReadFile "data/changelog.txt" -}}
+        {{- $changelog = . -}}
+    {{- end -}}
+{{- end -}}
+
+{{- /* Find first version line: ## [X.Y.Z] - YYYY-MM-DD */ -}}
+{{- $version := "" -}}
+{{- range split $changelog "\n" -}}
+    {{- if hasPrefix . "## [" -}}
+        {{- $line := . -}}
+        {{- $start := index (split $line "[") 1 -}}
+        {{- $version = index (split $start "]") 0 -}}
+        {{- break -}}
+    {{- end -}}
+{{- end -}}
+
+{{- $version -}}
