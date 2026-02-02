@@ -2,49 +2,46 @@
 title: "About"
 ---
 
-## Obscvrat: Noisework & Sonic Experimentation
+> HARSH NOISE<br>AUDIO RITUAL
 
-Obscvrat is a noisework project dedicated to exploring the boundaries between sound and silence, music and noise. Through live performances and sonic installations, we investigate unconventional approaches to sound design and acoustic expression.
+Obscvrat is a harsh noise and experimental sound project rooted in putrid underground. Grounded in sewers of obscurity, voltage, and vermin instinct, Obscvrat channels raw electrical pressure into immersive sonic environments where structure collapses and texture becomes narrative.
 
-### Mission
+> CAUSTIC HEMORRHAGING<br>ANALOG FILTH
 
-We believe that sound exists beyond conventional musical frameworks. Our work challenges listeners to reconsider their relationship with audio, examining how noise, texture, and timbre can communicate meaning and emotion independent of traditional melody or harmony.
+### Origin
 
-### Sound Philosophy
+<div class="two-columns">
 
-Our approach to noisework draws from:
-- **Industrial & Experimental Music**: Embracing harsh, raw, and unconventional sonic textures
-- **Field Recording & Sampling**: Capturing and transforming environmental sounds into compositional elements
-- **Live Electronics**: Using synthesizers, effects, and analog signal processing to sculpt sound in real-time
-- **Physical Modulation**: Exploring the acoustic properties of various materials and objects
+Emerging from a background in noise culture, and black metal aesthetics, Obscvrat rejects polish in favor of abrasion. Recordings are built from crumbling textures, infected field recordings, broken circuits, and analog filth—designed not to entertain, but to confront.
 
-### Performance Practice
+Each set functions as a **controlled collapse**: from distorted signal chains, unstable feedback systems, field recordings, and fractured rhythms—designed to a ritual of corrosion, pestilence, and repetition.
 
-Obscvrat performances are immersive sonic experiences. Each session is unique, incorporating:
-- Live mixing and manipulation of layered sound sources
-- Interaction with venue acoustics and spatial properties
-- Audience engagement through unpredictable sonic events
-- Collaboration with other sound artists and performers
+</div>
 
-### Influences
+### Etymology
 
-Our sonic palette is influenced by pioneers in experimental and noise music, including:
-- Merzbow and Japanese noise pioneers
-- Alvin Lucier's acoustic experiments
-- Pierre Schaeffer's musique concrète
-- Contemporary power electronics and industrial artists
+The name Obscvrat—derived from *Obscure*, *Command Voltage*, and *Rat*—reflects the project's philosophy: operating in the margins, guided by circuitry, thriving in neglected spaces.
 
-### Performances
+Obscvrat navigates cracks in systems—technological, social, and aesthetic—turning overlooked noise into **gnawing presence**.
 
-For upcoming gigs and past performances, visit our [Gigs](/gigs/) page.
+![Obscvrat harsh noise experimental sound project](/images/about/obscvrat-harsh-noise-experimental.jpg)
 
-### Connect
+> Rats don't die, they multiply.
 
-You can find more of our work and updates on our social media channels:
-- [YouTube](https://www.youtube.com)
-- [Instagram](https://www.instagram.com)
-- [Bandcamp](https://www.bandcamp.com)
+### Symbol
 
----
+Lyrically absent but conceptually dense, Obscvrat explores themes of entropy, and post-industrial decay.
 
-*Obscvrat is committed to pushing the boundaries of sonic art and creating spaces for experimental listening experiences.*
+<div class="two-columns">
+
+The rat serves as both symbol and method: filth as rebellion, plague as transformation, the stray's death as ritual prey. Releases adopt minimal visual language and lo-fi physical formats, emphasizing impermanence and resistance to commodification.
+
+Obscvrat exists outside genre convenience—too harsh for ambient, too abstract for metal, too physical for pure electronics. It stands as an **anti-product**, a **moving archive of distortion**, documentation of collapse, and celebration in the shadow.
+
+</div>
+
+> ANTI-PRODUCT<br>MOVING ARCHIVE
+
+### Position
+
+In a culture obsessed with clarity and optimization, Obscvrat insists on noise, friction, and the rodenticide's curse.
