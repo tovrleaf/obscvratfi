@@ -44,6 +44,54 @@
             line-height: 1.6;
             color: var(--primary-color);
             background: #000000;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1200px;
+            background: 
+                radial-gradient(ellipse 1000px 800px at 15% 100%, rgba(70, 70, 70, 0.6) 0%, transparent 60%),
+                radial-gradient(ellipse 800px 700px at 85% 100%, rgba(60, 60, 60, 0.7) 0%, transparent 55%),
+                radial-gradient(ellipse 900px 750px at 45% 100%, rgba(75, 75, 75, 0.8) 0%, transparent 65%),
+                radial-gradient(ellipse 700px 600px at 60% 100%, rgba(65, 65, 65, 0.6) 0%, transparent 50%),
+                radial-gradient(ellipse 600px 500px at 30% 100%, rgba(55, 55, 55, 0.5) 0%, transparent 50%),
+                radial-gradient(ellipse 750px 650px at 70% 100%, rgba(58, 58, 62, 0.5) 0%, transparent 55%),
+                radial-gradient(ellipse 650px 550px at 25% 100%, rgba(62, 58, 58, 0.4) 0%, transparent 50%),
+                radial-gradient(ellipse 550px 450px at 50% 100%, rgba(68, 68, 68, 0.5) 0%, transparent 48%),
+                radial-gradient(ellipse 700px 600px at 38% 100%, rgba(52, 52, 52, 0.4) 0%, transparent 52%),
+                radial-gradient(ellipse 620px 520px at 78% 100%, rgba(64, 64, 66, 0.5) 0%, transparent 50%);
+            z-index: -1;
+            animation: smokeRise 20s ease-in-out infinite;
+            filter: blur(40px) contrast(1.5);
+        }
+        
+        @keyframes smokeRise {
+            0% {
+                transform: translateY(150px) scale(0.95);
+                opacity: 0.5;
+            }
+            25% {
+                transform: translateY(100px) scale(1);
+                opacity: 0.8;
+            }
+            50% {
+                transform: translateY(50px) scale(1.05);
+                opacity: 1;
+            }
+            75% {
+                transform: translateY(80px) scale(1.02);
+                opacity: 0.9;
+            }
+            100% {
+                transform: translateY(150px) scale(0.95);
+                opacity: 0.5;
+            }
         }
         
         header {
