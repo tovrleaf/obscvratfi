@@ -46,3 +46,75 @@ In a culture obsessed with clarity and optimization, Obscvrat insists on noise, 
 
 This is<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;n&nbsp;o&nbsp;i&nbsp;s&nbsp;e.
+
+---
+
+### Nest
+
+<div class="two-columns">
+
+<div>
+
+<div class="nest-label-container">
+<span class="nest-label nest-label-1">Swarm</span>
+<span class="nest-label nest-label-2">Kindred</span>
+<span class="nest-label nest-label-3">Horde</span>
+</div>
+
+<div class="nest-group-1">
+
+[Bryskt](https://bryskt.org/)  
+[Heppakirjat](https://www.heppakirjat.fi/)
+
+</div>
+
+<div class="nest-group-2">
+
+[Atrophist](https://www.facebook.com/Atrophisthelsinki)  
+[Kluik](https://kluik.bandcamp.com/)  
+[Rautakymi](https://rautakymi.bandcamp.com/)  
+[Skärgård](https://skrgrd.bandcamp.com/)
+
+</div>
+
+<div class="nest-group-3">
+
+[Ieskadulla](https://renqvisteiirrotaotettaan.github.io/)
+
+</div>
+
+</div>
+
+<div>
+
+<div class="nest-label-container">
+<span class="nest-label nest-label-1">Channels</span>
+<span class="nest-label nest-label-2">Circuits</span>
+<span class="nest-label nest-label-3">Vectors</span>
+</div>
+
+<div class="nest-group-1">
+
+[ÄLÄ LOI TAPES](https://alaloitapes.bandcamp.com/)  
+[Deepthroat Records](https://deepthroatrecords.bandcamp.com/)  
+[Mima Kass](https://mimakass.bandcamp.com/)
+
+</div>
+
+<div class="nest-group-2">
+
+[Afvikling Kassetter](https://afviklingkassetter.bandcamp.com/)  
+[Kymijoenlevyt](https://kymijoenlevyt.org/)  
+[Rupu Tapes](https://ruputapes.wordpress.com/)  
+[Satatuhatta](https://satatuhatta.net/)  
+[Sudden Movements](https://suddenmovementings.blogspot.com/)
+
+</div>
+
+<div class="nest-group-3">
+
+</div>
+
+</div>
+
+</div>
