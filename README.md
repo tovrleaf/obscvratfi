@@ -349,13 +349,42 @@ bandcamp = "https://obscvrat.bandcamp.com"
 
 ## Deployment
 
-### Production Deployment (S3 + CloudFront)
+### GitHub Actions Deployment (Recommended)
 
-See `docs/DEPLOYMENT.md` for detailed instructions on:
-1. Setting up AWS S3 bucket
-2. Configuring CloudFront distribution
-3. Deploying the site
-4. Managing DNS
+Automated deployment via GitHub Actions with OIDC authentication.
+
+**One-time setup:**
+
+1. **Generate IAM policy:**
+   ```bash
+   make deploy generate-deployment-policy
+   ```
+
+2. **Create IAM resources in AWS Console:**
+   - Create IAM policy (use generated JSON)
+   - Create OIDC identity provider
+   - Create IAM role with web identity
+
+3. **Configure GitHub secrets:**
+   ```bash
+   make deploy setup-github-secrets
+   ```
+
+**Deploy:**
+- Automatically on push to `main` branch
+- Manually via GitHub Actions UI
+
+See [docs/GITHUB-ACTIONS.md](docs/GITHUB-ACTIONS.md) for detailed setup guide.
+
+### Manual Deployment (Alternative)
+
+For manual deployment to S3 + CloudFront:
+
+```bash
+make deploy production
+```
+
+See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for manual deployment instructions.
 
 ### Build for Production
 
@@ -363,7 +392,7 @@ See `docs/DEPLOYMENT.md` for detailed instructions on:
 make build-prod
 ```
 
-Then deploy `website/public/` to S3.
+Output: `website/public/`
 
 ## Git Workflow
 
