@@ -53,6 +53,7 @@
             <a href="/music/" class="terminal-link-right">view all</a><span class="tab"></span><span class="tab"></span><span class="tab"></span>
         </div>
         {{ $albums := where .Site.Pages "Section" "music" }}
+        {{ $albums := where $albums "Kind" "page" }}
         {{ $sortedAlbums := sort $albums "Date" "desc" }}
         {{ $recentAlbums := first 5 $sortedAlbums }}
         {{ if $recentAlbums }}
@@ -77,7 +78,7 @@
                 <h2>About</h2>
                 <p>Harsh noise and experimental sound rooted in putrid underground. Raw electrical pressure channeled into immersive sonic environments where structure collapses and texture becomes narrative.</p>
                 <p class="about-tagline">Obscure. Command Voltage. Rat.</p>
-                <a href="/about/" class="read-more">Enter the void →</a>
+                <a href="/about/" class="read-more glitch-link">Enter the void →</a>
             </div>
         </div>
     </section>

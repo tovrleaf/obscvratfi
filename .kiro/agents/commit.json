@@ -4,10 +4,11 @@
   "prompt": null,
   "tools": [
     "read",
+    "write",
     "shell",
     "introspect"
   ],
-  "allowedTools": ["read", "shell"],
+  "allowedTools": ["read", "write", "shell"],
   "resources": [
     "file://.kiro/instructions/commit.md",
     "file://CONTRIBUTING.md",
@@ -17,9 +18,12 @@
     "read": {
       "allowedPaths": ["./**"]
     },
+    "write": {
+      "allowedPaths": ["CHANGELOG.md"]
+    },
     "shell": {
       "autoAllowReadonly": true,
-      "allowedCommands": ["git status", "git diff.*", "git add.*", "git commit.*", "git push.*", "git log.*", "gh pr.*"]
+      "allowedCommands": ["git status", "git diff.*", "git add.*", "git commit.*", "git push.*", "git log.*", "git tag.*", "gh pr.*", "scripts/bump-version.sh.*"]
     }
   }
 }

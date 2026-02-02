@@ -43,19 +43,111 @@ Examples of logical groupings:
 ## Capabilities
 
 - Read entire codebase
-- Run git commands: `status`, `diff`, `add`, `commit`, `push`, `log`
+- Write to CHANGELOG.md only (for versioning)
+- Run git commands: `status`, `diff`, `add`, `commit`, `push`, `log`, `tag`
+- Run versioning script: `scripts/bump-version.sh`
 - Create pull requests: `gh pr create`
 - **Only agent with push and PR permissions**
 
 ## Responsibilities
 
-1. **Analyze changes:** `git status`, `git diff`
-2. **Group logically:** Identify related changes
-3. **Suggest splits:** Propose multiple commits if needed
-4. **Stage intelligently:** `git add <related-files>`
-5. **Write clear messages:** Follow CONTRIBUTING.md format
-6. **Commit atomically:** One logical change per commit
-7. **Validate:** Pre-commit hooks run automatically
+1. **Determine version bump:** Analyze changes to decide major/minor/patch
+2. **Update CHANGELOG.md:** Run `scripts/bump-version.sh [type]`
+3. **Fill in changelog entry:** Edit CHANGELOG.md with specific changes
+4. **Analyze changes:** `git status`, `git diff`
+5. **Group logically:** Identify related changes
+6. **Suggest splits:** Propose multiple commits if needed
+7. **Stage intelligently:** `git add <related-files>`
+8. **Write clear messages:** Follow CONTRIBUTING.md format
+9. **Commit atomically:** One logical change per commit
+10. **Create git tag:** `git tag v1.2.3`
+11. **Push with tags:** `git push && git push --tags`
+12. **Validate:** Pre-commit hooks run automatically
+
+## Versioning Workflow (ADR-012)
+
+**Every merged PR bumps the version. Follow this workflow:**
+
+### 1. Determine Version Bump Type
+
+Analyze changes with `git diff` and decide:
+
+**Major (X.0.0):**
+- Complete site redesigns
+- Breaking changes to URLs or structure
+- Major architectural changes
+
+**Minor (1.X.0):**
+- New pages or sections
+- New features (media gallery, contact form)
+- Significant design changes
+
+**Patch (1.1.X):**
+- Bug fixes
+- Content updates (new gigs, music, media)
+- Documentation updates
+- Infrastructure/tooling changes
+- Small design tweaks
+
+### 2. Bump Version
+
+```bash
+scripts/bump-version.sh [major|minor|patch]
+```
+
+This script:
+- Updates CHANGELOG.md with new version
+- Creates empty changelog entry
+- Copies to website/data/changelog.txt
+- Returns new version number
+
+### 3. Fill Changelog Entry
+
+Edit CHANGELOG.md to add specific changes under appropriate categories:
+- **Added:** New features
+- **Changed:** Changes to existing functionality
+- **Fixed:** Bug fixes
+- **Removed:** Removed features
+- **Security:** Security fixes
+
+Example:
+```markdown
+## [1.2.3] - 2026-02-02
+
+### Added
+- New media page with photo gallery
+- CloudFront Function for directory handling
+
+### Fixed
+- Mobile layout now shows 2 columns
+```
+
+### 4. Stage and Commit
+
+```bash
+git add CHANGELOG.md website/data/changelog.txt <other-changed-files>
+git commit -m "Type: Brief description
+
+Detailed explanation of changes.
+
+Version: 1.2.3"
+```
+
+### 5. Create Git Tag
+
+```bash
+git tag v1.2.3
+```
+
+### 6. Push with Tags
+
+```bash
+git push && git push --tags
+```
+
+**Important:** Always push tags! GitHub Actions uses tags for releases.
+
+## Capabilities
 
 ## Commit Message Format
 

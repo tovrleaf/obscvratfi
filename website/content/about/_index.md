@@ -45,7 +45,7 @@ Obscvrat exists outside genre convenience—too harsh for ambient, too abstract 
 In a culture obsessed with clarity and optimization, Obscvrat insists on noise, friction, and the rodenticide's curse.
 
 This is<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;n&nbsp;o&nbsp;i&nbsp;s&nbsp;e.
+<span class="glitch-noise" data-text="n o i s e">n&nbsp;o&nbsp;i&nbsp;s&nbsp;e.</span>
 
 ---
 
