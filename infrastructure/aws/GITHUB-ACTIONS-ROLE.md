@@ -38,7 +38,7 @@ If you haven't already set up GitHub as an OIDC provider:
 1. Go to AWS Console → IAM → Roles
 2. Click **Create role**
 3. Select **Web identity**
-4. Identity provider: `token.actions.githubusercontent.com`
+4. Identity provider: Select `token.actions.githubusercontent.com` from dropdown
 5. Audience: `sts.amazonaws.com`
 6. Click **Next**
 
