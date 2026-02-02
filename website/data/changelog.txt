@@ -1,0 +1,44 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [1.1.0] - 2026-02-02
+## [1.1.0] - 2026-02-02
+
+### Added
+- Semantic versioning system with CHANGELOG.md
+- Version bump automation script (scripts/bump-version.sh)
+- GitHub Release creation script (scripts/create-github-release.sh)
+- Version display in footer with link to releases
+- Glitch effect on "n o i s e" text on about page
+- Glitch effect on "Enter the void →" link on homepage
+- ADR-012: Semantic Versioning for AI-Driven Development
+
+### Changed
+- GitHub Actions deploy workflow now creates releases automatically
+- Commit Agent can now write to CHANGELOG.md and create git tags
+- Footer displays version on separate line with styled link
+- Footer font size reduced to 0.8rem
+
+### Fixed
+- Date wrapping on mobile (28 Sep now stays on one line)
+- Venue name wrapping on mobile (e.g., Vihdin Kultsan Halloween)
+- Music section no longer shows "Releases" index page
+- Tab spacing reduced on mobile to prevent text wrapping
+
+## [1.0.0] - 2026-02-02
+
+### Added
+- Initial release with semantic versioning
+- Homepage with band information
+- Music page with Bandcamp integration
+- Live performances page with upcoming and past gigs
+- Media page with photo gallery
+- About page with band details
+- GitHub Actions deployment with OIDC authentication
+- CloudFront CDN with SSL certificate
+- Pre-commit hooks for local validation
+- Architecture Decision Records (ADRs)
