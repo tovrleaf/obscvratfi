@@ -69,12 +69,83 @@
     <div style="clear: both; margin-bottom: 4rem;"></div>
 
     <section class="about-preview featured-section">
-        <h2>About Obscvrat</h2>
-        {{ $aboutPage := .Site.GetPage "/about" }}
-        {{ if $aboutPage }}
-            <p>{{ $aboutPage.Summary }}</p>
-            <a href="/about/" class="read-more">Learn more about our sound →</a>
-        {{ end }}
+        <div class="about-content-wrapper">
+            <div class="about-image">
+                <img src="/images/about/obscvrat-harsh-noise-experimental.jpg" alt="Obscvrat">
+            </div>
+            <div class="about-text">
+                <h2>About</h2>
+                <p>Harsh noise and experimental sound rooted in putrid underground. Raw electrical pressure channeled into immersive sonic environments where structure collapses and texture becomes narrative.</p>
+                <p class="about-tagline">Obscure. Command Voltage. Rat.</p>
+                <a href="/about/" class="read-more">Enter the void →</a>
+            </div>
+        </div>
     </section>
 </section>
+
+<style>
+.about-preview {
+    max-width: 100%;
+    margin-left: 0;
+    background: transparent !important;
+    padding: 0 !important;
+}
+
+.about-content-wrapper {
+    display: flex;
+    gap: 3rem;
+    align-items: flex-start;
+    max-width: 1200px;
+}
+
+.about-image {
+    flex-shrink: 0;
+    width: 40%;
+    min-width: 300px;
+    max-width: 500px;
+    position: relative;
+    overflow: hidden;
+}
+
+.about-image img {
+    width: 100%;
+    height: auto;
+    filter: blur(4px);
+    box-shadow: 
+        inset 80px 0 60px -30px #000,
+        inset -80px 0 60px -30px #000,
+        inset 0 60px 60px -30px #000,
+        inset 0 -60px 60px -30px #000;
+}
+
+.about-text {
+    flex: 1;
+}
+
+.about-text h2 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    font-family: 'Typo', 'Courier Prime', monospace;
+}
+
+.about-tagline {
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--secondary-color);
+    margin-top: 1.5rem;
+}
+
+@media (max-width: 768px) {
+    .about-content-wrapper {
+        flex-direction: column;
+    }
+    
+    .about-image {
+        width: 100%;
+    }
+}
+</style>
+
 {{ end }}

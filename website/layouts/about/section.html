@@ -1,93 +1,464 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ .Title }} - {{ .Site.Title }}</title>
-    <meta name="description" content="{{ .Description | default .Site.Params.description }}">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-        }
-        main {
-            max-width: 900px;
-            margin: 2rem auto;
-            padding: 0 1rem;
-        }
-        article {
-            margin: 2rem 0;
-        }
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 1.5rem;
-            border-bottom: 2px solid #333;
-            padding-bottom: 0.5rem;
-        }
-        h2 {
-            font-size: 1.8rem;
-            margin-top: 2rem;
-            margin-bottom: 1rem;
-        }
-        h3 {
-            font-size: 1.3rem;
-            margin-top: 1.5rem;
-            margin-bottom: 0.8rem;
-        }
-        p {
-            margin-bottom: 1rem;
-        }
-        ul, ol {
-            margin-left: 2rem;
-            margin-bottom: 1rem;
-        }
-        li {
-            margin-bottom: 0.5rem;
-        }
-        a {
-            color: #0066cc;
-            text-decoration: none;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
-        strong {
-            font-weight: 600;
-        }
-        hr {
-            border: none;
-            border-top: 1px solid #ddd;
-            margin: 2rem 0;
-        }
-        footer {
-            background: #f5f5f5;
-            padding: 2rem;
-            margin-top: 4rem;
-            text-align: center;
-            color: #666;
-            border-top: 1px solid #ddd;
-        }
-    </style>
-</head>
-<body>
-    <main>
-        <article class="about">
-            {{ if .Content }}
-                {{ .Content }}
-            {{ else }}
-                <h1>{{ .Title }}</h1>
-                <p>No content yet.</p>
-            {{ end }}
-        </article>
-    </main>
-    <footer>
-        <p>&copy; 2025 Obscvrat. All rights reserved.</p>
-    </footer>
-</body>
-</html>
+{{ define "main" }}
+<section class="about-page">
+    <h1>{{ .Title }}</h1>
+    
+    {{ .Content | safeHTML }}
+</section>
+
+<style>
+.about-page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding-left: 2rem;
+}
+
+.about-page h1 {
+    font-family: var(--font-body);
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    margin-bottom: 3rem;
+}
+
+.about-page > * {
+    font-family: var(--font-body);
+    color: var(--primary-color);
+    line-height: 1.9;
+    max-width: 750px;
+    margin-left: 15%;
+}
+
+.about-page h2 {
+    font-family: var(--font-body);
+    font-size: 1.8rem;
+    color: var(--primary-color);
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.about-page h3 {
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    color: var(--accent-color);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-top: 3rem;
+    margin-bottom: 2rem;
+    font-weight: 400;
+    margin-left: -15%;
+    padding-right: 2rem;
+    text-align: right;
+    width: 15%;
+    position: relative;
+    opacity: 0.75;
+    float: left;
+}
+
+.about-page h3 + * {
+    margin-top: 0;
+    clear: both;
+}
+
+.about-page p {
+    margin-bottom: 1.8rem;
+    color: var(--primary-color);
+    text-indent: 2ch;
+}
+
+.about-page p:first-of-type,
+.about-page h3 + p,
+.about-page blockquote + p,
+.about-page .two-columns p {
+    text-indent: 0;
+}
+
+.nest-group {
+    margin-bottom: 2rem;
+}
+
+.nest-indent-1 {
+    margin-left: 1rem;
+}
+
+.nest-indent-2 {
+    margin-left: 2rem;
+}
+
+.nest-label {
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0;
+    color: var(--secondary-color);
+    display: inline;
+    margin-right: 0.5rem;
+    white-space: nowrap;
+}
+
+.nest-label-container {
+    display: block;
+    margin-bottom: 1.5rem;
+}
+
+.nest-group-1 {
+    margin-left: 0;
+    margin-bottom: 2rem;
+}
+
+.nest-group-2 {
+    margin-left: 2rem;
+    margin-bottom: 2rem;
+}
+
+.nest-group-3 {
+    margin-left: 1rem;
+    margin-bottom: 2rem;
+}
+
+.nest-label-1 {
+    opacity: 0.65;
+    font-size: 0.65rem;
+    vertical-align: baseline;
+}
+
+.nest-label-2 {
+    opacity: 0.5;
+    font-size: 0.6rem;
+    vertical-align: 0.15em;
+}
+
+.nest-label-3 {
+    opacity: 0.35;
+    font-size: 0.55rem;
+    vertical-align: -0.1em;
+}
+
+.nest-group-1:hover {
+    --glitch-label: 1;
+}
+
+.nest-group-2:hover {
+    --glitch-label: 2;
+}
+
+.nest-group-3:hover {
+    --glitch-label: 3;
+}
+
+.two-columns > div:has(.nest-group-1:hover) .nest-label-1 {
+    animation: glitchEffect 1s steps(4) infinite;
+}
+
+.two-columns > div:has(.nest-group-2:hover) .nest-label-2 {
+    animation: glitchEffect 1s steps(4) infinite;
+}
+
+.two-columns > div:has(.nest-group-3:hover) .nest-label-3 {
+    animation: glitchEffect 1s steps(4) infinite;
+}
+
+@keyframes glitchEffect {
+    0% { 
+        transform: translate(0, 0);
+        opacity: 0.65;
+        text-shadow: 2px 0 rgba(255, 255, 255, 0.3), -2px 0 rgba(0, 0, 0, 0.5);
+    }
+    20% { 
+        transform: translate(-3px, 2px);
+        opacity: 0.9;
+        text-shadow: -2px 0 rgba(255, 255, 255, 0.4), 2px 0 rgba(0, 0, 0, 0.6);
+    }
+    40% { 
+        transform: translate(2px, -1px);
+        opacity: 1;
+        text-shadow: 3px 0 rgba(255, 255, 255, 0.5), -3px 0 rgba(0, 0, 0, 0.7);
+    }
+    60% { 
+        transform: translate(-1px, -2px);
+        opacity: 0.8;
+        text-shadow: -1px 0 rgba(255, 255, 255, 0.3), 1px 0 rgba(0, 0, 0, 0.5);
+    }
+    80% { 
+        transform: translate(3px, 1px);
+        opacity: 0.95;
+        text-shadow: 2px 0 rgba(255, 255, 255, 0.4), -2px 0 rgba(0, 0, 0, 0.6);
+    }
+    100% { 
+        transform: translate(0, 0);
+        opacity: 0.65;
+        text-shadow: 1px 0 rgba(255, 255, 255, 0.3), -1px 0 rgba(0, 0, 0, 0.5);
+    }
+}
+
+@keyframes distort {
+    0%, 100% { 
+        opacity: 0.65;
+        transform: scaleX(1) skewX(0deg);
+        letter-spacing: 0;
+    }
+    25% { 
+        opacity: 0.9;
+        transform: scaleX(1.05) skewX(-2deg);
+        letter-spacing: 0.05em;
+    }
+    50% { 
+        opacity: 1;
+        transform: scaleX(0.95) skewX(2deg);
+        letter-spacing: -0.02em;
+    }
+    75% { 
+        opacity: 0.85;
+        transform: scaleX(1.02) skewX(-1deg);
+        letter-spacing: 0.03em;
+    }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 0.65; }
+    50% { opacity: 1; }
+}
+
+@keyframes glitch {
+    0%, 100% { transform: translate(0); }
+    20% { transform: translate(-2px, 1px); }
+    40% { transform: translate(2px, -1px); }
+    60% { transform: translate(-1px, 2px); }
+    80% { transform: translate(1px, -2px); }
+}
+
+.about-page ul,
+.about-page ol {
+    margin-left: 2rem;
+    margin-bottom: 1.2rem;
+}
+
+.about-page li {
+    margin-bottom: 0.6rem;
+    color: var(--primary-color);
+}
+
+.about-page strong {
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.about-page em {
+    color: var(--secondary-color);
+    font-style: italic;
+}
+
+.about-page a {
+    color: var(--secondary-color);
+    text-decoration: none;
+    border-bottom: 1px solid var(--border-color);
+    transition: border-color 0.3s;
+}
+
+.about-page a:hover {
+    border-color: var(--secondary-color);
+}
+
+.about-page blockquote {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    color: var(--primary-color);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    line-height: 1.4;
+    margin: 3rem 0;
+    padding: 1.5rem 0;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    max-width: 650px;
+    width: 100%;
+    background-image: url('/images/about/obscvrat-harsh-noise-experimental.jpg');
+    background-size: cover;
+    background-position: center;
+    box-shadow: 
+        inset 120px 0 100px -40px #000,
+        inset -120px 0 100px -40px #000,
+        inset 0 60px 80px -30px rgba(0, 0, 0, 0.7),
+        inset 0 -60px 80px -30px rgba(0, 0, 0, 0.7);
+}
+
+.about-page blockquote .quote-text {
+    position: relative;
+    z-index: 10;
+    display: inline-block;
+}
+
+.about-page blockquote:nth-of-type(1) {
+    background-position: 55% 38%;
+    background-size: 280%;
+}
+
+.about-page blockquote:nth-of-type(2) {
+    background-position: 50% 42.5%;
+    background-size: 310%;
+}
+
+.about-page blockquote:nth-of-type(3) {
+    background-position: 30% 70%;
+    background-size: 220%;
+}
+
+.about-page img {
+    width: 100%;
+    height: auto;
+    margin: 2.5rem 0;
+    box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.8);
+}
+
+.about-page .two-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    margin: 0 0 1.8rem 0;
+}
+
+.about-page .two-columns p {
+    margin-bottom: 0;
+}
+
+.about-page blockquote::before,
+.about-page blockquote::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 1px;
+    background: var(--border-color);
+    left: 0;
+    overflow: hidden;
+    bottom: 0;
+    z-index: 2;
+}
+
+.about-page blockquote::before {
+    top: 0;
+}
+
+.about-page blockquote::after {
+    bottom: 0;
+}
+
+/* Different animation delays for each blockquote */
+.about-page blockquote:nth-of-type(1)::before {
+    animation: shimmerLine 12s infinite;
+}
+
+.about-page blockquote:nth-of-type(1)::after {
+    animation: shimmerLine 12s infinite reverse;
+}
+
+.about-page blockquote:nth-of-type(2)::before {
+    animation: shimmerLine 12s infinite 3s;
+}
+
+.about-page blockquote:nth-of-type(2)::after {
+    animation: shimmerLine 12s infinite reverse 3s;
+}
+
+.about-page blockquote:nth-of-type(3)::before {
+    animation: shimmerLine 12s infinite 6s;
+}
+
+.about-page blockquote:nth-of-type(3)::after {
+    animation: shimmerLine 12s infinite reverse 6s;
+}
+
+.about-page blockquote:nth-of-type(4)::before {
+    animation: shimmerLine 12s infinite 9s;
+}
+
+.about-page blockquote:nth-of-type(4)::after {
+    animation: shimmerLine 12s infinite reverse 9s;
+}
+
+@keyframes shimmerLine {
+    0%, 100% {
+        opacity: 0.3;
+    }
+    10% {
+        opacity: 0.8;
+    }
+    25% {
+        opacity: 0.4;
+    }
+    40% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+    65% {
+        opacity: 0.9;
+    }
+    80% {
+        opacity: 0.6;
+    }
+    90% {
+        opacity: 0.7;
+    }
+}
+
+.about-page blockquote p {
+    margin: 0;
+    position: relative;
+    z-index: 10;
+}
+
+@media (max-width: 1100px) {
+    .about-page {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    
+    .about-page > * {
+        margin-left: 0;
+        max-width: 100%;
+    }
+    
+    .about-page h3 {
+        font-size: 0.85rem;
+        position: static;
+        float: none;
+        margin-left: 0;
+        text-align: left;
+        padding-right: 0;
+        width: auto;
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+        opacity: 1;
+    }
+    
+    .about-page h3 + * {
+        clear: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .about-page blockquote {
+        font-size: 0.95rem;
+    }
+    
+    .about-page .two-columns {
+        grid-template-columns: 1fr;
+        gap: 1.8rem;
+    }
+    
+    .about-page p {
+        text-indent: 0;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add target blank to all links in nest
+    document.querySelectorAll('.two-columns a').forEach(link => {
+        link.setAttribute('target', '_blank');
+        link.setAttribute('rel', 'noopener noreferrer');
+    });
+});
+</script>
+
+{{ end }}
