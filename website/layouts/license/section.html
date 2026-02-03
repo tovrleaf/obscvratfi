@@ -1,0 +1,349 @@
+{{ define "main" }}
+<article class="license-page">
+    <h1>{{ .Title }}</h1>
+    
+    <div class="license-intro">
+        <p>This website uses a dual licensing approach to distinguish between code and creative content.</p>
+    </div>
+
+    <div class="license-grid">
+        <section class="license-section">
+            <h2>MIT License</h2>
+            <h3 class="license-type">Code</h3>
+            <p class="license-description">The <strong>code</strong> that powers this website is licensed under the <strong>MIT License</strong>, which means you can freely use, modify, and distribute it.</p>
+            
+            <div class="license-applies">
+                <h4>This includes:</h4>
+                <ul>
+                    <li>Hugo templates and layouts</li>
+                    <li>CSS stylesheets</li>
+                    <li>JavaScript code</li>
+                    <li>Build scripts and automation</li>
+                    <li>Infrastructure configuration</li>
+                    <li>Documentation</li>
+                </ul>
+            </div>
+
+            <div class="license-can">
+                <h4>You can:</h4>
+                <ul>
+                    <li>Use the code for any purpose, including commercial projects</li>
+                    <li>Modify and adapt the code</li>
+                    <li>Distribute copies of the code</li>
+                    <li>Use it in private projects</li>
+                </ul>
+            </div>
+            
+            <div class="license-permissions">
+                <h4>You must:</h4>
+                <ul>
+                    <li>Include the copyright notice and license text</li>
+                    <li>Provide attribution to Obscvrat</li>
+                </ul>
+            </div>
+
+            <p class="license-link"><a href="https://github.com/tovrleaf/obscvratfi/blob/main/LICENSE-CODE.md" target="_blank" rel="noopener noreferrer">View full MIT License →</a></p>
+        </section>
+
+        <section class="license-section">
+            <h2>CC BY-NC-SA 4.0</h2>
+            <h3 class="license-type">Content</h3>
+            <p class="license-description">The <strong>creative content</strong> on this website is licensed under <strong>Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)</strong>.</p>
+            
+            <div class="license-applies">
+                <h4>This includes:</h4>
+                <ul>
+                    <li>Music and recordings</li>
+                    <li>Photos and images</li>
+                    <li>Videos</li>
+                    <li>Text and descriptions</li>
+                    <li>Artwork and graphics</li>
+                    <li>Custom fonts</li>
+                </ul>
+            </div>
+
+            <div class="license-can">
+                <h4>You can:</h4>
+                <ul>
+                    <li>Share and redistribute the content</li>
+                    <li>Adapt, remix, and build upon the content</li>
+                </ul>
+            </div>
+            
+            <div class="license-permissions">
+                <h4>You must:</h4>
+                <ul>
+                    <li>Give appropriate credit to Obscvrat</li>
+                    <li>Provide a link to the license</li>
+                    <li>Indicate if changes were made</li>
+                    <li>Distribute your contributions under the same CC BY-NC-SA 4.0 license</li>
+                </ul>
+                
+                <h4>You cannot:</h4>
+                <ul>
+                    <li>Use the content for commercial purposes without permission</li>
+                </ul>
+            </div>
+
+            <p class="license-link"><a href="https://github.com/tovrleaf/obscvratfi/blob/main/LICENSE-CONTENT.md" target="_blank" rel="noopener noreferrer">View full CC BY-NC-SA 4.0 License →</a></p>
+        </section>
+    </div>
+
+    <section class="credits-section">
+        <h2>Credits &amp; Acknowledgments</h2>
+        <p>This website is built with the following open source tools and resources:</p>
+
+        <div class="credits-grid">
+            <div class="credits-column">
+                <div class="credits-category">
+                    <h3>Build Tools</h3>
+                    <ul>
+                        <li><a href="https://gohugo.io" target="_blank" rel="noopener noreferrer">Hugo</a> - Apache License 2.0<br>
+                        <span class="credit-description">Static site generator</span></li>
+                    </ul>
+                </div>
+
+                <div class="credits-category">
+                    <h3>JavaScript Libraries</h3>
+                    <ul>
+                        <li><a href="https://swiperjs.com" target="_blank" rel="noopener noreferrer">Swiper.js</a> - MIT License<br>
+                        <span class="credit-description">Touch slider and carousel functionality</span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="credits-column">
+                <div class="credits-category">
+                    <h3>Fonts &amp; Icons</h3>
+                    <ul>
+                        <li><a href="https://fontawesome.com" target="_blank" rel="noopener noreferrer">Font Awesome</a> - CC BY 4.0 (icons), SIL OFL 1.1 (fonts), MIT (code)<br>
+                        <span class="credit-description">Icon library and toolkit</span></li>
+                        <li><a href="https://github.com/mozilla/Fira" target="_blank" rel="noopener noreferrer">Fira Mono</a> - SIL Open Font License 1.1<br>
+                        <span class="credit-description">Monospace font for navigation and structural elements</span></li>
+                        <li>Typo - Unrestricted/Custom<br>
+                        <span class="credit-description">Custom font for body text</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <p class="license-link"><a href="https://github.com/tovrleaf/obscvratfi/blob/main/NOTICE.md" target="_blank" rel="noopener noreferrer">View full third-party acknowledgments →</a></p>
+    </section>
+
+    <section class="questions-section">
+        <h2>Questions?</h2>
+        <p>For licensing questions or permission requests, please contact us through our social media channels.</p>
+    </section>
+</article>
+
+<style>
+.license-page {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+.license-page h1 {
+    font-family: 'Fira Mono', monospace;
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    color: var(--primary-color);
+}
+
+.license-intro {
+    margin-bottom: 3rem;
+    font-size: 1.1rem;
+    color: var(--secondary-color);
+}
+
+.license-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 3rem;
+    margin-bottom: 4rem;
+}
+
+.license-section {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.license-section h2 {
+    font-family: 'Fira Mono', monospace;
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+    color: var(--primary-color);
+}
+
+.license-type {
+    font-family: 'Fira Mono', monospace;
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    color: var(--secondary-color);
+    font-weight: normal;
+}
+
+.license-section h4 {
+    font-family: 'Fira Mono', monospace;
+    font-size: 1rem;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: var(--secondary-color);
+}
+
+.license-description {
+    font-size: 1.05rem;
+    margin-bottom: 3rem;
+    line-height: 1.6;
+    height: 100px;
+}
+
+.license-can {
+    margin-bottom: 3rem;
+    min-height: 220px;
+}
+
+.license-permissions {
+    margin-bottom: 1.5rem;
+}
+
+.license-applies {
+    margin-bottom: 3rem;
+    min-height: 240px;
+}
+
+.license-section ul {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 0.5rem;
+}
+
+.license-section ul li {
+    padding: 0.4rem 0;
+    padding-left: 1.5rem;
+    position: relative;
+}
+
+.license-section ul li::before {
+    content: "→";
+    position: absolute;
+    left: 0;
+    color: var(--primary-color);
+}
+
+.license-link {
+    margin-top: 1.5rem;
+}
+
+.license-link a {
+    color: var(--primary-color);
+    text-decoration: none;
+    border-bottom: 1px solid var(--primary-color);
+    transition: border-bottom-color 0.2s ease;
+}
+
+.license-link a:hover {
+    border-bottom-color: var(--secondary-color);
+}
+
+.credits-section {
+    margin-bottom: 4rem;
+    padding-bottom: 3rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.credits-section h2 {
+    font-family: 'Fira Mono', monospace;
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    color: var(--primary-color);
+}
+
+.credits-section h3 {
+    font-family: 'Fira Mono', monospace;
+    font-size: 1.2rem;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: var(--secondary-color);
+}
+
+.credits-section .credits-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.credits-section .credits-category {
+    margin-bottom: 2rem;
+}
+
+.credits-section ul li {
+    margin-bottom: 1rem;
+}
+
+.credits-section ul li a {
+    color: var(--primary-color);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-bottom-color 0.2s ease;
+}
+
+.credits-section ul li a:hover {
+    border-bottom-color: var(--primary-color);
+}
+
+.credit-description {
+    font-size: 0.9rem;
+    color: var(--secondary-color);
+    font-style: italic;
+}
+
+.questions-section {
+    text-align: center;
+}
+
+.questions-section h2 {
+    font-family: 'Fira Mono', monospace;
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    color: var(--primary-color);
+}
+
+@media (max-width: 768px) {
+    .license-page {
+        padding: 1.5rem 1rem;
+    }
+    
+    .license-page h1 {
+        font-size: 2rem;
+    }
+    
+    .license-section h2 {
+        font-size: 1.5rem;
+    }
+    
+    .license-section h3 {
+        font-size: 1.1rem;
+    }
+    
+    .credits-section .credits-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .license-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    
+    .license-description,
+    .license-applies,
+    .license-can {
+        height: auto;
+        min-height: 0;
+    }
+}
+</style>
+{{ end }}

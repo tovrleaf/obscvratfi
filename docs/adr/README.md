@@ -35,6 +35,7 @@ decision made, alternatives considered, and consequences.
 - **[011](011-yaml-data-files-for-content-management.md)** - YAML Data
   Files (Accepted, 2026-01-31)
 - **[012](012-semantic-versioning-for-ai-driven-development.md)** - Semantic Versioning (Accepted, 2026-02-02)
+- **[013](013-dual-licensing-strategy-mit-and-cc-by-nc-sa.md)** - Dual Licensing Strategy (Accepted, 2026-02-03)
 
 ## Creating a New ADR
 
