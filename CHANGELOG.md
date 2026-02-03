@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.1] - 2026-02-03
+## [1.1.1] - 2026-02-03
+
+### Added
+- Year headers on live page (2026, 2025, etc.)
+- Content grid pattern documentation in DESIGN.md
+
+### Changed
+- Music and Live pages: 2-column layout on all mobile sizes
+- Live page: Card layout matching music page style
+- Live page: Venue/location displayed before date
+- Footer version link points to specific release tag
+- GitHub release script preserves Markdown formatting
+
+### Fixed
+- Mobile layout: No horizontal overflow on 390px width screens
+- Mobile layout: Reduced gaps on small screens (400px and below)
+- Artist names: Nowrap on desktop, wrap on mobile
+- Release formatting: Proper Markdown rendering in GitHub releases
+
 ## [1.1.0] - 2026-02-02
 ## [1.1.0] - 2026-02-02
 
