@@ -24,28 +24,44 @@
         {{ end }}
     </div>
     
-    <!-- Gigs grid -->
-    <div class="gigs-grid">
-        {{ $live := where .Pages "Kind" "page" }}
-        {{ $sortedLive := sort $live "Date" "desc" }}
-        {{ range $sortedLive }}
-            {{ $gigSlug := strings.TrimSuffix "/" (strings.TrimPrefix "/live/" .RelPermalink) }}
-            {{ $year := .Date.Format "2006" }}
-            <div class="gig-item" data-year="{{ $year }}">
-                <a href="{{ .Permalink }}" class="gig-link">
-                    {{ if .Params.poster }}
-                        <div class="gig-poster">
-                            <img src="/media/live/{{ $gigSlug }}/{{ .Params.poster }}" alt="{{ .Title }} poster">
-                            <div class="gig-overlay">
-                                <span class="gig-date">{{ .Date.Format "January 2, 2006" }} <span class="gig-title-inline">{{ .Title }}</span></span>
-                                <p class="gig-venue">{{ .Params.venue }}, {{ .Params.location }}</p>
-                            </div>
+    <!-- Gigs by year -->
+    {{ $years := slice }}
+    {{ range where .Pages "Kind" "page" }}
+        {{ $year := .Date.Format "2006" }}
+        {{ if not (in $years $year) }}
+            {{ $years = $years | append $year }}
+        {{ end }}
+    {{ end }}
+    
+    {{ range sort $years "value" "desc" }}
+        {{ $year := . }}
+        <section class="year-section" data-year="{{ $year }}">
+            <h2>{{ $year }}</h2>
+            <div class="gigs-grid">
+                {{ $live := where $.Pages "Kind" "page" }}
+                {{ $sortedLive := sort $live "Date" "desc" }}
+                {{ range $sortedLive }}
+                    {{ if eq (.Date.Format "2006") $year }}
+                        {{ $gigSlug := strings.TrimSuffix "/" (strings.TrimPrefix "/live/" .RelPermalink) }}
+                        <div class="gig-item" data-year="{{ $year }}">
+                            <a href="{{ .Permalink }}" class="gig-link">
+                                {{ if .Params.poster }}
+                                    <div class="gig-poster">
+                                        <img src="/media/live/{{ $gigSlug }}/{{ .Params.poster }}" alt="{{ .Title }} poster">
+                                    </div>
+                                    <div class="gig-info">
+                                        <h3 class="gig-title">{{ .Title }}</h3>
+                                        <p class="gig-venue">{{ .Params.venue }}, {{ .Params.location }}</p>
+                                        <p class="gig-date-text">{{ .Date.Format "January 2, 2006" }}</p>
+                                    </div>
+                                {{ end }}
+                            </a>
                         </div>
                     {{ end }}
-                </a>
+                {{ end }}
             </div>
-        {{ end }}
-    </div>
+        </section>
+    {{ end }}
 </section>
 
 <style>
@@ -203,11 +219,25 @@
 }
 
 /* Gigs grid */
+.year-section {
+    margin-bottom: 3rem;
+}
+
+.year-section h2 {
+    font-family: var(--font-body);
+    font-size: 1.8rem;
+    color: var(--primary-color);
+    margin: 2rem 0 1.5rem 0;
+}
+
+.year-section.hidden {
+    display: none;
+}
+
 .gigs-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 2rem;
-    margin-top: 2rem;
 }
 
 .gig-item {
@@ -219,77 +249,16 @@
 }
 
 .gig-link {
-    display: flex;
-    gap: 2rem;
+    display: block;
     text-decoration: none;
     color: inherit;
 }
 
 .gig-poster {
     position: relative;
-    flex-shrink: 0;
-    width: 200px;
+    width: 100%;
     aspect-ratio: 1 / 1;
-}
-
-.gig-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    z-index: 2;
-    transform: translateY(0.5em);
-}
-
-.gig-date {
-    --primary: rgba(255, 255, 255, 0.1);
-    --shadow-primary: rgba(100, 100, 100, 0.5);
-    font-family: var(--font-body);
-    font-weight: normal;
-    color: var(--primary-color);
-    font-size: 0.9rem;
-    display: block;
-    margin-bottom: 0.5rem;
-    margin-left: 2rem;
-    padding: 0.5rem 0.5rem 0.5rem 4rem;
-    position: relative;
-    clip-path: polygon(0 0, 100% 0, 100% 100%, 95% 100%, 95% 90%, 85% 90%, 85% 100%, 8% 100%, 0 70%);
-    background: linear-gradient(to right, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.3) 40%, rgba(0, 0, 0, 0.7) 100%);
-    white-space: nowrap;
-}
-
-@media (max-width: 1200px) {
-    .gig-date {
-        white-space: normal;
-        word-wrap: break-word;
-    }
-}
-
-.gig-date strong,
-.gig-date .gig-title-inline {
-    margin-left: 4ch;
-    font-weight: normal;
-    font-family: var(--font-display);
-    position: relative;
-    z-index: 1;
-}
-
-.gig-date::before {
-    display: none;
-}
-
-.gig-date::after {
-    display: none;
-}
-
-.gig-title {
-    font-size: 1.1rem;
-    font-weight: normal;
-    margin: 0;
-    padding-left: 4ch;
-    color: var(--primary-color);
+    margin-bottom: 0.75rem;
 }
 
 .gig-poster::after {
@@ -321,37 +290,54 @@
     filter: grayscale(0%);
 }
 
-.gig-venue {
+.gig-info {
+    padding: 0;
+}
+
+.gig-title {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    margin: 0 0 0.25rem 0;
+    color: var(--primary-color);
+}
+
+.gig-date-text {
+    font-family: var(--font-body);
+    font-size: 0.85rem;
     color: var(--secondary-color);
-    font-size: 0.9rem;
+    margin: 0 0 0.25rem 0;
+}
+
+.gig-venue {
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    color: var(--secondary-color);
     margin: 0;
-    padding-left: 23ch;
 }
 
 @media (max-width: 768px) {
     .gigs-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
     }
     
-    .gig-link {
-        flex-direction: column;
+    .gigs-filters {
+        gap: 0.5rem;
     }
     
-    .gig-poster {
-        width: 100%;
-    }
-    
-    .gig-venue {
-        background: rgba(0, 0, 0, 0.5);
-        padding: 0.5rem;
-        margin-left: 2rem;
-        text-align: center;
+    .filter-btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.8rem;
     }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 400px) {
     .gigs-grid {
-        gap: 1.5rem;
+        gap: 0.75rem;
+    }
+    
+    .gigs-page {
+        padding: 1rem;
     }
 }
 </style>
@@ -359,7 +345,7 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const filterBtns = document.querySelectorAll('.filter-btn');
-    const gigItems = document.querySelectorAll('.gig-item');
+    const yearSections = document.querySelectorAll('.year-section');
     
     filterBtns.forEach(btn => {
         btn.addEventListener('click', function() {
@@ -369,12 +355,12 @@ document.addEventListener('DOMContentLoaded', function() {
             filterBtns.forEach(b => b.classList.remove('active'));
             this.classList.add('active');
             
-            // Filter gigs
-            gigItems.forEach(item => {
-                if (year === 'all' || item.dataset.year === year) {
-                    item.classList.remove('hidden');
+            // Filter year sections
+            yearSections.forEach(section => {
+                if (year === 'all' || section.dataset.year === year) {
+                    section.classList.remove('hidden');
                 } else {
-                    item.classList.add('hidden');
+                    section.classList.add('hidden');
                 }
             });
         });
