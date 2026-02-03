@@ -22,7 +22,7 @@ fi
 
 # Extract changelog entry for this version
 # Get lines between first ## [ and second ## [
-RELEASE_NOTES=$(awk '/^## \[/{if(++count==1){flag=1;next}else{flag=0}}flag' "$CHANGELOG" | sed '/^$/d')
+RELEASE_NOTES=$(awk '/^## \[/{if(++count==1){flag=1;next}else{flag=0}}flag' "$CHANGELOG")
 
 if [[ -z "$RELEASE_NOTES" ]]; then
     echo "Error: Could not extract release notes for version $VERSION" >&2

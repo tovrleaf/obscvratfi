@@ -199,6 +199,46 @@ padding: 0.5rem;
 
 ## Grid Layouts
 
+### Content Grid (Music, Live, Media)
+
+**Responsive auto-fill pattern:**
+
+```css
+.content-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 2rem;
+}
+```
+
+**Behavior:**
+- ~1000px+ width = 4 columns
+- ~750-1000px = 3 columns
+- ~500-750px = 2 columns
+- Mobile (<768px) = forced 2 columns via media query
+
+**Mobile override:**
+
+```css
+@media (max-width: 768px) {
+    .content-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 400px) {
+    .content-grid {
+        gap: 0.75rem;
+    }
+}
+```
+
+**Used in:**
+- Music page (`/music/`)
+- Live page (`/live/`)
+- Media page (`/media/`)
+
 ### Media Grid
 
 ```css
