@@ -38,14 +38,14 @@ sh:
 			exit 1; \
 		fi; \
 		if [ -f ../../.venv/bin/shellcheck ]; then \
-			if cd ../.. && .venv/bin/shellcheck --format=gcc $(FILE); then \
+			if cd ../.. && .venv/bin/shellcheck --severity=error --format=gcc $(FILE); then \
 				echo "✅ Shellcheck passed"; \
 			else \
 				echo "❌ Shellcheck found issues in $(FILE)"; \
 				exit 1; \
 			fi; \
 		elif command -v shellcheck >/dev/null 2>&1; then \
-			if cd ../.. && shellcheck --format=gcc $(FILE); then \
+			if cd ../.. && shellcheck --severity=error --format=gcc $(FILE); then \
 				echo "✅ Shellcheck passed"; \
 			else \
 				echo "❌ Shellcheck found issues in $(FILE)"; \
@@ -59,14 +59,14 @@ sh:
 	else \
 		echo "🔍 Running shellcheck on all shell scripts..."; \
 		if [ -f ../../.venv/bin/shellcheck ]; then \
-			if cd ../.. && find scripts -name "*.sh" -type f -exec .venv/bin/shellcheck --format=gcc {} +; then \
+			if cd ../.. && find scripts -name "*.sh" -type f -exec .venv/bin/shellcheck --severity=error --format=gcc {} +; then \
 				echo "✅ Shellcheck passed"; \
 			else \
 				echo "❌ Shellcheck found issues"; \
 				exit 1; \
 			fi; \
 		elif command -v shellcheck >/dev/null 2>&1; then \
-			if cd ../.. && find scripts -name "*.sh" -type f -exec shellcheck --format=gcc {} +; then \
+			if cd ../.. && find scripts -name "*.sh" -type f -exec shellcheck --severity=error --format=gcc {} +; then \
 				echo "✅ Shellcheck passed"; \
 			else \
 				echo "❌ Shellcheck found issues"; \
@@ -86,7 +86,7 @@ sh-commit:
 	@if [ -f ../../.venv/bin/shellcheck ]; then \
 		cd ../.. && shell_files=$$(git diff-tree --no-commit-id --name-only -r HEAD | grep '\.sh$$'); \
 		if [ -n "$$shell_files" ]; then \
-			if echo "$$shell_files" | xargs .venv/bin/shellcheck --format=gcc; then \
+			if echo "$$shell_files" | xargs .venv/bin/shellcheck --severity=error --format=gcc; then \
 				echo "✅ Shellcheck passed"; \
 			else \
 				echo "❌ Shellcheck found issues in committed files"; \
@@ -98,7 +98,7 @@ sh-commit:
 	elif command -v shellcheck >/dev/null 2>&1; then \
 		cd ../.. && shell_files=$$(git diff-tree --no-commit-id --name-only -r HEAD | grep '\.sh$$'); \
 		if [ -n "$$shell_files" ]; then \
-			if echo "$$shell_files" | xargs shellcheck --format=gcc; then \
+			if echo "$$shell_files" | xargs shellcheck --severity=error --format=gcc; then \
 				echo "✅ Shellcheck passed"; \
 			else \
 				echo "❌ Shellcheck found issues in committed files"; \

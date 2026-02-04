@@ -117,7 +117,16 @@ select_ruleset_to_delete() {
     echo ""
     read -p "Enter ruleset ID to delete (or Ctrl+C to cancel): " selected_id
     
-    if [[ ! " ${ids_array[@]} " =~ " ${selected_id} " ]]; then
+    # Check if selected_id is in ids_array
+    found=false
+    for id in "${ids_array[@]}"; do
+        if [[ "$id" == "$selected_id" ]]; then
+            found=true
+            break
+        fi
+    done
+    
+    if [[ "$found" == "false" ]]; then
         log_error "Invalid ruleset ID: $selected_id"
         exit 1
     fi
