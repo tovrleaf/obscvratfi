@@ -1,4 +1,4 @@
 .PHONY: live
 
 live: ## Manage live performances (create, list, edit, delete)
-	@./scripts/manage-live.sh
+	@python3 ./scripts/manage_live.py
