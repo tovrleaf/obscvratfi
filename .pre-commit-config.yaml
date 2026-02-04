@@ -52,7 +52,7 @@ repos:
       - id: hugo-build
         name: hugo-build
         description: Validate Hugo build (dev mode)
-        entry: bash -c 'cd website && docker run --rm -v "$PWD:/site" -w /site alpine:3.20.2 sh -c "wget -q -O - https://github.com/gohugoio/hugo/releases/download/v0.128.2/hugo_0.128.2_linux-amd64.tar.gz | tar xz && ./hugo --config hugo.toml && rm -f hugo LICENSE" && cd ..'
+        entry: bash -c 'cd website && hugo && cd ..'
         language: system
         pass_filenames: false
         always_run: true
