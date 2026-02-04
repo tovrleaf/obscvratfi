@@ -74,9 +74,11 @@ We will implement a two-layer testing approach:
    - Validates: `.github/workflows/*.yml`, `docker-compose.yml`, etc.
    - Catches: format errors, indentation issues, structure problems
 
-3. **Markdown Linting (markdownlint)**
-   - Validates: `docs/**/*.md`, `README.md`, etc.
+3. **Markdown Linting (pymarkdown)**
+   - Validates: `docs/**/*.md`, `README.md`, `website/content/**/*.md`
    - Catches: formatting issues, link problems, consistency
+   - Configuration: `.pymarkdownlnt` with Hugo-specific rules disabled
+   - See: `docs/MARKDOWN-LINTING.md` for complete list of disabled rules and rationale
 
 4. **TOML Linting (tomli)**
    - Validates: `website/hugo.toml`, `Dockerfile` config
