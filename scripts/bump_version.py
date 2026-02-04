@@ -16,13 +16,13 @@ from pathlib import Path
 def parse_changelog(content: str) -> dict:
     """
     Parse CHANGELOG.md content to extract current version.
-    
+
     Args:
         content: CHANGELOG.md file content
-        
+
     Returns:
         Dict with version info
-        
+
     Raises:
         ValueError: If no version found
     """
@@ -35,25 +35,25 @@ def parse_changelog(content: str) -> dict:
 def bump_version(current_version: str, bump_type: str) -> str:
     """
     Calculate new version based on bump type.
-    
+
     Args:
         current_version: Current version string (e.g., "1.0.0")
         bump_type: Type of bump ("major", "minor", "patch")
-        
+
     Returns:
         New version string
-        
+
     Raises:
         ValueError: If invalid bump type or version format
     """
     if bump_type not in ['major', 'minor', 'patch']:
         raise ValueError(f"Invalid bump type '{bump_type}'. Use: major, minor, or patch")
-    
+
     try:
         major, minor, patch = map(int, current_version.split('.'))
-    except ValueError:
-        raise ValueError(f"Invalid version format: {current_version}")
-    
+    except ValueError as e:
+        raise ValueError(f"Invalid version format: {current_version}") from e
+
     if bump_type == 'major':
         major += 1
         minor = 0
@@ -63,21 +63,21 @@ def bump_version(current_version: str, bump_type: str) -> str:
         patch = 0
     else:  # patch
         patch += 1
-    
+
     return f"{major}.{minor}.{patch}"
 
 
 def update_changelog(changelog_path: Path, new_version: str) -> None:
     """
     Update CHANGELOG.md with new version entry.
-    
+
     Args:
         changelog_path: Path to CHANGELOG.md
         new_version: New version string
     """
     content = changelog_path.read_text()
     today = date.today().strftime('%Y-%m-%d')
-    
+
     new_entry = f"""## [{new_version}] - {today}
 
 ### Added
@@ -87,7 +87,7 @@ def update_changelog(changelog_path: Path, new_version: str) -> None:
 ### Fixed
 
 """
-    
+
     # Find first version line and insert before it
     lines = content.split('\n')
     for i, line in enumerate(lines):
@@ -96,42 +96,42 @@ def update_changelog(changelog_path: Path, new_version: str) -> None:
             break
     else:
         raise ValueError("Could not find version entry in CHANGELOG")
-    
+
     changelog_path.write_text('\n'.join(lines))
 
 
 def main_function(bump_type: str) -> int:
     """
     Main logic function.
-    
+
     Args:
         bump_type: Type of version bump
-        
+
     Returns:
         Exit code (0 for success)
     """
     changelog_path = Path("CHANGELOG.md")
     data_changelog_path = Path("website/data/changelog.txt")
-    
+
     if not changelog_path.exists():
         print(f"Error: {changelog_path} not found", file=sys.stderr)
         return 1
-    
+
     try:
         content = changelog_path.read_text()
         version_info = parse_changelog(content)
         current_version = version_info['version']
         new_version = bump_version(current_version, bump_type)
-        
+
         update_changelog(changelog_path, new_version)
-        
+
         # Copy to website/data for Hugo
         data_changelog_path.parent.mkdir(parents=True, exist_ok=True)
         data_changelog_path.write_text(changelog_path.read_text())
-        
+
         print(new_version)
         return 0
-        
+
     except (ValueError, OSError) as e:
         print(f"Error: {e}", file=sys.stderr)
         return 1
