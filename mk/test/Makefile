@@ -14,6 +14,13 @@ help:
 	@echo "  make test secrets         - Run detect-secrets on all files"
 	@echo "  make test links           - Check critical internal links"
 	@echo ""
+	@echo "Test single file (use FILE parameter):"
+	@echo "  make test sh FILE=path/to/script.sh"
+	@echo "  make test yaml FILE=path/to/file.yml"
+	@echo "  make test md FILE=path/to/file.md"
+	@echo "  make test html FILE=path/to/file.html"
+	@echo "  make test py FILE=path/to/file.py"
+	@echo ""
 	@echo "Test committed files:"
 	@echo "  make test sh-commit       - Run shellcheck on shell scripts in last commit"
 	@echo "  make test yaml-commit     - Run yamllint on YAML files in last commit"
@@ -24,17 +31,35 @@ help:
 	@echo "  See ADR-004 for testing requirements"
 
 sh:
-	@echo "🔍 Running shellcheck on all shell scripts..."
-	@if [ -f ../../.venv/bin/shellcheck ]; then \
-		cd ../.. && find scripts -name "*.sh" -type f -exec .venv/bin/shellcheck --format=gcc {} +; \
-		echo "✅ Shellcheck complete"; \
-	elif command -v shellcheck >/dev/null 2>&1; then \
-		cd ../.. && find scripts -name "*.sh" -type f -exec shellcheck --format=gcc {} +; \
+	@if [ -n "$(FILE)" ]; then \
+		echo "🔍 Running shellcheck on $(FILE)..."; \
+		if [ ! -f "../../$(FILE)" ]; then \
+			echo "❌ File not found: $(FILE)"; \
+			exit 1; \
+		fi; \
+		if [ -f ../../.venv/bin/shellcheck ]; then \
+			cd ../.. && .venv/bin/shellcheck --format=gcc $(FILE); \
+		elif command -v shellcheck >/dev/null 2>&1; then \
+			cd ../.. && shellcheck --format=gcc $(FILE); \
+		else \
+			echo "❌ shellcheck not found"; \
+			echo "Run 'make hooks setup' to install locally"; \
+			exit 1; \
+		fi; \
 		echo "✅ Shellcheck complete"; \
 	else \
-		echo "❌ shellcheck not found"; \
-		echo "Run 'make hooks setup' to install locally"; \
-		exit 1; \
+		echo "🔍 Running shellcheck on all shell scripts..."; \
+		if [ -f ../../.venv/bin/shellcheck ]; then \
+			cd ../.. && find scripts -name "*.sh" -type f -exec .venv/bin/shellcheck --format=gcc {} +; \
+			echo "✅ Shellcheck complete"; \
+		elif command -v shellcheck >/dev/null 2>&1; then \
+			cd ../.. && find scripts -name "*.sh" -type f -exec shellcheck --format=gcc {} +; \
+			echo "✅ Shellcheck complete"; \
+		else \
+			echo "❌ shellcheck not found"; \
+			echo "Run 'make hooks setup' to install locally"; \
+			exit 1; \
+		fi; \
 	fi
 
 sh-all: sh
@@ -62,14 +87,30 @@ sh-commit:
 	fi
 
 yaml:
-	@echo "🔍 Running yamllint on all YAML files..."
-	@if [ -f ../../.venv/bin/yamllint ]; then \
-		cd ../.. && find . -name "*.yml" -o -name "*.yaml" | grep -v ".venv" | xargs .venv/bin/yamllint -c .github/yamllint-config.yml; \
+	@if [ -n "$(FILE)" ]; then \
+		echo "🔍 Running yamllint on $(FILE)..."; \
+		if [ ! -f "../../$(FILE)" ]; then \
+			echo "❌ File not found: $(FILE)"; \
+			exit 1; \
+		fi; \
+		if [ -f ../../.venv/bin/yamllint ]; then \
+			cd ../.. && .venv/bin/yamllint -c .github/yamllint-config.yml $(FILE); \
+		else \
+			echo "❌ yamllint not found"; \
+			echo "Run 'make hooks setup' to install locally"; \
+			exit 1; \
+		fi; \
 		echo "✅ Yamllint complete"; \
 	else \
-		echo "❌ yamllint not found"; \
-		echo "Run 'make hooks setup' to install locally"; \
-		exit 1; \
+		echo "🔍 Running yamllint on all YAML files..."; \
+		if [ -f ../../.venv/bin/yamllint ]; then \
+			cd ../.. && find . -name "*.yml" -o -name "*.yaml" | grep -v ".venv" | xargs .venv/bin/yamllint -c .github/yamllint-config.yml; \
+			echo "✅ Yamllint complete"; \
+		else \
+			echo "❌ yamllint not found"; \
+			echo "Run 'make hooks setup' to install locally"; \
+			exit 1; \
+		fi; \
 	fi
 
 yaml-all: yaml
@@ -90,14 +131,30 @@ yaml-commit:
 	fi
 
 md:
-	@echo "🔍 Running pymarkdown on all Markdown files..."
-	@if [ -f ../../.venv/bin/pymarkdown ]; then \
-		cd ../.. && find . -name "*.md" | grep -v ".venv" | xargs .venv/bin/pymarkdown --config .pymarkdownlnt scan; \
+	@if [ -n "$(FILE)" ]; then \
+		echo "🔍 Running pymarkdown on $(FILE)..."; \
+		if [ ! -f "../../$(FILE)" ]; then \
+			echo "❌ File not found: $(FILE)"; \
+			exit 1; \
+		fi; \
+		if [ -f ../../.venv/bin/pymarkdown ]; then \
+			cd ../.. && .venv/bin/pymarkdown --config .pymarkdownlnt scan $(FILE); \
+		else \
+			echo "❌ pymarkdown not found"; \
+			echo "Run 'make hooks setup' to install locally"; \
+			exit 1; \
+		fi; \
 		echo "✅ Pymarkdown complete"; \
 	else \
-		echo "❌ pymarkdown not found"; \
-		echo "Run 'make hooks setup' to install locally"; \
-		exit 1; \
+		echo "🔍 Running pymarkdown on all Markdown files..."; \
+		if [ -f ../../.venv/bin/pymarkdown ]; then \
+			cd ../.. && find . -name "*.md" | grep -v ".venv" | xargs .venv/bin/pymarkdown --config .pymarkdownlnt scan; \
+			echo "✅ Pymarkdown complete"; \
+		else \
+			echo "❌ pymarkdown not found"; \
+			echo "Run 'make hooks setup' to install locally"; \
+			exit 1; \
+		fi; \
 	fi
 
 md-all: md
@@ -118,8 +175,17 @@ md-commit:
 	fi
 
 html:
-	@echo "🔍 Running HTML validation on all files..."
-	@cd ../.. && chmod +x scripts/test-html.sh && scripts/test-html.sh all
+	@if [ -n "$(FILE)" ]; then \
+		echo "🔍 Running HTML validation on $(FILE)..."; \
+		if [ ! -f "../../$(FILE)" ]; then \
+			echo "❌ File not found: $(FILE)"; \
+			exit 1; \
+		fi; \
+		cd ../.. && chmod +x scripts/test-html.sh && scripts/test-html.sh single $(FILE); \
+	else \
+		echo "🔍 Running HTML validation on all files..."; \
+		cd ../.. && chmod +x scripts/test-html.sh && scripts/test-html.sh all; \
+	fi
 
 html-all: html
 
@@ -157,17 +223,35 @@ links:
 	fi
 
 py:
-	@echo "🐍 Running Python tests and linting..."
-	@if [ -f ../../.venv/bin/pytest ]; then \
-		cd ../.. && (.venv/bin/ruff check scripts/ || echo "⚠️  Ruff found issues but continuing...") && \
-		.venv/bin/pytest && echo "✅ Pytest complete"; \
-	elif command -v pytest >/dev/null 2>&1 && command -v ruff >/dev/null 2>&1; then \
-		cd ../.. && (ruff check scripts/ || echo "⚠️  Ruff found issues but continuing...") && \
-		pytest && echo "✅ Pytest complete"; \
+	@if [ -n "$(FILE)" ]; then \
+		echo "🐍 Running Python linting on $(FILE)..."; \
+		if [ ! -f "../../$(FILE)" ]; then \
+			echo "❌ File not found: $(FILE)"; \
+			exit 1; \
+		fi; \
+		if [ -f ../../.venv/bin/ruff ]; then \
+			cd ../.. && (.venv/bin/ruff check $(FILE) || echo "⚠️  Ruff found issues but continuing..."); \
+		elif command -v ruff >/dev/null 2>&1; then \
+			cd ../.. && (ruff check $(FILE) || echo "⚠️  Ruff found issues but continuing..."); \
+		else \
+			echo "❌ ruff not found"; \
+			echo "Run 'make hooks setup' to install locally"; \
+			exit 1; \
+		fi; \
+		echo "✅ Python linting complete"; \
 	else \
-		echo "❌ pytest or ruff not found"; \
-		echo "Run 'make hooks setup' to install locally"; \
-		exit 1; \
+		echo "🐍 Running Python tests and linting..."; \
+		if [ -f ../../.venv/bin/pytest ]; then \
+			cd ../.. && (.venv/bin/ruff check scripts/ || echo "⚠️  Ruff found issues but continuing...") && \
+			.venv/bin/pytest && echo "✅ Pytest complete"; \
+		elif command -v pytest >/dev/null 2>&1 && command -v ruff >/dev/null 2>&1; then \
+			cd ../.. && (ruff check scripts/ || echo "⚠️  Ruff found issues but continuing...") && \
+			pytest && echo "✅ Pytest complete"; \
+		else \
+			echo "❌ pytest or ruff not found"; \
+			echo "Run 'make hooks setup' to install locally"; \
+			exit 1; \
+		fi; \
 	fi
 
 py-all: py

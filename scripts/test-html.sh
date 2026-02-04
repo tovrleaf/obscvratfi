@@ -3,9 +3,10 @@ set -e
 
 # HTML Testing Script for Hugo Site
 # Tests HTML validation and verifies changes are present in rendered output
-# Usage: scripts/test-html.sh [all|changed]
+# Usage: scripts/test-html.sh [all|changed|single] [file]
 
 MODE="${1:-changed}"
+SINGLE_FILE="${2:-}"
 
 # Files that trigger HTML rebuild/validation
 TRIGGER_PATTERNS=(
@@ -53,6 +54,26 @@ rebuild_hugo_site() {
         hugo --config hugo.toml
     fi
     cd ..
+}
+
+validate_single_html() {
+    local file="$1"
+    echo "🔍 Validating HTML file: $file"
+    
+    # Check if html5lib is available
+    if ! $PYTHON -c "import html5lib" 2>/dev/null; then
+        echo "⚠️  html5lib not found, skipping HTML validation"
+        echo "   Run 'make hooks setup' to install"
+        return 0
+    fi
+    
+    if ! $PYTHON -m html5lib "$file" >/dev/null 2>&1; then
+        echo "❌ Error in $file"
+        return 1
+    else
+        echo "✅ HTML validation passed"
+        return 0
+    fi
 }
 
 validate_html() {
@@ -122,6 +143,20 @@ check_changes_in_html() {
 
 main() {
     check_dependencies
+    
+    if [ "$MODE" = "single" ]; then
+        if [ -z "$SINGLE_FILE" ]; then
+            echo "❌ Single file mode requires a file argument"
+            exit 1
+        fi
+        if [ ! -f "$SINGLE_FILE" ]; then
+            echo "❌ File not found: $SINGLE_FILE"
+            exit 1
+        fi
+        validate_single_html "$SINGLE_FILE"
+        echo "✅ HTML testing complete"
+        exit 0
+    fi
     
     if [ "$MODE" = "all" ]; then
         echo "🔍 Testing all HTML files..."
