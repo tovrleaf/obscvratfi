@@ -143,17 +143,17 @@ html-commit:
 		exit 1; \
 	fi
 
-secrets:
-	@echo "🔍 Running detect-secrets on all files..."
-	@if [ -f ../../.venv/bin/detect-secrets ]; then \
-		cd ../.. && .venv/bin/detect-secrets scan; \
+secrets: # pragma: allowlist secret
+	@echo "🔍 Running detect-secrets on all files..." # pragma: allowlist secret
+	@if [ -f ../../.venv/bin/detect-secrets ]; then \ # pragma: allowlist secret
+		cd ../.. && .venv/bin/detect-secrets scan; \ # pragma: allowlist secret
 	else \
-		echo "❌ detect-secrets not found"; \
+		echo "❌ detect-secrets not found"; \ # pragma: allowlist secret
 		echo "Run 'make hooks setup' to install locally"; \
 		exit 1; \
 	fi
 
-secrets-all: secrets
+secrets-all: secrets # pragma: allowlist secret
 
 links:
 	@echo "🔗 Checking critical internal links..."
