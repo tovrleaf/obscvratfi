@@ -46,13 +46,16 @@ has_trigger_changes() {
 
 rebuild_hugo_site() {
     echo "🔨 Rebuilding Hugo site..."
-    cd website
-    if [ -f ../docker-compose.yml ]; then
-        docker run --rm -v "$PWD:/site" -w /site alpine:3.20.2 sh -c \
-            "wget -q -O - https://github.com/gohugoio/hugo/releases/download/v0.128.2/hugo_0.128.2_linux-amd64.tar.gz | tar xz && ./hugo --config hugo.toml && rm -f hugo LICENSE"
-    else
-        hugo --config hugo.toml
+    
+    if ! command -v hugo &> /dev/null; then
+        echo "❌ Hugo not found"
+        echo "Install Hugo Extended v0.128.2 or later:"
+        echo "  https://gohugo.io/installation/"
+        exit 1
     fi
+    
+    cd website
+    hugo --config hugo.toml
     cd ..
 }
 

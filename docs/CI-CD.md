@@ -45,11 +45,9 @@ Builds the Hugo site and validates output.
 
 #### Build Steps
 
-1. **Docker setup** - Prepares Docker build environment
-2. **Docker cache** - Uses GitHub Actions cache for faster builds
-3. **Hugo build** - Runs Hugo in Docker to generate `website/public/`
+1. **Hugo setup** - Installs Hugo Extended
+2. **Hugo build** - Runs Hugo to generate `website/public/`
    - Dev mode (unminified, for testing)
-   - Cached Docker layers for speed
 4. **HTML validation** - Validates generated HTML structure
 5. **Link checking** - Verifies critical internal links exist
 
@@ -64,7 +62,7 @@ Builds the Hugo site and validates output.
 
 **Failure mode:** Build or link check failures block merge
 
-**Time:** 30-60 seconds (varies based on Docker cache)
+**Time:** 30-60 seconds
 
 ---
 
@@ -307,15 +305,15 @@ You'll get emails for:
 
 ### Build Times
 
-- **First build:** 2-3 minutes (downloads Docker image)
-- **Subsequent builds:** 30-60 seconds (uses cached Docker layers)
+- **First build:** 1-2 minutes (installs Hugo)
+- **Subsequent builds:** 30-60 seconds (uses cached Hugo)
 - **Lint only:** 1-2 minutes
-- **Total pipeline:** 5-10 minutes
+- **Total pipeline:** 3-5 minutes
 
 ### Optimization
 
-Docker layer caching significantly speeds up builds. Cache persists across workflow runs unless:
-- Dockerfile changes
+Hugo caching speeds up builds. Cache persists across workflow runs unless:
+- Hugo version changes
 - Dependencies change
 - Cache is manually cleared
 
@@ -337,13 +335,6 @@ Docker layer caching significantly speeds up builds. Cache persists across workf
 1. Workflow file syntax (YAML errors)
 2. Branch is included in `on` trigger conditions
 3. Repository has Actions enabled
-
-### Docker cache not working
-
-**Check:**
-1. GitHub Actions cache is enabled (default)
-2. Dockerfile hasn't changed
-3. No manual cache clear performed
 
 ### Lint warnings blocking merge
 

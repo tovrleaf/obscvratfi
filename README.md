@@ -266,7 +266,7 @@ Edit `website/content/about/_index.md` to update the About page content. The pag
 ### Local Development Environment
 
 **Prerequisites:**
-- Docker (or Docker Desktop for macOS/Windows)
+- Hugo Extended v0.128.2 or later ([installation instructions](https://gohugo.io/installation/))
 - Make
 
 **Starting the dev server:**
@@ -274,7 +274,7 @@ Edit `website/content/about/_index.md` to update the About page content. The pag
 make serve
 ```
 
-This starts Hugo in Docker and watches for file changes. The site auto-reloads at `http://localhost:1313`.
+This starts Hugo and watches for file changes. The site auto-reloads at `http://localhost:1313`.
 
 ### Building the Site
 
