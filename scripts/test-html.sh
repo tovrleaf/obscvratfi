@@ -67,12 +67,32 @@ validate_single_html() {
         return 0
     fi
     
-    if ! $PYTHON -m html5lib "$file" >/dev/null 2>&1; then
-        echo "❌ Error in $file"
-        return 1
-    else
-        echo "✅ HTML validation passed"
+    # Create temporary Python script for validation
+    local temp_script
+    temp_script=$(mktemp)
+    cat > "$temp_script" << 'EOF'
+import html5lib
+import sys
+import os
+
+filename = sys.argv[1]
+try:
+    with open(filename, 'r') as f:
+        parser = html5lib.HTMLParser(strict=True)
+        parser.parse(f)
+    print(f"✅ {filename}: HTML validation passed")
+except Exception as e:
+    print(f"❌ {filename}: {e}")
+    sys.exit(1)
+EOF
+    
+    # Run validation and capture result
+    if $PYTHON "$temp_script" "$file"; then
+        rm -f "$temp_script"
         return 0
+    else
+        rm -f "$temp_script"
+        return 1
     fi
 }
 
@@ -86,17 +106,38 @@ validate_html() {
         return 0
     fi
     
-    # Validate all HTML files
+    # Create temporary Python script for validation
+    local temp_script
+    temp_script=$(mktemp)
+    cat > "$temp_script" << 'EOF'
+import html5lib
+import sys
+import os
+
+filename = sys.argv[1]
+try:
+    with open(filename, 'r') as f:
+        parser = html5lib.HTMLParser(strict=True)
+        parser.parse(f)
+except Exception as e:
+    print(f"❌ {filename}: {e}")
+    sys.exit(1)
+EOF
+    
+    # Validate all HTML files and collect errors
     local errors=0
     while IFS= read -r html_file; do
-        if ! $PYTHON -m html5lib "$html_file" >/dev/null 2>&1; then
-            echo "❌ Error in $html_file"
+        if ! $PYTHON "$temp_script" "$html_file" 2>/dev/null; then
             errors=$((errors + 1))
         fi
     done < <(find website/public -name "*.html" -type f)
     
+    rm -f "$temp_script"
+    
     if [ $errors -gt 0 ]; then
         echo "❌ HTML validation failed: $errors files with errors"
+        echo "Run with single file mode to see specific errors:"
+        echo "  make test html FILE=path/to/file.html"
         return 1
     else
         echo "✅ HTML validation passed"
