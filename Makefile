@@ -22,6 +22,7 @@ help: ## Show this help
 	@echo "  make media                     - Manage media (pictures, videos)"
 	@echo "  make music                     - Manage music/albums"
 	@echo "  make generate                  - Generate markdown from YAML data"
+	@echo "  make bump-version              - Bump version in CHANGELOG.md"
 	@echo ""
 	@echo "Website:"
 	@echo "  make serve                     - Run dev server"
