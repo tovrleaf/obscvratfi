@@ -2,8 +2,8 @@
 # Documentation: https://gohugo.io/getting-started/configuration/
 #
 # Environment-specific settings:
-# - Development: baseURL = "http://localhost:1313", minify = false
-# - Production: baseURL = "https://obscvrat.fi", minify = true
+# - Development: baseURL = "http://localhost:1313", minifyOutput = false
+# - Production: baseURL = "https://obscvrat.fi", minifyOutput = true
 #
 # To build for production:
 #   hugo --baseURL="https://obscvrat.fi" --minify
@@ -19,7 +19,8 @@ languageCode = "en-us"
 defaultContentLanguage = "en"
 
 # Enable gzip compression and minification in production
-minify = false  # Set to true in production builds
+[minify]
+minifyOutput = false  # Set to true in production builds
 
 # Logging
 logLevel = "warn"
@@ -40,7 +41,6 @@ bandcamp = "https://iamrat.bandcamp.com/"
 home = ["HTML", "JSON", "RSS", "sitemap"]
 section = ["HTML"]
 taxonomy = ["HTML"]
-taxonomyTerm = ["HTML"]
 
 # Output format settings
 [outputFormats]
@@ -102,8 +102,8 @@ weight = 4
 
 # Permalinks configuration
 [permalinks]
-live = "/live/:filename/"
-music = "/music/:filename/"
+live = "/live/:contentbasename/"
+music = "/music/:contentbasename/"
 about = "/about/"
 
 # Outputs per kind

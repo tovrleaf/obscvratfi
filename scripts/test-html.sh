@@ -76,16 +76,58 @@ validate_single_html() {
     cat > "$temp_script" << 'EOF'
 import html5lib
 import sys
-import os
+import re
 
 filename = sys.argv[1]
+
+# Read file content
+with open(filename, 'r') as f:
+    content = f.read()
+    lines = content.split('\n')
+
+# Parse with error tracking
+parser = html5lib.HTMLParser(strict=True)
 try:
-    with open(filename, 'r') as f:
-        parser = html5lib.HTMLParser(strict=True)
-        parser.parse(f)
+    parser.parse(content)
     print(f"✅ {filename}: HTML validation passed")
+    sys.exit(0)
 except Exception as e:
-    print(f"❌ {filename}: {e}")
+    error_msg = str(e)
+    print(f"❌ {filename}: {error_msg}")
+    
+    # Provide specific hints based on error type
+    if "Named entity expected" in error_msg or "& " in error_msg:
+        print("\n   Common causes:")
+        print("   1. Unescaped & in URLs (use &amp; instead)")
+        print("   2. Unescaped & in text (use &amp; instead)")
+        print("\n   Searching for unescaped & characters (excluding <script> and <style> tags)...")
+        
+        # Remove script and style tag contents to avoid false positives
+        content_no_scripts = re.sub(r'<script[^>]*>.*?</script>', '', content, flags=re.DOTALL | re.IGNORECASE)
+        content_no_scripts = re.sub(r'<style[^>]*>.*?</style>', '', content_no_scripts, flags=re.DOTALL | re.IGNORECASE)
+        lines_no_scripts = content_no_scripts.split('\n')
+        
+        # Find lines with unescaped & (not part of entity)
+        found_issues = False
+        for i, line in enumerate(lines_no_scripts, 1):
+            # Look for & not followed by valid entity pattern
+            matches = re.finditer(r'&(?![a-zA-Z]+;|#[0-9]+;|#x[0-9a-fA-F]+;)', line)
+            for match in matches:
+                if not found_issues:
+                    print("\n   Found potential issues:")
+                    found_issues = True
+                col = match.start() + 1
+                # Get the original line (with scripts) for display
+                if i <= len(lines):
+                    print(f"\n   Line {i}, Column {col}:")
+                    print(f"   {lines[i-1]}")
+                    print(f"   {' ' * (col-1)}^")
+                    print(f"   Fix: Replace & with &amp;")
+        
+        if not found_issues:
+            print("\n   No obvious & issues found in HTML content.")
+            print("   Note: <script> and <style> tag contents are excluded from this check.")
+    
     sys.exit(1)
 EOF
     
