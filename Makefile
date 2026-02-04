@@ -38,6 +38,7 @@ help: ## Show this help
 	@echo "  make test yaml                 - Run yamllint on all YAML files"
 	@echo "  make test md                   - Run pymarkdown on all Markdown"
 	@echo "  make test html                 - Run html5lib on all HTML"
+	@echo "  make test py                   - Run pytest and ruff on Python files"
 	@echo "  make test secrets              - Run detect-secrets on all files"
 	@echo "  make test links                - Check critical internal links"
 	@echo "  make test sh-commit            - Check scripts in last commit"

@@ -30,6 +30,24 @@ repos:
   # Custom hooks
   - repo: local
     hooks:
+      # Python linting and testing
+      - id: ruff-check
+        name: ruff-check
+        description: Run ruff linter on Python files
+        entry: .venv/bin/ruff check
+        language: system
+        files: \.py$
+        stages: [commit]
+
+      - id: pytest
+        name: pytest
+        description: Run pytest on Python test files
+        entry: .venv/bin/pytest
+        language: system
+        files: ^scripts/.*\.py$
+        stages: [commit]
+        pass_filenames: false
+
       # Hugo build validation
       - id: hugo-build
         name: hugo-build

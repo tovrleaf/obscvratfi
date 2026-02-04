@@ -1,5 +1,5 @@
 .DEFAULT_GOAL := help
-.PHONY: help sh sh-all sh-commit yaml yaml-all yaml-commit md md-all md-commit html html-all html-commit secrets secrets-all links
+.PHONY: help sh sh-all sh-commit yaml yaml-all yaml-commit md md-all md-commit html html-all html-commit secrets secrets-all links py py-all
 
 help:
 	@echo "Testing Commands"
@@ -10,6 +10,7 @@ help:
 	@echo "  make test yaml            - Run yamllint on all YAML files"
 	@echo "  make test md              - Run pymarkdown on all Markdown files"
 	@echo "  make test html            - Run html5lib on all HTML files"
+	@echo "  make test py              - Run pytest and ruff on Python files"
 	@echo "  make test secrets         - Run detect-secrets on all files"
 	@echo "  make test links           - Check critical internal links"
 	@echo ""
@@ -162,3 +163,19 @@ links:
 		echo "❌ Link checker script not found"; \
 		exit 1; \
 	fi
+
+py:
+	@echo "🐍 Running Python tests and linting..."
+	@if [ -f ../../.venv/bin/pytest ]; then \
+		cd ../.. && (.venv/bin/ruff check scripts/ || echo "⚠️  Ruff found issues but continuing...") && \
+		.venv/bin/pytest && echo "✅ Pytest complete"; \
+	elif command -v pytest >/dev/null 2>&1 && command -v ruff >/dev/null 2>&1; then \
+		cd ../.. && (ruff check scripts/ || echo "⚠️  Ruff found issues but continuing...") && \
+		pytest && echo "✅ Pytest complete"; \
+	else \
+		echo "❌ pytest or ruff not found"; \
+		echo "Run 'make hooks setup' to install locally"; \
+		exit 1; \
+	fi
+
+py-all: py
