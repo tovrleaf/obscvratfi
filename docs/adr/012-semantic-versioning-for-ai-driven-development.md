@@ -92,14 +92,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **1. Commit Agent Responsibilities:**
 - Review changes with `git diff`
 - Determine version bump type based on changes
-- Run `scripts/bump-version.sh [major|minor|patch]`
+- Run `python3 scripts/bump_version.py [major|minor|patch]`
 - Commit changes + updated CHANGELOG.md together
 - Create git tag (e.g., `v1.2.3`)
 - Push commits and tags: `git push && git push --tags`
 
 **2. Version Bump Script:**
 ```bash
-scripts/bump-version.sh [major|minor|patch]
+python3 scripts/bump_version.py [major|minor|patch]
 ```
 - Reads current version from CHANGELOG.md
 - Calculates new version
@@ -124,7 +124,7 @@ scripts/bump-version.sh [major|minor|patch]
 **Commit Agent (.kiro/agents/commit.json):**
 - Add write access to: `CHANGELOG.md`
 - Keep read-only for: all other files
-- Can run: `scripts/bump-version.sh`, git commands
+- Can run: `scripts/bump_version.py`, git commands
 
 **No changes needed for:**
 - Plan Agent (read-only + ADRs)
@@ -263,7 +263,7 @@ Use tools like semantic-release to auto-determine version from commits.
 
 **Phase 1: Setup**
 - [ ] Create CHANGELOG.md with v1.0.0 (current state)
-- [ ] Create `scripts/bump-version.sh`
+- [ ] Create `scripts/bump_version.py`
 - [ ] Create `scripts/create-github-release.sh`
 - [ ] Update Commit Agent permissions (add CHANGELOG.md write access)
 
