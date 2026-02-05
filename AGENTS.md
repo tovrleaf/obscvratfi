@@ -174,7 +174,7 @@ Obscvrat is a band website built with Hugo static site generator, deployed to AW
 
 ### Testing Commands
 ```bash
-make test              # Run all tests
+make test              # Show available test commands
 make test sh           # Shell script linting (shellcheck)
 make test yaml         # YAML linting (yamllint)
 make test md           # Markdown linting (pymarkdown)
@@ -211,9 +211,9 @@ make help
 
 ### ADR Commands
 ```bash
-make adr-new TITLE="Decision Title"  # Create new ADR
-make adr-list                        # List all ADRs
-make adr-list-accepted               # List accepted ADRs
+make adr new TITLE="Decision Title"  # Create new ADR
+make adr list                        # List all ADRs
+make adr list-accepted               # List accepted ADRs
 ```
 
 ### Content Management
@@ -462,7 +462,7 @@ Create an ADR for decisions that:
    - Ask relevant questions (see ADR-002)
    - Research and present alternatives with pros/cons
    - Help draft the ADR after decision is made
-4. **Create the ADR:** Use `make adr-new TITLE="Decision Title"`
+4. **Create the ADR:** Use `make adr new TITLE="Decision Title"`
 5. **Reference the ADR:** In code comments, PR descriptions, documentation
 
 ### ADR Resources
@@ -471,18 +471,18 @@ Create an ADR for decisions that:
 - **Template:** `/docs/adr/template.md`
 - **Workflow:** See ADR-002 for detailed process
 - **Scripts:**
-  - `make adr-new TITLE="Title"` - Create new ADR
-  - `make adr-list` - List ADRs
+  - `make adr new TITLE="Title"` - Create new ADR
+  - `make adr list` - List ADRs
 
 ```bash
 # Create a new ADR
-make adr-new TITLE="Choose deployment strategy"
+make adr new TITLE="Choose deployment strategy"
 
 # List all ADRs
-make adr-list
+make adr list
 
 # List by status
-make adr-list-accepted
+make adr list-accepted
 ```
 
 ## Git Commit Guidelines

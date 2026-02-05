@@ -34,9 +34,11 @@ make deploy production
 
 ### Common Commands
 - `make serve` - Start dev server
-- `make test` - Run all tests
+- `make test sh` - Test shell scripts
+- `make test yaml` - Test YAML files
+- `make test md` - Test markdown
 - `make hooks setup` - Install pre-commit hooks
-- `make adr-new TITLE="..."` - Create ADR
+- `make adr new TITLE="..."` - Create ADR
 - `make deploy production` - Deploy to AWS
 
 ### Documentation
