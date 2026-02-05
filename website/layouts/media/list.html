@@ -442,6 +442,15 @@
     opacity: 1;
 }
 
+.media-item.show-info .media-info {
+    opacity: 1;
+}
+
+.media-item.show-info img {
+    transform: scale(1.05);
+    filter: blur(2px) brightness(0.5);
+}
+
 .media-title {
     font-weight: normal;
     margin-bottom: 0.5rem;
@@ -724,6 +733,24 @@
     .media-grid {
         column-count: 2;
     }
+    
+    .media-info {
+        font-size: 0.65rem;
+        padding: 0.5rem;
+    }
+    
+    .media-title, .media-gig {
+        font-size: 0.65rem;
+        margin-bottom: 0.1rem;
+    }
+    
+    .media-gig {
+        padding: 0.25rem;
+    }
+    
+    .media-date {
+        margin-bottom: 0.1rem;
+    }
 }
 </style>
 
@@ -874,6 +901,48 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (e.target === modal) modal.remove();
             });
         });
+    });
+});
+
+// Mobile touch handling for media info overlay
+document.addEventListener('DOMContentLoaded', function() {
+    const mediaItems = document.querySelectorAll('.media-item');
+    
+    mediaItems.forEach(item => {
+        let touchStartTime = 0;
+        
+        item.addEventListener('touchstart', (e) => {
+            touchStartTime = Date.now();
+        });
+        
+        item.addEventListener('touchend', (e) => {
+            const touchDuration = Date.now() - touchStartTime;
+            
+            // Quick tap (< 200ms)
+            if (touchDuration < 200) {
+                // If info is already showing, let the click through to open lightbox
+                if (item.classList.contains('show-info')) {
+                    return;
+                }
+                
+                // First tap: show info, prevent lightbox
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Hide all other info overlays
+                mediaItems.forEach(other => other.classList.remove('show-info'));
+                
+                // Show this one
+                item.classList.add('show-info');
+            }
+        });
+    });
+    
+    // Hide info when tapping outside
+    document.addEventListener('touchend', (e) => {
+        if (!e.target.closest('.media-item')) {
+            mediaItems.forEach(item => item.classList.remove('show-info'));
+        }
     });
 });
 </script>
