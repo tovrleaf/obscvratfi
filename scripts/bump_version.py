@@ -85,14 +85,15 @@ def update_changelog(changelog_path: Path, new_version: str) -> None:
 ### Changed
 
 ### Fixed
-
 """
 
     # Find first version line and insert before it
     lines = content.split('\n')
     for i, line in enumerate(lines):
         if re.match(r'^## \[', line):
+            # Insert new entry with blank line before next version
             lines.insert(i, new_entry.rstrip())
+            lines.insert(i + 1, '')
             break
     else:
         raise ValueError("Could not find version entry in CHANGELOG")

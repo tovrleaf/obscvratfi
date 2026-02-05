@@ -42,8 +42,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Pre-commit hooks: Automated validation before commit and push
 - Documentation: Consolidated homepage docs into DESIGN.md
 - ADRs: Created ADR-013 (dual licensing) and ADR-014 (Python conversion)
-## [1.1.1] - 2026-02-03
 
+## [1.1.1] - 2026-02-03
 
 ### Added
 - Year headers on live page (2026, 2025, etc.)
