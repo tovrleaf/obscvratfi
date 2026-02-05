@@ -31,7 +31,14 @@
                     <a href="{{ .Permalink }}" class="music-link">
                         {{ if .Params.cover }}
                             <div class="music-cover">
-                                <img src="{{ .Params.cover }}" alt="{{ .Title }} cover">
+                                {{ $coverPath := strings.TrimPrefix "/" .Params.cover }}
+                                {{ $cover := resources.Get $coverPath }}
+                                {{ if $cover }}
+                                    {{ $thumb := $cover.Resize "400x q85" }}
+                                    <img src="{{ $thumb.RelPermalink }}" alt="{{ .Title }} cover" loading="lazy">
+                                {{ else }}
+                                    <img src="{{ .Params.cover }}" alt="{{ .Title }} cover">
+                                {{ end }}
                             </div>
                             <div class="music-info">
                                 <h3 class="music-title">{{ .Title }}</h3>
@@ -56,7 +63,14 @@
                     <a href="{{ .Permalink }}" class="music-link">
                         {{ if .Params.cover }}
                             <div class="music-cover">
-                                <img src="{{ .Params.cover }}" alt="{{ .Title }} cover">
+                                {{ $coverPath := strings.TrimPrefix "/" .Params.cover }}
+                                {{ $cover := resources.Get $coverPath }}
+                                {{ if $cover }}
+                                    {{ $thumb := $cover.Resize "400x q85" }}
+                                    <img src="{{ $thumb.RelPermalink }}" alt="{{ .Title }} cover" loading="lazy">
+                                {{ else }}
+                                    <img src="{{ .Params.cover }}" alt="{{ .Title }} cover">
+                                {{ end }}
                             </div>
                             <div class="music-info">
                                 <h3 class="music-title">{{ .Title }}</h3>

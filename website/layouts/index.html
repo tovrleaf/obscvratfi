@@ -72,7 +72,17 @@
     <section class="about-preview featured-section">
         <div class="about-content-wrapper">
             <div class="about-image">
-                <img src="/images/about/obscvrat-harsh-noise-experimental.jpg" alt="Obscvrat">
+                {{ $image := resources.Get "images/about/obscvrat-harsh-noise-experimental.jpg" }}
+                {{ $small := $image.Resize "400x q85" }}
+                {{ $medium := $image.Resize "800x q85" }}
+                {{ $large := $image.Resize "1200x q85" }}
+                <img srcset="{{ $small.RelPermalink }} 400w,
+                             {{ $medium.RelPermalink }} 800w,
+                             {{ $large.RelPermalink }} 1200w"
+                     sizes="(max-width: 768px) 100vw, 800px"
+                     src="{{ $medium.RelPermalink }}"
+                     alt="Obscvrat"
+                     loading="lazy">
             </div>
             <div class="about-text">
                 <h2>About</h2>

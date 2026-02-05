@@ -16,8 +16,8 @@ The project currently uses shell scripts for automation tasks (version bumping, 
 - Data processing (YAML, JSON) requires external tools
 - Cross-platform compatibility issues
 
-**Current scripts:**
-- `scripts/bump-version.sh` - Version management, CHANGELOG parsing
+**Scripts at time of decision:**
+- `scripts/bump-version.sh` - Version management, CHANGELOG parsing (converted to bump_version.py)
 - `scripts/create-github-release.sh` - GitHub API calls, text processing
 - `scripts/manage-media.sh` - YAML processing, file operations
 - `scripts/manage-live.sh` - Interactive prompts, YAML manipulation

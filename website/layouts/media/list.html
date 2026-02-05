@@ -63,24 +63,28 @@
                 {{ if .Params.media.pictures }}
                     {{ $gigTitle := .Title }}
                     {{ $gigPermalink := .Permalink }}
-                    {{ $gigSlug := strings.TrimSuffix "/" (strings.TrimPrefix "/live/" .RelPermalink) }}
+                    {{ $gigDir := path.Base .File.Path | strings.TrimSuffix ".md" }}
                     {{ $author := .Params.media.pictures.author }}
                     {{ $authorUrl := .Params.media.pictures.author_url }}
                     {{ $location := .Params.location }}
                     {{ $date := .Date.Format "January 2, 2006" }}
                     {{ range $index, $image := .Params.media.pictures.images }}
-                        {{ $imagePath := printf "media/live/%s/%s" $gigSlug $image }}
+                        {{ $imagePath := printf "media/live/%s/%s" $gigDir $image }}
                         {{ with resources.Get $imagePath }}
                             {{ $altText := printf "Obscvrat live at %s, %s, %s - Photo by %s" $gigTitle $location $date $author }}
+                            {{ $thumb := .Resize "400x q85" }}
+                            {{ $lightbox := .Resize "1600x q90" }}
                             <div class="media-item photo-item">
                                 <a href="#" class="open-lightbox" 
-                                   data-gig="{{ $gigSlug }}" 
+                                   data-gig="{{ $gigDir }}" 
                                    data-image="{{ $image }}"
+                                   data-image-url="{{ $lightbox.RelPermalink }}"
+                                   data-original-url="{{ .RelPermalink }}"
                                    data-gig-title="{{ $gigTitle }}"
                                    data-gig-link="{{ $gigPermalink }}"
                                    data-author="{{ $author }}"
                                    data-author-url="{{ $authorUrl }}">
-                                    <img src="{{ .RelPermalink }}" alt="{{ $altText }}">
+                                    <img src="{{ $thumb.RelPermalink }}" alt="{{ $altText }}" loading="lazy">
                                 </a>
                                 <div class="media-info">
                                     <h3 class="media-gig"><a href="{{ $gigPermalink }}">{{ $gigTitle }}</a></h3>
@@ -442,6 +446,15 @@
     opacity: 1;
 }
 
+.media-item.show-info .media-info {
+    opacity: 1;
+}
+
+.media-item.show-info img {
+    transform: scale(1.05);
+    filter: blur(2px) brightness(0.5);
+}
+
 .media-title {
     font-weight: normal;
     margin-bottom: 0.5rem;
@@ -724,6 +737,24 @@
     .media-grid {
         column-count: 2;
     }
+    
+    .media-info {
+        font-size: 0.65rem;
+        padding: 0.5rem;
+    }
+    
+    .media-title, .media-gig {
+        font-size: 0.65rem;
+        margin-bottom: 0.1rem;
+    }
+    
+    .media-gig {
+        padding: 0.25rem;
+    }
+    
+    .media-date {
+        margin-bottom: 0.1rem;
+    }
 }
 </style>
 
@@ -760,8 +791,8 @@ document.addEventListener('DOMContentLoaded', function() {
     imageLightboxLinks.forEach(link => {
         link.addEventListener('click', function(e) {
             e.preventDefault();
-            const gig = this.dataset.gig;
-            const image = this.dataset.image;
+            const imageUrl = this.dataset.imageUrl;
+            const originalUrl = this.dataset.originalUrl;
             const gigTitle = this.dataset.gigTitle;
             const gigLink = this.dataset.gigLink;
             const author = this.dataset.author;
@@ -774,13 +805,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     <button class="swiper-modal-close">&times;</button>
                     <button class="swiper-modal-nav swiper-modal-prev">‹</button>
                     <button class="swiper-modal-nav swiper-modal-next">›</button>
-                    <img src="/media/live/${gig}/${image}" alt="${gigTitle}">
+                    <img src="${imageUrl}" alt="${gigTitle}">
                     <div class="swiper-modal-info">
                         <div class="swiper-modal-info-left">
                             <p><strong>Live @</strong> <a href="${gigLink}">${gigTitle}</a></p>
                             <p><strong>Photo by:</strong> ${authorUrl ? `<a href="${authorUrl}" target="_blank">${author}</a>` : author}</p>
                         </div>
-                        <a href="/media/live/${gig}/${image}" download class="download-btn">Download</a>
+                        <a href="${originalUrl}" download class="download-btn">Download</a>
                     </div>
                 </div>
             `;
@@ -874,6 +905,48 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (e.target === modal) modal.remove();
             });
         });
+    });
+});
+
+// Mobile touch handling for media info overlay
+document.addEventListener('DOMContentLoaded', function() {
+    const mediaItems = document.querySelectorAll('.media-item');
+    
+    mediaItems.forEach(item => {
+        let touchStartTime = 0;
+        
+        item.addEventListener('touchstart', (e) => {
+            touchStartTime = Date.now();
+        });
+        
+        item.addEventListener('touchend', (e) => {
+            const touchDuration = Date.now() - touchStartTime;
+            
+            // Quick tap (< 200ms)
+            if (touchDuration < 200) {
+                // If info is already showing, let the click through to open lightbox
+                if (item.classList.contains('show-info')) {
+                    return;
+                }
+                
+                // First tap: show info, prevent lightbox
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Hide all other info overlays
+                mediaItems.forEach(other => other.classList.remove('show-info'));
+                
+                // Show this one
+                item.classList.add('show-info');
+            }
+        });
+    });
+    
+    // Hide info when tapping outside
+    document.addEventListener('touchend', (e) => {
+        if (!e.target.closest('.media-item')) {
+            mediaItems.forEach(item => item.classList.remove('show-info'));
+        }
     });
 });
 </script>

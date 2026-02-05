@@ -33,7 +33,7 @@ I can modify files and run commands, but cannot commit or push."
 - Run tests using `make test` commands
 - Build Hugo site with `make build`
 - Check what changed with `git status` and `git diff`
-- Follow code style guidelines in AGENTS.md
+- Follow code style guidelines (below)
 
 ## Limitations
 
@@ -46,15 +46,90 @@ I can modify files and run commands, but cannot commit or push."
 to review all changes before committing. When implementation is complete,
 suggest switching to Commit Agent.**
 
+## Code Style Guidelines
+
+### File Renaming and Moving
+
+**IMPORTANT:** When renaming or moving files tracked by git, always use `git mv` to preserve file history:
+
+```bash
+# Correct - preserves history
+git mv old-name.sh new-name.sh
+
+# Wrong - breaks history
+mv old-name.sh new-name.sh
+git add new-name.sh
+```
+
+After using `git mv`, make content changes and commit. Git will show the rename with similarity percentage.
+
+### Shell Scripts
+- Use shellcheck for validation
+- Include error handling (`set -e`)
+- Add descriptive comments for complex logic
+- Use meaningful variable names
+- Quote variables to prevent word splitting
+
+### Hugo Templates
+- Follow Go template syntax
+- Keep templates focused and modular
+- Use partials for reusable components
+- Comment complex template logic
+
+### Markdown Content
+- Follow markdownlint rules
+- Use consistent heading hierarchy
+- Keep lines under 120 characters when practical
+- Use descriptive link text
+
+### File Organization
+- Hugo content in `website/content/`
+- Templates in `website/layouts/`
+- Static files in `website/static/`
+- Scripts in `scripts/`
+- Infrastructure code in `infrastructure/`
+- Documentation in `docs/`
+
+## Testing Your Changes
+
+Run tests based on what you modified:
+
+### Shell Scripts (.sh)
+```bash
+make test sh
+```
+
+### YAML Files (.yml, .yaml)
+```bash
+make test yaml
+```
+
+### Markdown Files (.md)
+```bash
+make test md
+```
+
+### Hugo Templates (layouts/)
+```bash
+make test html
+```
+
+### Python Scripts (.py)
+```bash
+make test py
+```
+
+**Always test before handing off to Commit Agent.**
+
 ## Testing Requirements
 
-Before finishing, always:
-1. Test modified scripts: `bash -n script.sh`
-2. Build Hugo site if templates changed: `cd website && hugo`
-3. Run relevant tests: `make test <type>`
-4. Check for errors in output
+See `.kiro/instructions/testing.md` for detailed testing requirements.
 
-See AGENTS.md for detailed testing requirements.
+Quick reference:
+- Test modified scripts before committing
+- Build Hugo site if templates changed
+- Run appropriate validation commands
+- Check for errors in output
 
 ## Agent Handoff
 

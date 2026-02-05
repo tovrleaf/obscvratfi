@@ -12,7 +12,7 @@ help:
 	@echo "  make test html            - Run html5lib on all HTML files"
 	@echo "  make test py              - Run pytest and ruff on Python files"
 	@echo "  make test secrets         - Run detect-secrets on all files"
-	@echo "  make test links           - Check critical internal links"
+	@echo "  make test links           - Validate all links and images (htmltest)"
 	@echo ""
 	@echo "Test single file (use FILE parameter):"
 	@echo "  make test sh FILE=path/to/script.sh"
@@ -270,13 +270,18 @@ secrets: # pragma: allowlist secret
 secrets-all: secrets # pragma: allowlist secret
 
 links:
-	@echo "🔗 Checking critical internal links..."
-	@if [ -f ../../scripts/pre-push-link-checker.sh ]; then \
-		cd ../.. && chmod +x scripts/pre-push-link-checker.sh && scripts/pre-push-link-checker.sh; \
-	else \
-		echo "❌ Link checker script not found"; \
+	@echo "🔗 Validating all links and images with htmltest..."
+	@if ! command -v htmltest >/dev/null 2>&1; then \
+		echo "❌ htmltest not found"; \
+		echo "Install: brew install htmltest"; \
 		exit 1; \
 	fi
+	@if [ ! -d ../../website/public ]; then \
+		echo "❌ website/public not found"; \
+		echo "Run 'cd website && hugo' to build site first"; \
+		exit 1; \
+	fi
+	@cd ../.. && htmltest
 
 py:
 	@if [ -n "$(FILE)" ]; then \

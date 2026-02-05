@@ -1,6 +1,9 @@
 {{ define "main" }}
 <article class="album-page">
     <h1>Music</h1>
+    <nav class="page-nav">
+        {{ with .PrevInSection }}<a href="{{ .Permalink }}" class="nav-prev">⇜</a>{{ else }}<span class="nav-disabled">⇜</span>{{ end }}<a href="/music/" class="nav-back">↑</a>{{ with .NextInSection }}<a href="{{ .Permalink }}" class="nav-next">⇝</a>{{ else }}<span class="nav-disabled">⇝</span>{{ end }}
+    </nav>
     
     <!-- Two-column layout: A (Cover + Tracks) | B (Info + Description) -->
     <div class="album-container">
@@ -8,7 +11,22 @@
         <div class="album-column-a">
             {{ if .Params.cover }}
             <div class="album-cover">
-                <img src="{{ .Params.cover }}" alt="{{ .Title }} cover" class="cover-image" data-swiper-image="{{ .Params.cover }}">
+                {{ $coverPath := strings.TrimPrefix "/" .Params.cover }}
+                {{ $cover := resources.Get $coverPath }}
+                {{ if $cover }}
+                    {{ $small := $cover.Resize "350x q85" }}
+                    {{ $large := $cover.Resize "700x q85" }}
+                    {{ $lightbox := $cover.Resize "1200x q90" }}
+                    <img srcset="{{ $small.RelPermalink }} 1x,
+                                 {{ $large.RelPermalink }} 2x"
+                         src="{{ $small.RelPermalink }}"
+                         alt="{{ .Title }} cover"
+                         class="cover-image"
+                         data-swiper-image="{{ $lightbox.RelPermalink }}"
+                         data-original-image="{{ $cover.RelPermalink }}">
+                {{ else }}
+                    <img src="{{ .Params.cover }}" alt="{{ .Title }} cover" class="cover-image" data-swiper-image="{{ .Params.cover }}">
+                {{ end }}
             </div>
             {{ end }}
             
@@ -27,7 +45,7 @@
             </div>
             
             <div class="album-meta">
-                <p><strong>Label:</strong> {{ if .Params.label_url }}<a href="{{ .Params.label_url }}" target="_blank" rel="noopener">{{ .Params.label }}</a>{{ else }}{{ .Params.label }}{{ end }}{{ if .Params.catalog_number }} – {{ .Params.catalog_number }}{{ end }}</p>
+                <p><strong>Label:</strong> {{ if .Params.label_url }}<a href="{{ .Params.label_url }}" target="_blank" rel="noopener">{{ .Params.label }}</a>{{ else }}{{ .Params.label }}{{ end }}{{ if .Params.catalog_number }} – {{ .Params.catalog_number }}{{ end }}{{ if .Params.release_type }} <sup>{{ .Params.release_type }}</sup>{{ end }}</p>
                 <p><strong>Format:</strong> {{ .Params.format }}</p>
                 <p><strong>Country:</strong> {{ .Params.country }}</p>
                 <p><strong>Released:</strong> {{ .Date.Format "2 Jan 2006" }}</p>
@@ -66,6 +84,39 @@
 </article>
 
 <style>
+.page-nav {
+    display: inline-flex;
+    gap: 0.5rem;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding: 0;
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    width: auto;
+}
+
+.nav-back, .nav-prev, .nav-next {
+    color: var(--primary-color);
+    text-decoration: none;
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
+}
+
+.nav-disabled {
+    color: var(--primary-color);
+    opacity: 0.2;
+}
+
+.nav-back:hover, .nav-prev:hover, .nav-next:hover {
+    opacity: 1;
+}
+
+@media (max-width: 768px) {
+    .page-nav {
+        gap: 0.5rem;
+    }
+}
+
 .album-page {
     max-width: 1200px;
     margin: 0 auto;
@@ -73,7 +124,7 @@
 }
 
 .album-page > h1 {
-    margin-bottom: 3rem;
+    margin-bottom: 0;
 }
 
 .album-container {
@@ -353,9 +404,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // Create modal
     const modal = document.createElement('div');
     modal.className = 'swiper-modal';
+    const originalUrl = coverImage.dataset.originalImage || coverImage.dataset.swiperImage;
     modal.innerHTML = `
         <button class="swiper-close">&times;</button>
         <img src="${coverImage.dataset.swiperImage}" alt="Album cover">
+        <a href="${originalUrl}" download class="download-btn" style="position: absolute; bottom: 2rem; right: 2rem; padding: 0.5rem 1rem; background: rgba(255,255,255,0.1); color: white; text-decoration: none; border: 1px solid rgba(255,255,255,0.3);">Download</a>
     `;
     document.body.appendChild(modal);
     

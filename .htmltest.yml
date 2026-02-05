@@ -1,0 +1,9 @@
+DirectoryPath: website/public
+CheckInternal: true
+CheckImages: true
+CheckExternal: false
+IgnoreInternalEmptyHash: true
+IgnoreDirectoryMissingTrailingSlash: true
+IgnoreURLs:
+  - /livereload.js
+LogLevel: 2

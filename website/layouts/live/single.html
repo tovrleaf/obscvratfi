@@ -1,6 +1,9 @@
 {{ define "main" }}
 <article class="gig-detail">
     <h1 class="page-title">Live</h1>
+    <nav class="page-nav">
+        {{ with .PrevInSection }}<a href="{{ .Permalink }}" class="nav-prev">⇜</a>{{ else }}<span class="nav-disabled">⇜</span>{{ end }}<a href="/live/" class="nav-back">↑</a>{{ with .NextInSection }}<a href="{{ .Permalink }}" class="nav-next">⇝</a>{{ else }}<span class="nav-disabled">⇝</span>{{ end }}
+    </nav>
     
     <!-- Hero Section: Poster + Overlaid Info -->
     <div class="gig-hero">
@@ -16,11 +19,23 @@
                 {{ $posterPath := printf "media/live/%s/%s" $gigSlug $posterFilename }}
                 {{ $resource := resources.Get $posterPath }}
                 {{ if $resource }}
+                {{ $small := $resource.Resize "400x q85" }}
+                {{ $medium := $resource.Resize "800x q85" }}
+                {{ $large := $resource.Resize "1200x q85" }}
+                {{ $lightbox := $resource.Resize "1600x q90" }}
                 <a href="#" class="open-lightbox"
-                   data-image-url="{{ $resource.RelPermalink }}"
+                   data-image-url="{{ $lightbox.RelPermalink }}"
+                   data-original-url="{{ $resource.RelPermalink }}"
                    data-gig-title="{{ .Title }}"
                    data-gig-link="{{ .Permalink }}">
-                    <img src="{{ $resource.RelPermalink }}" alt="{{ .Title }} poster" class="poster-image">
+                    <img srcset="{{ $small.RelPermalink }} 400w,
+                                 {{ $medium.RelPermalink }} 800w,
+                                 {{ $large.RelPermalink }} 1200w"
+                         sizes="(max-width: 768px) 100vw, 800px"
+                         src="{{ $medium.RelPermalink }}"
+                         alt="{{ .Title }} poster"
+                         class="poster-image"
+                         loading="lazy">
                 </a>
                 {{ end }}
             </div>
@@ -108,14 +123,17 @@
                     {{ $imagePath := printf "media/live/%s/%s" $gigSlug . }}
                     {{ with resources.Get $imagePath }}
                         {{ $altText := printf "Obscvrat live at %s, %s, %s - Photo by %s" $gigTitle $location $date $author }}
+                        {{ $thumb := .Resize "400x q85" }}
+                        {{ $lightbox := .Resize "1600x q90" }}
                         <div class="media-item photo-item">
                             <a href="#" class="open-lightbox" 
-                               data-image-url="{{ .RelPermalink }}"
+                               data-image-url="{{ $lightbox.RelPermalink }}"
+                               data-original-url="{{ .RelPermalink }}"
                                data-gig-title="{{ $gigTitle }}"
                                data-gig-link="{{ $gigPermalink }}"
                                data-author="{{ $author }}"
                                data-author-url="{{ $authorUrl }}">
-                                <img src="{{ .RelPermalink }}" alt="{{ $altText }}">
+                                <img src="{{ $thumb.RelPermalink }}" alt="{{ $altText }}" loading="lazy">
                                 <div class="photo-overlay">
                                     <span class="photo-meta">{{ $author }}</span>
                                 </div>
@@ -187,12 +205,45 @@
 </article>
 
 <style>
+.page-nav {
+    display: inline-flex;
+    gap: 0.5rem;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding: 0;
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    width: auto;
+}
+
+.nav-back, .nav-prev, .nav-next {
+    color: var(--primary-color);
+    text-decoration: none;
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
+}
+
+.nav-disabled {
+    color: var(--primary-color);
+    opacity: 0.2;
+}
+
+.nav-back:hover, .nav-prev:hover, .nav-next:hover {
+    opacity: 1;
+}
+
+@media (max-width: 768px) {
+    .page-nav {
+        gap: 0.5rem;
+    }
+}
+
 .page-title {
     font-family: var(--font-structure);
     font-size: 2.5rem;
     font-weight: 700;
     color: var(--primary-color);
-    margin-bottom: 3rem;
+    margin-bottom: 0;
 }
 
 /* Hero Section */
@@ -889,6 +940,7 @@ document.addEventListener('DOMContentLoaded', function() {
         link.addEventListener('click', function(e) {
             e.preventDefault();
             const imageUrl = this.dataset.imageUrl;
+            const originalUrl = this.dataset.originalUrl;
             const gigTitle = this.dataset.gigTitle;
             const gigLink = this.dataset.gigLink;
             const author = this.dataset.author;
@@ -907,7 +959,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             <p><strong>Gig:</strong> <a href="${gigLink}">${gigTitle}</a></p>
                             ${author ? `<p><strong>Photo by:</strong> ${authorUrl ? `<a href="${authorUrl}" target="_blank">${author}</a>` : author}</p>` : ''}
                         </div>
-                        <a href="${imageUrl}" download class="download-btn">Download</a>
+                        <a href="${originalUrl}" download class="download-btn">Download</a>
                     </div>
                 </div>
             `;

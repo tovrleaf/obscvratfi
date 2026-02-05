@@ -5,7 +5,7 @@
         </div>
         <ul>
             {{ range .Site.Menus.main }}
-            <li><a href="{{ .URL }}">{{ .Name }}</a></li>
+            <li><a href="{{ .URL }}">{{ if eq .Name "About" }}<img src="/images/nav-icon.png" alt="About" style="height:1.5em; vertical-align:middle;">{{ else }}{{ .Name }}{{ end }}</a></li>
             {{ end }}
         </ul>
     </nav>
