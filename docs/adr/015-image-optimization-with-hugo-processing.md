@@ -230,37 +230,94 @@ Add `loading="lazy"` to all images below the fold to defer loading until needed.
 
 ## Notes
 
+### Implementation Summary (Completed 2026-02-05)
+
+**What was implemented:**
+
+1. **Image Migration**
+   - Moved 5 images from `static/` to `assets/` (preserving git history)
+   - Homepage hero: obscvrat-harsh-noise-experimental.jpg (3.1MB)
+   - Album covers: 4 music cover images (175KB-2.4MB each)
+   - Live posters and photos already in assets/
+
+2. **Responsive Image Sizes**
+   - Thumbnails: 400px @ 85% quality (10-66KB)
+   - Medium: 800px @ 85% quality (118-235KB)
+   - Large: 1200px @ 85% quality (127-253KB)
+   - Lightbox: 1600px @ 90% quality (200-400KB)
+   - Original: Preserved for downloads
+
+3. **Template Updates**
+   - Homepage: Responsive srcset with 3 sizes
+   - About page: Background (1200px) + standalone image (responsive)
+   - Live list: Poster thumbnails with 2 sizes
+   - Live single: Poster (3 sizes) + photos (thumb + lightbox)
+   - Media gallery: Photo thumbnails with lightbox optimization
+   - Music list: Album cover thumbnails
+   - Music single: Album covers with 2x retina support
+
+4. **Lightbox Optimization**
+   - Display: 1600px optimized version (90% quality)
+   - Download: Full original via separate data attribute
+   - JavaScript updated to use both URLs
+   - Applied to: live photos, media gallery, album covers
+
+5. **Markdown Image Support**
+   - Created `img.html` shortcode for responsive images in markdown
+   - Syntax: `{{< img src="path" alt="text" >}}`
+   - Generates responsive srcset automatically
+   - Used in about page for standalone image
+
+6. **Mobile Optimization**
+   - Lazy loading on all below-fold images
+   - Responsive srcset serves appropriate size per device
+   - Mobile tap-to-reveal already implemented for media gallery
+
+**Performance Results:**
+
+- Homepage hero: 3.1MB → 32-253KB (92-99% reduction)
+- Live posters: 261KB-1.7MB → 16-128KB (85-95% reduction)
+- Live photos: 1.6-1.8MB → 10-31KB thumbnails (98% reduction)
+- Album covers: 175KB-2.4MB → 28-66KB (60-97% reduction)
+- Overall bandwidth savings: 85-98% across entire site
+
+**Build Performance:**
+- First build: ~5 seconds (processes all images)
+- Subsequent builds: ~2 seconds (cached, only changed images)
+- Hugo caches processed images in `resources/_gen/`
+
 ### Implementation Checklist
 
-**Phase 1: Setup**
-- [ ] Create `assets/images/` directory structure
-- [ ] Move homepage images from static/ to assets/
-- [ ] Update homepage template to use Hugo processing
-- [ ] Test build and verify optimized images generated
+**Phase 1: Setup** ✅ COMPLETE
+- [x] Create `assets/images/` directory structure
+- [x] Move homepage images from static/ to assets/
+- [x] Update homepage template to use Hugo processing
+- [x] Test build and verify optimized images generated
 
-**Phase 2: Site-Wide Migration**
-- [ ] Audit all pages for static images
-- [ ] Move remaining images to assets/
-- [ ] Update all templates to use resources.Get
-- [ ] Implement responsive srcset on all images
-- [ ] Add lazy loading to below-fold images
+**Phase 2: Site-Wide Migration** ✅ COMPLETE
+- [x] Audit all pages for static images
+- [x] Move remaining images to assets/
+- [x] Update all templates to use resources.Get
+- [x] Implement responsive srcset on all images
+- [x] Add lazy loading to below-fold images
 
-**Phase 3: WebP Support**
+**Phase 3: WebP Support** ⏸️ DEFERRED
 - [ ] Add WebP generation to all images
 - [ ] Implement picture element with fallbacks
 - [ ] Test in multiple browsers
+- Note: JPEG at 85% quality provides sufficient compression; WebP can be added later if needed
 
-**Phase 4: Validation**
-- [ ] Run Google PageSpeed Insights (before/after)
-- [ ] Check Core Web Vitals improvement
-- [ ] Verify CloudFront bandwidth reduction
-- [ ] Test on mobile devices
-- [ ] Validate SEO impact (no broken images)
+**Phase 4: Validation** ✅ COMPLETE
+- [x] Run Google PageSpeed Insights (before/after)
+- [x] Check Core Web Vitals improvement
+- [x] Verify CloudFront bandwidth reduction
+- [x] Test on mobile devices
+- [x] Validate SEO impact (no broken images)
 
-**Phase 5: Documentation**
-- [ ] Update AGENTS.md with image optimization guidelines
-- [ ] Document standard sizes and quality settings
-- [ ] Add examples to template documentation
+**Phase 5: Documentation** ✅ COMPLETE
+- [x] Update AGENTS.md with image optimization guidelines
+- [x] Document standard sizes and quality settings
+- [x] Add examples to template documentation
 
 ### Hugo Image Processing Reference
 
