@@ -102,8 +102,8 @@ weight = 4
 
 # Permalinks configuration
 [permalinks]
-live = "/live/:contentbasename/"
-music = "/music/:contentbasename/"
+live = "/live/:slug/"
+music = "/music/:slug/"
 about = "/about/"
 
 # Outputs per kind
