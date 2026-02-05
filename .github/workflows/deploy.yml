@@ -4,6 +4,12 @@ on:
   # Manual trigger
   workflow_dispatch:
 
+
+  # Trigger on tag pushes (for releases)
+  push:
+    tags:
+      - 'v*'
+
   # Automatic trigger after PR checks pass on main
   workflow_run:
     workflows: ["PR Checks - Lint, Build & Validate"]
