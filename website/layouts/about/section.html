@@ -1,4 +1,6 @@
 {{ define "main" }}
+{{ $bgImage := resources.Get "images/about/obscvrat-harsh-noise-experimental.jpg" }}
+{{ $bgOptimized := $bgImage.Resize "1200x q85" }}
 <section class="about-page">
     <h1 class="fade-in-element">{{ .Title }}</h1>
     
@@ -295,7 +297,7 @@
     overflow: hidden;
     max-width: 650px;
     width: 100%;
-    background-image: url('/images/about/obscvrat-harsh-noise-experimental.jpg');
+    background-image: url('{{ $bgOptimized.RelPermalink }}');
     background-size: cover;
     background-position: center;
     box-shadow: 

@@ -19,11 +19,23 @@
                 {{ $posterPath := printf "media/live/%s/%s" $gigSlug $posterFilename }}
                 {{ $resource := resources.Get $posterPath }}
                 {{ if $resource }}
+                {{ $small := $resource.Resize "400x q85" }}
+                {{ $medium := $resource.Resize "800x q85" }}
+                {{ $large := $resource.Resize "1200x q85" }}
+                {{ $lightbox := $resource.Resize "1600x q90" }}
                 <a href="#" class="open-lightbox"
-                   data-image-url="{{ $resource.RelPermalink }}"
+                   data-image-url="{{ $lightbox.RelPermalink }}"
+                   data-original-url="{{ $resource.RelPermalink }}"
                    data-gig-title="{{ .Title }}"
                    data-gig-link="{{ .Permalink }}">
-                    <img src="{{ $resource.RelPermalink }}" alt="{{ .Title }} poster" class="poster-image">
+                    <img srcset="{{ $small.RelPermalink }} 400w,
+                                 {{ $medium.RelPermalink }} 800w,
+                                 {{ $large.RelPermalink }} 1200w"
+                         sizes="(max-width: 768px) 100vw, 800px"
+                         src="{{ $medium.RelPermalink }}"
+                         alt="{{ .Title }} poster"
+                         class="poster-image"
+                         loading="lazy">
                 </a>
                 {{ end }}
             </div>
@@ -111,14 +123,17 @@
                     {{ $imagePath := printf "media/live/%s/%s" $gigSlug . }}
                     {{ with resources.Get $imagePath }}
                         {{ $altText := printf "Obscvrat live at %s, %s, %s - Photo by %s" $gigTitle $location $date $author }}
+                        {{ $thumb := .Resize "400x q85" }}
+                        {{ $lightbox := .Resize "1600x q90" }}
                         <div class="media-item photo-item">
                             <a href="#" class="open-lightbox" 
-                               data-image-url="{{ .RelPermalink }}"
+                               data-image-url="{{ $lightbox.RelPermalink }}"
+                               data-original-url="{{ .RelPermalink }}"
                                data-gig-title="{{ $gigTitle }}"
                                data-gig-link="{{ $gigPermalink }}"
                                data-author="{{ $author }}"
                                data-author-url="{{ $authorUrl }}">
-                                <img src="{{ .RelPermalink }}" alt="{{ $altText }}">
+                                <img src="{{ $thumb.RelPermalink }}" alt="{{ $altText }}" loading="lazy">
                                 <div class="photo-overlay">
                                     <span class="photo-meta">{{ $author }}</span>
                                 </div>
@@ -925,6 +940,7 @@ document.addEventListener('DOMContentLoaded', function() {
         link.addEventListener('click', function(e) {
             e.preventDefault();
             const imageUrl = this.dataset.imageUrl;
+            const originalUrl = this.dataset.originalUrl;
             const gigTitle = this.dataset.gigTitle;
             const gigLink = this.dataset.gigLink;
             const author = this.dataset.author;
@@ -943,7 +959,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             <p><strong>Gig:</strong> <a href="${gigLink}">${gigTitle}</a></p>
                             ${author ? `<p><strong>Photo by:</strong> ${authorUrl ? `<a href="${authorUrl}" target="_blank">${author}</a>` : author}</p>` : ''}
                         </div>
-                        <a href="${imageUrl}" download class="download-btn">Download</a>
+                        <a href="${originalUrl}" download class="download-btn">Download</a>
                     </div>
                 </div>
             `;

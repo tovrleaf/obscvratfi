@@ -1,0 +1,15 @@
+{{ $image := resources.Get (.Get "src") }}
+{{ if $image }}
+  {{ $small := $image.Resize "400x q85" }}
+  {{ $medium := $image.Resize "800x q85" }}
+  {{ $large := $image.Resize "1200x q85" }}
+  <img srcset="{{ $small.RelPermalink }} 400w,
+               {{ $medium.RelPermalink }} 800w,
+               {{ $large.RelPermalink }} 1200w"
+       sizes="(max-width: 768px) 100vw, 800px"
+       src="{{ $medium.RelPermalink }}"
+       alt="{{ .Get "alt" }}"
+       loading="lazy">
+{{ else }}
+  <img src="{{ .Get "src" }}" alt="{{ .Get "alt" }}">
+{{ end }}

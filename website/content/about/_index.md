@@ -24,7 +24,7 @@ The name Obscvrat—derived from *Obscure*, *Command Voltage*, and *Rat*—refle
 
 Obscvrat navigates cracks in systems—technological, social, and aesthetic—turning overlooked noise into **gnawing presence**.
 
-![Obscvrat harsh noise experimental sound project](/images/about/obscvrat-harsh-noise-experimental.jpg)
+{{< img src="images/about/obscvrat-harsh-noise-experimental.jpg" alt="Obscvrat harsh noise experimental sound project" >}}
 
 ### Symbol
 

@@ -47,7 +47,20 @@
                             <a href="{{ .Permalink }}" class="gig-link">
                                 {{ if .Params.poster }}
                                     <div class="gig-poster">
-                                        <img src="/media/live/{{ $gigDir }}/{{ .Params.poster }}" alt="{{ .Title }} poster">
+                                        {{ $posterPath := printf "media/live/%s/%s" $gigDir .Params.poster }}
+                                        {{ $resource := resources.Get $posterPath }}
+                                        {{ if $resource }}
+                                            {{ $small := $resource.Resize "400x q85" }}
+                                            {{ $medium := $resource.Resize "800x q85" }}
+                                            <img srcset="{{ $small.RelPermalink }} 400w,
+                                                         {{ $medium.RelPermalink }} 800w"
+                                                 sizes="(max-width: 768px) 100vw, 400px"
+                                                 src="{{ $medium.RelPermalink }}"
+                                                 alt="{{ .Title }} poster"
+                                                 loading="lazy">
+                                        {{ else }}
+                                            <img src="/media/live/{{ $gigDir }}/{{ .Params.poster }}" alt="{{ .Title }} poster">
+                                        {{ end }}
                                     </div>
                                     <div class="gig-info">
                                         <h3 class="gig-title">{{ .Title }}</h3>

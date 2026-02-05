@@ -11,7 +11,22 @@
         <div class="album-column-a">
             {{ if .Params.cover }}
             <div class="album-cover">
-                <img src="{{ .Params.cover }}" alt="{{ .Title }} cover" class="cover-image" data-swiper-image="{{ .Params.cover }}">
+                {{ $coverPath := strings.TrimPrefix "/" .Params.cover }}
+                {{ $cover := resources.Get $coverPath }}
+                {{ if $cover }}
+                    {{ $small := $cover.Resize "350x q85" }}
+                    {{ $large := $cover.Resize "700x q85" }}
+                    {{ $lightbox := $cover.Resize "1200x q90" }}
+                    <img srcset="{{ $small.RelPermalink }} 1x,
+                                 {{ $large.RelPermalink }} 2x"
+                         src="{{ $small.RelPermalink }}"
+                         alt="{{ .Title }} cover"
+                         class="cover-image"
+                         data-swiper-image="{{ $lightbox.RelPermalink }}"
+                         data-original-image="{{ $cover.RelPermalink }}">
+                {{ else }}
+                    <img src="{{ .Params.cover }}" alt="{{ .Title }} cover" class="cover-image" data-swiper-image="{{ .Params.cover }}">
+                {{ end }}
             </div>
             {{ end }}
             
@@ -389,9 +404,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // Create modal
     const modal = document.createElement('div');
     modal.className = 'swiper-modal';
+    const originalUrl = coverImage.dataset.originalImage || coverImage.dataset.swiperImage;
     modal.innerHTML = `
         <button class="swiper-close">&times;</button>
         <img src="${coverImage.dataset.swiperImage}" alt="Album cover">
+        <a href="${originalUrl}" download class="download-btn" style="position: absolute; bottom: 2rem; right: 2rem; padding: 0.5rem 1rem; background: rgba(255,255,255,0.1); color: white; text-decoration: none; border: 1px solid rgba(255,255,255,0.3);">Download</a>
     `;
     document.body.appendChild(modal);
     

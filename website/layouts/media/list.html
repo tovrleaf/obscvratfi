@@ -72,15 +72,19 @@
                         {{ $imagePath := printf "media/live/%s/%s" $gigDir $image }}
                         {{ with resources.Get $imagePath }}
                             {{ $altText := printf "Obscvrat live at %s, %s, %s - Photo by %s" $gigTitle $location $date $author }}
+                            {{ $thumb := .Resize "400x q85" }}
+                            {{ $lightbox := .Resize "1600x q90" }}
                             <div class="media-item photo-item">
                                 <a href="#" class="open-lightbox" 
                                    data-gig="{{ $gigDir }}" 
                                    data-image="{{ $image }}"
+                                   data-image-url="{{ $lightbox.RelPermalink }}"
+                                   data-original-url="{{ .RelPermalink }}"
                                    data-gig-title="{{ $gigTitle }}"
                                    data-gig-link="{{ $gigPermalink }}"
                                    data-author="{{ $author }}"
                                    data-author-url="{{ $authorUrl }}">
-                                    <img src="{{ .RelPermalink }}" alt="{{ $altText }}">
+                                    <img src="{{ $thumb.RelPermalink }}" alt="{{ $altText }}" loading="lazy">
                                 </a>
                                 <div class="media-info">
                                     <h3 class="media-gig"><a href="{{ $gigPermalink }}">{{ $gigTitle }}</a></h3>
@@ -787,8 +791,8 @@ document.addEventListener('DOMContentLoaded', function() {
     imageLightboxLinks.forEach(link => {
         link.addEventListener('click', function(e) {
             e.preventDefault();
-            const gig = this.dataset.gig;
-            const image = this.dataset.image;
+            const imageUrl = this.dataset.imageUrl;
+            const originalUrl = this.dataset.originalUrl;
             const gigTitle = this.dataset.gigTitle;
             const gigLink = this.dataset.gigLink;
             const author = this.dataset.author;
@@ -801,13 +805,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     <button class="swiper-modal-close">&times;</button>
                     <button class="swiper-modal-nav swiper-modal-prev">‹</button>
                     <button class="swiper-modal-nav swiper-modal-next">›</button>
-                    <img src="/media/live/${gig}/${image}" alt="${gigTitle}">
+                    <img src="${imageUrl}" alt="${gigTitle}">
                     <div class="swiper-modal-info">
                         <div class="swiper-modal-info-left">
                             <p><strong>Live @</strong> <a href="${gigLink}">${gigTitle}</a></p>
                             <p><strong>Photo by:</strong> ${authorUrl ? `<a href="${authorUrl}" target="_blank">${author}</a>` : author}</p>
                         </div>
-                        <a href="/media/live/${gig}/${image}" download class="download-btn">Download</a>
+                        <a href="${originalUrl}" download class="download-btn">Download</a>
                     </div>
                 </div>
             `;
