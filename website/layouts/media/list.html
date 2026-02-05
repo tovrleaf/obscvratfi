@@ -63,18 +63,18 @@
                 {{ if .Params.media.pictures }}
                     {{ $gigTitle := .Title }}
                     {{ $gigPermalink := .Permalink }}
-                    {{ $gigSlug := strings.TrimSuffix "/" (strings.TrimPrefix "/live/" .RelPermalink) }}
+                    {{ $gigDir := path.Base .File.Path | strings.TrimSuffix ".md" }}
                     {{ $author := .Params.media.pictures.author }}
                     {{ $authorUrl := .Params.media.pictures.author_url }}
                     {{ $location := .Params.location }}
                     {{ $date := .Date.Format "January 2, 2006" }}
                     {{ range $index, $image := .Params.media.pictures.images }}
-                        {{ $imagePath := printf "media/live/%s/%s" $gigSlug $image }}
+                        {{ $imagePath := printf "media/live/%s/%s" $gigDir $image }}
                         {{ with resources.Get $imagePath }}
                             {{ $altText := printf "Obscvrat live at %s, %s, %s - Photo by %s" $gigTitle $location $date $author }}
                             <div class="media-item photo-item">
                                 <a href="#" class="open-lightbox" 
-                                   data-gig="{{ $gigSlug }}" 
+                                   data-gig="{{ $gigDir }}" 
                                    data-image="{{ $image }}"
                                    data-gig-title="{{ $gigTitle }}"
                                    data-gig-link="{{ $gigPermalink }}"
