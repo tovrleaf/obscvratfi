@@ -111,12 +111,77 @@ Manual with validation:
        └─────────────────┘ (if tests fail, back to Build)
 ```
 
+## Available Prompts
+
+Prompts streamline common workflows. Invoke with `@prompt-name`.
+
+### Workflow Prompts
+
+- **`@branch`** - Create new feature branch
+  - Asks what you're building
+  - Suggests properly formatted branch name
+  - Switches to main, pulls latest, creates branch
+  - Use: Starting any new work
+
+- **`@pr`** - Create and open pull request
+  - Checks all changes are committed
+  - Pushes branch to remote
+  - Creates PR with auto-filled title/body
+  - Opens PR in browser automatically
+  - Use: When feature is ready for review
+
+- **`@commit`** - Commit workflow
+  - Reviews changes with git status/diff
+  - Creates atomic commits
+  - Writes proper commit messages
+  - Use: When you have changes to commit
+
+### Automated Workflows
+
+- **`@workflow-full`** - Complete development workflow
+  - Plan → Build → Test → Commit → Push
+  - Full orchestrated workflow
+  - Use: For complex features requiring all steps
+
+- **`@workflow-lint-fix-changed`** - Fix linting on changed files
+  - Identifies changed files
+  - Runs appropriate linters
+  - Fixes issues automatically
+  - Use: When linting fails on specific files
+
+- **`@workflow-cicd-fix`** - Fix CI/CD pipeline failures
+  - Fetches failure logs from GitHub Actions
+  - Analyzes root cause
+  - Fixes issues and pushes
+  - Monitors until pipeline passes
+  - Use: When GitHub Actions fails
+
 ## Project Overview
 
-Obscvrat is a band website built with Hugo static site generator, deployed to AWS S3 + CloudFront. The project uses shell scripts for deployment and infrastructure management.
+Obscvrat is a band website built with Hugo static site generator, deployed to AWS S3 + CloudFront. The project uses Python scripts and shell scripts for automation and infrastructure management.
 
-## Build and Development Commands
+## Make Commands Reference
 
+### Testing Commands
+```bash
+make test              # Run all tests
+make test sh           # Shell script linting (shellcheck)
+make test yaml         # YAML linting (yamllint)
+make test md           # Markdown linting (pymarkdown)
+make test html         # HTML validation (html5lib)
+make test py           # Python tests (pytest + ruff)
+make test secrets      # Secret scanning (detect-secrets)
+make test links        # Critical link validation
+```
+
+### Hook Commands
+```bash
+make hooks setup       # Install pre-commit hooks (one-time)
+make hooks run         # Run all hooks manually
+make hooks uninstall   # Remove pre-commit hooks
+```
+
+### Build Commands
 ```bash
 # Start local development server (http://localhost:1313)
 make serve
@@ -132,6 +197,198 @@ make clean
 
 # View all available commands
 make help
+```
+
+### ADR Commands
+```bash
+make adr-new TITLE="Decision Title"  # Create new ADR
+make adr-list                        # List all ADRs
+make adr-list-accepted               # List accepted ADRs
+```
+
+### Content Management
+```bash
+make live    # Generate live performance pages
+make media   # Generate media pages
+make music   # Generate music pages
+```
+
+### Deployment
+```bash
+make deploy production  # Deploy to AWS S3 + CloudFront
+```
+
+## CI/CD Workflow
+
+### PR Checks Workflow (`pr-checks.yml`)
+
+Runs on every push and pull request to validate code quality.
+
+**Jobs (run in parallel):**
+1. **Lint** - Shellcheck, yamllint, markdown linting
+2. **Build & Validate** - Hugo build, HTML validation, link checking
+3. **Security** - Secret scanning, AWS key detection
+
+**Jobs (run after validation):**
+4. **Results** - Post PR comment with status
+5. **Notify** - Send email notifications
+
+**Triggers:**
+- Push to any branch
+- Pull request to main
+
+**Duration:** ~30 seconds
+
+### Deploy Workflow (`deploy.yml`)
+
+Deploys to production after pr-checks pass on main branch.
+
+**Steps:**
+1. Configure AWS credentials (OIDC)
+2. Build Hugo site with production settings
+3. Sync to S3 bucket
+4. Invalidate CloudFront cache
+5. Create GitHub release (if tagged)
+
+**Triggers:**
+- Automatically after pr-checks succeeds on main
+- Manual trigger via workflow_dispatch
+
+**Duration:** ~20 seconds
+
+**Safety:** Only deploys if pr-checks passed or manually triggered.
+
+See [docs/CI-CD.md](docs/CI-CD.md) for detailed pipeline documentation.
+
+## Release Process
+
+### Version Bumping
+
+Use `bump_version.py` to update version:
+
+```bash
+# Bump patch version (1.2.0 → 1.2.1)
+python3 scripts/bump_version.py patch
+
+# Bump minor version (1.2.0 → 1.3.0)
+python3 scripts/bump_version.py minor
+
+# Bump major version (1.2.0 → 2.0.0)
+python3 scripts/bump_version.py major
+```
+
+**What it does:**
+- Updates CHANGELOG.md with new version entry
+- Updates website/data/changelog.txt
+- Creates empty sections (Added, Changed, Fixed)
+- Prints new version number
+
+### Creating a Release
+
+1. **Fill CHANGELOG.md** - Add changes under appropriate sections
+2. **Commit changes** - `git commit -m "Release v1.2.0: Description"`
+3. **Create git tag** - `git tag v1.2.0`
+4. **Push tag** - `git push --tags`
+5. **Merge to main** - Create and merge PR
+6. **Auto-deploy** - Deploy workflow runs automatically
+7. **GitHub release** - Created automatically from CHANGELOG
+
+**Version Guidelines:**
+- **Major (2.0.0)** - Breaking changes, major features
+- **Minor (1.3.0)** - New features, no breaking changes
+- **Patch (1.2.1)** - Bug fixes, small improvements
+
+## Common Workflows
+
+### New Feature Workflow
+
+```
+1. @branch
+   → Creates feature/feature-name branch from main
+
+2. Build Agent
+   → Implement feature
+   → Run tests: make test
+
+3. @commit
+   → Reviews changes
+   → Creates atomic commits
+
+4. @pr
+   → Pushes to remote
+   → Creates PR
+   → Opens in browser
+
+5. Merge PR
+   → pr-checks validates
+   → Merge to main
+   → Auto-deploys to production
+```
+
+### Bug Fix Workflow
+
+```
+1. @branch
+   → Creates fix/bug-name branch from main
+
+2. Build Agent
+   → Fix the bug
+   → Test: make test
+
+3. @commit
+   → Commit fix
+
+4. @pr
+   → Create PR
+   → Merge after validation
+```
+
+### Documentation Update
+
+```
+1. @branch
+   → Creates docs/update-name branch
+
+2. Build Agent
+   → Update documentation
+   → Build: make serve (verify changes)
+
+3. @commit
+   → Commit changes
+
+4. @pr
+   → Create PR and merge
+```
+
+### Release Workflow
+
+```
+1. On feature branch
+   → python3 scripts/bump_version.py minor
+   → Fill CHANGELOG.md
+   → git commit -m "Release v1.3.0: Description"
+   → git tag v1.3.0
+
+2. @pr
+   → Push and create PR
+
+3. Merge PR
+   → pr-checks validates
+   → Merge to main
+   → deploy workflow runs
+   → GitHub release created
+   → Site updated with new version
+```
+
+### CI/CD Fix Workflow
+
+```
+1. @workflow-cicd-fix
+   → Fetches failure logs
+   → Analyzes root cause
+   → Fixes issues
+   → Pushes fix
+   → Monitors until pass
 ```
 
 ## Testing and Validation
@@ -342,9 +599,9 @@ See `docs/DEPLOYMENT.md` for detailed deployment instructions.
 
 ## Project-Specific Notes
 
-- **Hugo version:** 0.128.2 (specified in Dockerfile)
-- **Deployment:** Manual deployment via scripts (no auto-deploy)
-- **CI/CD:** GitHub Actions validates PRs but doesn't deploy
+- **Hugo version:** 0.128.2 (used in CI/CD)
+- **Deployment:** Automatic deployment after pr-checks pass on main
+- **CI/CD:** GitHub Actions validates and deploys
 - **Branch protection:** Main branch requires PR approval
 - **Pre-commit hooks:** Local validation before push (ADR-004)
 - **Design system:** Dark minimal aesthetic (ADR-007)
@@ -352,8 +609,14 @@ See `docs/DEPLOYMENT.md` for detailed deployment instructions.
 
 ## Additional Resources
 
-- [README.md](README.md) - Project overview and quick start
-- [CONTRIBUTING.md](CONTRIBUTING.md) - Contribution guidelines
+### For AI Agents
 - [docs/adr/](docs/adr/) - Architecture Decision Records
-- [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) - Deployment guide
 - [docs/CI-CD.md](docs/CI-CD.md) - CI/CD pipeline documentation
+- [docs/DESIGN.md](docs/DESIGN.md) - Design system and patterns
+- [docs/MARKDOWN-LINTING.md](docs/MARKDOWN-LINTING.md) - Markdown linting rules
+- [docs/GITHUB-ACTIONS.md](docs/GITHUB-ACTIONS.md) - GitHub Actions setup
+
+### For Humans
+- [README.md](README.md) - Quick start guide
+- [CONTRIBUTING.md](CONTRIBUTING.md) - Git conventions
+- [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) - Deployment guide
