@@ -2,7 +2,7 @@
 
 **Status:** Accepted
 
-**Date:** 2025-12-30 (Updated: 2026-01-25)
+**Date:** 2025-12-30 (Updated: 2026-02-05)
 
 ## Context
 
@@ -97,17 +97,21 @@ We will implement a two-layer testing approach:
    - Validates: No AWS keys, tokens, or secrets in commits
    - Catches: Accidental credential exposure
 
-8. **Critical Link Validation (Custom)**
-   - Validates: 6 essential internal links work
-   - Links: `/`, `/about/`, `/live/`, `/albums/`, `/feed.xml`, `/sitemap.xml`
-   - Uses: Custom bash script with curl
+8. **Comprehensive Link and Image Validation (htmltest)**
+   - Validates: All internal links, external links, and images
+   - Checks: `<a href>` and `<img src>` on all pages
+   - Pages: `/`, `/about/`, `/live/`, `/music/`, `/media/`, and all generated pages
+   - Internal links: Fail build if broken
+   - External links: Warn only (don't fail build)
+   - Images: Fail build if missing
+   - Uses: htmltest (Go-based tool)
+   - Configuration: `.htmltest.yml`
 
 **Configuration Files:**
 
 ```
 .pre-commit-config.yaml         # Main hook configuration
-.pre-commit-hooks.yaml          # Custom hook definitions (link validator)
-scripts/pre-push-link-checker.sh # Custom link validation script
+.htmltest.yml                   # htmltest configuration
 ```
 
 **Setup & Usage:**
@@ -386,6 +390,7 @@ rm -rf website/public/
 - **Bypass temptation:** `--no-verify` flag can be abused
 - **Environment differences:** Issues caught by local hooks might not match CI exactly
 - **Hugo dependency:** Hugo validation requires local Hugo installation (v0.128.2+)
+- **htmltest dependency:** Link validation requires htmltest binary (Go-based)
 - **Maintenance:** Need to keep `.pre-commit-config.yaml` in sync with GitHub Actions
 - **Requires discipline:** Manual testing easy to skip without enforcement
 - **Adds time:** Testing adds time to development process
@@ -410,7 +415,7 @@ rm -rf website/public/
 - **Customization:** `.pre-commit-config.yaml` allows disabling individual hooks if needed
 - **Performance:** Expected 10-30 second runtime per push (varies by file count)
 - **Hugo:** Uses local Hugo installation (same version as production)
-- **Link validation:** Custom script validates 6 critical endpoints after build
+- **Link validation:** htmltest validates all links and images across entire site
 - **Related:** ADR-003 describes GitHub Actions pipeline that local hooks mirror
 - **Future:** Could expand to include unit tests once test suite established
 - **Team:** Recommended setup instruction should be added to `CONTRIBUTING.md`
@@ -425,13 +430,53 @@ rm -rf website/public/
 When ready to implement (future work):
 
 1. Create `.pre-commit-config.yaml` with all hook definitions
-2. Create `.pre-commit-hooks.yaml` for custom link validator
-3. Create `scripts/pre-push-link-checker.sh` for link validation
-4. Update `Makefile` with `setup-hooks`, `run-hooks`, `uninstall-hooks` targets
-5. Update `README.md` with local development setup section
-6. Update `CONTRIBUTING.md` with setup instructions
-7. Update `.gitignore` for pre-commit cache directory (`.pre-commit`)
-8. Document any environment-specific setup needs
-9. Test setup process from clean repository clone
-10. Commit all changes with reference to this ADR
+2. Create `.htmltest.yml` for htmltest configuration
+3. Update `Makefile` with `setup-hooks`, `run-hooks`, `uninstall-hooks` targets
+4. Update `README.md` with local development setup section
+5. Update `CONTRIBUTING.md` with setup instructions
+6. Update `.gitignore` for pre-commit cache directory (`.pre-commit`)
+7. Document any environment-specific setup needs
+8. Test setup process from clean repository clone
+9. Commit all changes with reference to this ADR
+
+## htmltest Configuration
+
+Create `.htmltest.yml`:
+
+```yaml
+DirectoryPath: "website/public"
+CheckDoctype: true
+CheckAnchors: true
+CheckLinks: true
+CheckImages: true
+CheckScripts: false
+CheckFavicon: false
+CheckMetaRefresh: false
+CheckGeneric: true
+CheckInternal: true
+CheckExternal: true
+CheckInternalHash: true
+CheckExternalHash: false
+CheckMailto: false
+CheckTel: false
+EnforceHTTPS: false
+IgnoreDirectoryMissingTrailingSlash: true
+IgnoreAltMissing: false
+IgnoreEmptyHref: false
+IgnoreInternalEmptyHash: true
+IgnoreExternalBrokenLinks: true  # Warn only, don't fail
+IgnoreTagAttribute:
+  - "script:src"
+  - "link:href"
+IgnoreURLs:
+  - "^https://www.instagram.com"  # Instagram blocks automated requests
+  - "^https://fonts.googleapis.com"  # External font CDN
+LogLevel: 2  # 0=silent, 1=errors, 2=warnings, 3=info
+```
+
+**Key settings:**
+- `CheckInternal: true` - Fail on broken internal links
+- `CheckImages: true` - Fail on missing images
+- `IgnoreExternalBrokenLinks: true` - Warn on external, don't fail
+- Validates all pages in `website/public/` after Hugo build
 
