@@ -156,6 +156,16 @@ Prompts streamline common workflows. Invoke with `@prompt-name`.
   - Monitors until pipeline passes
   - Use: When GitHub Actions fails
 
+- **`@workflow-release`** - Automated release workflow
+  - Bumps version (major/minor/patch)
+  - Updates CHANGELOG.md
+  - Creates commit and git tag
+  - Pushes and creates PR
+  - Monitors deployment
+  - Use: When ready to release new version
+
+All prompts are in `.kiro/prompts/` with detailed documentation.
+
 ## Project Overview
 
 Obscvrat is a band website built with Hugo static site generator, deployed to AWS S3 + CloudFront. The project uses Python scripts and shell scripts for automation and infrastructure management.
@@ -395,125 +405,33 @@ python3 scripts/bump_version.py major
 
 **See ADR-004 for detailed rationale and decision on testing requirements.**
 
-Quick reference for local testing:
+**See `.kiro/instructions/testing.md` for detailed testing requirements.**
+
+Quick reference:
 
 ```bash
-# Setup local pre-commit hooks (one-time)
-make setup-hooks
-
-# Run all validation hooks manually
-make run-hooks
-
-# Uninstall hooks
-make uninstall-hooks
+# Run appropriate tests based on changes
+make test sh           # Shell scripts
+make test yaml         # YAML files
+make test md           # Markdown files
+make test html         # HTML output
+make test py           # Python scripts
+make test secrets      # Secret scanning
+make test links        # Link validation
 ```
 
-Local hooks validate:
-- Shell scripts (shellcheck)
-- YAML files (yamllint)
-- Markdown files (markdownlint)
-- Hugo site builds
-- HTML structure
-- Critical internal links
-- No secrets committed
-
-### Script Testing Requirements
-
-**IMPORTANT:** When modifying existing scripts, always test them before committing:
-
-1. **Syntax validation:** Run `bash -n script.sh` to check for syntax errors
-2. **Functional testing:** Execute the script with test inputs to verify behavior
-3. **Edge cases:** Test with empty inputs, invalid inputs, and boundary conditions
-4. **Integration:** Verify the script works with related files and commands
-5. **Cleanup:** Remove test artifacts and restore to pre-testing state
-
-Example testing workflow:
+Pre-commit hooks (one-time setup):
 ```bash
-# Check syntax
-bash -n scripts/manage-media.sh
-
-# Test the script interactively or with test data
-./scripts/manage-media.sh
-
-# Verify generated files are correct
-cat website/content/media/others.md
-
-# Clean up test artifacts (restore to state before testing)
-rm -f website/content/media/others.md  # if created during testing
-git restore website/content/media/others.md  # if modified during testing
-git clean -fd  # remove any untracked files created during testing
+make hooks setup       # Install hooks
+make hooks run         # Run manually
+make hooks uninstall   # Remove hooks
 ```
-
-Do not hand back modified scripts without testing them first.
-Always restore the repository to the state it was in before testing.
-
-### Template/Webpage Testing Requirements
-
-**IMPORTANT:** When modifying Hugo templates, layouts, or content in `website/`, always test by building and validating:
-
-1. **Build the site:** Run `cd website && hugo` to compile
-2. **Check for build errors:** Look for ERROR messages in output
-3. **Validate HTML:** Run `make test html-commit` to validate changed HTML files
-4. **Verify content:** Check generated HTML contains expected content
-5. **Clean up:** Remove test artifacts if needed
-
-Example testing workflow:
-```bash
-# Build the site
-cd website && hugo
-
-# Check for errors in build output
-cd website && hugo 2>&1 | grep ERROR
-
-# Validate HTML from your changes
-make test html-commit
-
-# Verify generated HTML content
-cat website/public/media/index.html | grep "expected-content"
-
-# Clean up if needed
-rm -rf website/public/
-```
-
-Do not hand back modified templates without building and validating the output.
 
 ## Code Style Guidelines
 
-### File Renaming and Moving
+See `.kiro/instructions/build.md` for detailed code style guidelines.
 
-**IMPORTANT:** When renaming or moving files tracked by git, always use `git mv` to preserve file history:
-
-```bash
-# Correct - preserves history
-git mv old-name.sh new-name.sh
-
-# Wrong - breaks history
-mv old-name.sh new-name.sh
-git add new-name.sh
-```
-
-After using `git mv`, make content changes and commit. Git will show the rename with similarity percentage (e.g., "rename scripts/{old.sh => new.sh} (90%)").
-
-### Shell Scripts
-- Use shellcheck for validation
-- Include error handling (`set -e`)
-- Add descriptive comments for complex logic
-- Use meaningful variable names
-- Quote variables to prevent word splitting
-
-### Hugo Templates
-- Follow Go template syntax
-- Keep templates focused and modular
-- Use partials for reusable components
-- Comment complex template logic
-
-### Markdown Content
-- Follow markdownlint rules
-- Use consistent heading hierarchy
-- Keep lines under 120 characters when practical
-- Use descriptive link text
-
-### File Organization
+Quick reference:
 - Hugo content in `website/content/`
 - Templates in `website/layouts/`
 - Static files in `website/static/`
@@ -569,7 +487,7 @@ make adr-list-accepted
 
 ## Git Commit Guidelines
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
+See [CONTRIBUTING.md](CONTRIBUTING.md) and `.kiro/instructions/commit.md` for detailed guidelines.
 
 **Quick Reference:**
 - Use imperative mood: "Add feature" not "Added feature"
@@ -610,6 +528,13 @@ See `docs/DEPLOYMENT.md` for detailed deployment instructions.
 ## Additional Resources
 
 ### For AI Agents
+- [.kiro/instructions/](. kiro/instructions/) - Agent-specific instructions
+  - `build.md` - Build Agent code style and testing
+  - `commit.md` - Commit Agent git workflow
+  - `test.md` - Test Agent validation commands
+  - `testing.md` - Shared testing requirements
+  - `plan.md` - Plan Agent ADR workflow
+- [.kiro/prompts/](.kiro/prompts/) - Workflow automation prompts
 - [docs/adr/](docs/adr/) - Architecture Decision Records
 - [docs/CI-CD.md](docs/CI-CD.md) - CI/CD pipeline documentation
 - [docs/DESIGN.md](docs/DESIGN.md) - Design system and patterns

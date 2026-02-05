@@ -35,6 +35,7 @@ I can create ADRs and research, but cannot write code or run commands."
 
 When planning is complete, suggest:
 - "Plan ready. Switch to Build Agent to implement."
+- Or: "Use @workflow-full for complete automated workflow."
 - Provide clear implementation steps
 - Reference the ADR if created
 
