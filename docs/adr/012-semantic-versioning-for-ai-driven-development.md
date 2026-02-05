@@ -89,13 +89,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Automated Workflow
 
+**IMPORTANT:** Tags must be created on main branch AFTER merging PR.
+
 **1. Commit Agent Responsibilities:**
 - Review changes with `git diff`
 - Determine version bump type based on changes
-- Run `python3 scripts/bump_version.py [major|minor|patch]`
-- Commit changes + updated CHANGELOG.md together
-- Create git tag (e.g., `v1.2.3`)
-- Push commits and tags: `git push && git push --tags`
+- Commit changes on feature branch
+- Push and create PR
+- After PR merged: Checkout main, bump version, tag, push tag
+
+**Correct workflow:**
+1. On feature branch: Make changes and commit
+2. Push branch: `git push origin feature/branch-name`
+3. Create PR and merge to main
+4. Checkout main: `git checkout main && git pull origin main`
+5. Bump version: `python3 scripts/bump_version.py [major|minor|patch]`
+6. Fill CHANGELOG.md with changes
+7. Commit: `git add CHANGELOG.md website/data/changelog.txt && git commit -m "Release vX.Y.Z: Description"`
+8. Create tag: `git tag vX.Y.Z`
+9. Push tag: `git push origin vX.Y.Z`
+10. Deploy workflow runs with tag and creates GitHub release
 
 **2. Version Bump Script:**
 ```bash
