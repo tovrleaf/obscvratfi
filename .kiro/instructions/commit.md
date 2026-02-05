@@ -79,15 +79,20 @@ Users may invoke you via:
 
 For releases, update CHANGELOG.md:
 
-```bash
-# Bump version first (Build Agent does this)
-python3 scripts/bump_version.py [major|minor|patch]
+**IMPORTANT:** Tags must be created on main branch AFTER merging PR.
 
-# Then you:
-# 1. Fill in CHANGELOG.md sections (Added, Changed, Fixed)
-# 2. Commit with message: "Release vX.Y.Z: Description"
-# 3. Create git tag: git tag vX.Y.Z
-# 4. Push: git push && git push --tags
+```bash
+# Correct workflow:
+# 1. On feature branch: Make changes and commit
+# 2. Push branch and create PR
+# 3. Merge PR to main
+# 4. Checkout main: git checkout main && git pull origin main
+# 5. Bump version: python3 scripts/bump_version.py [major|minor|patch]
+# 6. Fill CHANGELOG.md sections (Added, Changed, Fixed)
+# 7. Commit: git add CHANGELOG.md website/data/changelog.txt && git commit -m "Release vX.Y.Z: Description"
+# 8. Create tag: git tag vX.Y.Z
+# 9. Push tag: git push origin vX.Y.Z
+# 10. Deploy workflow runs with tag and creates GitHub release
 ```
 
 ## Agent Handoff
