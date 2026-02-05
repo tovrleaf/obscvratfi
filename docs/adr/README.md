@@ -43,7 +43,7 @@ decision made, alternatives considered, and consequences.
 Use the helper script:
 
 ```bash
-make adr-new TITLE="Your Decision Title"
+make adr new TITLE="Your Decision Title"
 ```
 
 This will:
@@ -66,13 +66,13 @@ Use the helper script to list all ADRs:
 
 ```bash
 # List all ADRs
-make adr-list
+make adr list
 
 # List only accepted ADRs
-make adr-list-accepted
+make adr list-accepted
 
 # List proposed ADRs
-make adr-list-proposed
+make adr list-proposed
 ```
 
 ## ADR Status

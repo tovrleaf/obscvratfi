@@ -145,5 +145,5 @@ We will use the following template structure for all ADRs:
 ## Notes
 
 The template file is stored at `docs/adr/template.md` and is used by the
-`make adr-new` command to create new ADRs with proper structure and
+`make adr new` command to create new ADRs with proper structure and
 placeholders.
