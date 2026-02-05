@@ -33,7 +33,7 @@ obscvrat.fi (custom domain)
 - AWS Account with appropriate permissions (S3, CloudFront, Route 53)
 - AWS CLI configured locally
 - Make (for build commands)
-- Docker (for building)
+- Hugo Extended v0.128.2 or later
 
 ### Required AWS Permissions
 

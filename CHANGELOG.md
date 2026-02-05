@@ -5,7 +5,44 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.1.1] - 2026-02-03
+## [1.2.0] - 2026-02-05
+
+### Added
+- Python script conversion: bump_version.py, create_release.py, manage_media.py, manage_live.py (ADR-014)
+- Comprehensive test suite: 120 tests with 92% average coverage
+- Dual licensing system: MIT for code, CC BY-NC-SA 4.0 for content (ADR-013)
+- License page with styled two-column layout and credits section
+- Scroll-triggered fade-in animation on about page
+- @pr prompt for streamlined pull request creation
+- Markdown linting documentation (MARKDOWN-LINTING.md)
+- Shell script conversion priority list for future work
+
+### Changed
+- Extracted inline CSS (27KB) and JS (1.5KB) to external files for browser caching
+- Reduced baseof.html from 30KB to 2.5KB (92% smaller)
+- Improved CI/CD: Deploy workflow now waits for pr-checks to pass
+- Pre-commit hooks now use local Hugo instead of Docker
+- Shellcheck configured to show errors only (warnings suppressed)
+- YAML linting: Increased line length limit to 300 characters
+- Markdown linting: Disabled Hugo-incompatible rules (MD033, MD013, etc.)
+- Media page: Reduced left margin on Others section descriptions (mobile)
+- Footer: Added "License: MIT & CC BY-NC-SA 4.0" link
+
+- Python linting: Fixed 549 ruff errors across all scripts
+- YAML linting: Fixed trailing spaces and blank lines in deploy.yml
+- Shellcheck: Fixed array comparison error in remove-branch-protection.sh
+- Hugo configuration: Fixed deprecated minify, taxonomyTerm, and :filename settings
+- HTML validation: Fixed unescaped ampersand in Google Fonts URL
+- Pre-commit hooks: Fixed deprecated stage names (push→pre-push, commit→pre-commit)
+- Secret detection: Created baseline file to suppress false positives
+
+### Infrastructure
+- Testing: pytest with 80% minimum coverage enforcement
+- Linting: ruff, mypy, shellcheck, yamllint, pymarkdown
+- Pre-commit hooks: Automated validation before commit and push
+- Documentation: Consolidated homepage docs into DESIGN.md
+- ADRs: Created ADR-013 (dual licensing) and ADR-014 (Python conversion)
+
 ## [1.1.1] - 2026-02-03
 
 ### Added
@@ -19,13 +56,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Footer version link points to specific release tag
 - GitHub release script preserves Markdown formatting
 
-### Fixed
 - Mobile layout: No horizontal overflow on 390px width screens
 - Mobile layout: Reduced gaps on small screens (400px and below)
 - Artist names: Nowrap on desktop, wrap on mobile
 - Release formatting: Proper Markdown rendering in GitHub releases
 
-## [1.1.0] - 2026-02-02
 ## [1.1.0] - 2026-02-02
 
 ### Added
@@ -43,7 +78,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Footer displays version on separate line with styled link
 - Footer font size reduced to 0.8rem
 
-### Fixed
 - Date wrapping on mobile (28 Sep now stays on one line)
 - Venue name wrapping on mobile (e.g., Vihdin Kultsan Halloween)
 - Music section no longer shows "Releases" index page

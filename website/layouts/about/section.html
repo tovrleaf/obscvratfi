@@ -1,8 +1,10 @@
 {{ define "main" }}
 <section class="about-page">
-    <h1>{{ .Title }}</h1>
+    <h1 class="fade-in-element">{{ .Title }}</h1>
     
-    {{ .Content | safeHTML }}
+    <div class="about-content">
+        {{ .Content | safeHTML }}
+    </div>
 </section>
 
 <style>
@@ -10,6 +12,29 @@
     max-width: 900px;
     margin: 0 auto;
     padding-left: 2rem;
+}
+
+/* Scroll animation styles */
+.fade-in-element {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.fade-in-element.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.about-content > * {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.about-content > *.visible {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 .about-page h1 {
@@ -508,6 +533,35 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.two-columns a').forEach(link => {
         link.setAttribute('target', '_blank');
         link.setAttribute('rel', 'noopener noreferrer');
+    });
+
+    // Scroll-triggered fade-in animation
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -100px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry, index) => {
+            if (entry.isIntersecting) {
+                setTimeout(() => {
+                    entry.target.classList.add('visible');
+                }, index * 100);
+                observer.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+
+    // Observe title
+    const title = document.querySelector('.about-page h1');
+    if (title) {
+        observer.observe(title);
+    }
+
+    // Observe all content elements
+    const contentElements = document.querySelectorAll('.about-content > *');
+    contentElements.forEach(element => {
+        observer.observe(element);
     });
 });
 </script>

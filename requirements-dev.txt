@@ -5,6 +5,12 @@
 # Pre-commit framework for git hooks
 pre-commit>=3.5.0
 
+# Python testing and linting (ADR-014)
+pytest>=7.4.0             # Testing framework
+pytest-cov>=4.1.0         # Coverage reporting
+ruff>=0.1.0               # Fast linter + formatter
+mypy>=1.7.0               # Type checking
+
 # Linting tools
 shellcheck-py>=0.9.0      # Shell script linting
 yamllint>=1.35.0          # YAML linting

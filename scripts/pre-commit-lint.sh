@@ -15,7 +15,7 @@ if [ -n "$shell_files" ]; then
     echo ""
     echo "🔍 Running shellcheck on staged shell scripts..."
     if [ -f .venv/bin/shellcheck ]; then
-        echo "$shell_files" | xargs .venv/bin/shellcheck --format=gcc || has_issues=1
+        echo "$shell_files" | xargs .venv/bin/shellcheck --severity=error --format=gcc || has_issues=1
     else
         echo "⚠️  shellcheck not found, skipping"
     fi

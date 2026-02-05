@@ -5,6 +5,6 @@
             {{ if .Site.Params.bandcamp }}<li><a href="{{ .Site.Params.bandcamp }}" target="_blank" rel="noopener noreferrer" aria-label="Bandcamp"><i class="fab fa-bandcamp"></i></a></li>{{ end }}
             {{ if .Site.Params.youtube }}<li><a href="{{ .Site.Params.youtube }}" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><i class="fab fa-youtube"></i></a></li>{{ end }}
         </ul>
-        <p class="footer-copyright">&copy; {{ now.Year }} {{ .Site.Title }}. All rights reserved.<br><a href="https://github.com/tovrleaf/obscvratfi/releases/tag/v{{ partial "version.html" . }}" target="_blank" rel="noopener noreferrer" class="footer-version-link">Site v{{ partial "version.html" . }}</a></p>
+        <p class="footer-copyright">&copy; {{ now.Year }} {{ .Site.Title }}. All rights reserved.<br><a href="/license/" class="footer-license-link">License: MIT &amp; CC BY-NC-SA 4.0</a><br><a href="https://github.com/tovrleaf/obscvratfi/releases/tag/v{{ partial "version.html" . }}" target="_blank" rel="noopener noreferrer" class="footer-version-link">Site v{{ partial "version.html" . }}</a></p>
     </div>
 </footer>
