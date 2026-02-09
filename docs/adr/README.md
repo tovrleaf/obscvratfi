@@ -38,6 +38,7 @@ decision made, alternatives considered, and consequences.
 - **[013](013-dual-licensing-strategy-mit-and-cc-by-nc-sa.md)** - Dual Licensing Strategy (Accepted, 2026-02-03)
 - **[014](014-python-for-complex-scripts-with-test-coverage.md)** - Python for Complex Scripts (Accepted, 2026-02-04)
 - **[015](015-image-optimization-with-hugo-processing.md)** - Image Optimization (Accepted, 2026-02-05)
+- **[016](016-cloudfront-analytics-for-website-traffic-monitoring.md)** - CloudFront Analytics (Accepted, 2026-02-09)
 
 ## Creating a New ADR
 
