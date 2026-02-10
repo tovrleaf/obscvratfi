@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.3.0] - 2026-02-05
+## [1.4.0] - 2026-02-10
 
 ### Added
 
@@ -13,7 +13,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-## [1.2.0] - 2026-02-05
+## [1.3.0] - 2026-02-05
+
+### Added
+- Comprehensive image optimization with Hugo processing (ADR-015)
+- Responsive images with srcset for all pages (400w, 800w, 1200w sizes)
+- Image shortcode for responsive images in markdown content
+- Mobile tap-to-reveal interaction for media gallery photos
+- Prev/up/next arrow navigation on single album and gig pages
+- Custom PNG icon for About navigation link
+- Download links for full-resolution originals in lightbox modals
+
+### Changed
+- Navigation reordered: Music → Live → Media → About (content-first)
+- Filter button background opacity reduced for cleaner appearance
+- Image storage moved from static/ to assets/ for Hugo processing
+- Lightbox displays optimized 1600px versions instead of full originals
+- Album covers use 2x retina support for sharp display
+
+### Fixed
+- Photo gallery image paths now use file basename with date prefix
+- Poster image paths corrected for live performance pages
+- All images now load correctly across site
+
+### Performance
+- Homepage hero image: 3.1MB → 32-253KB (92-99% reduction)
+- Live posters: 261KB-1.7MB → 16-128KB (85-95% reduction)
+- Photo thumbnails: 1.6-1.8MB → 10-31KB (98% reduction)
+- Album covers: 175KB-2.4MB → 28-66KB (60-97% reduction)
+- Overall bandwidth savings: 85-98% across entire site
+
 
 ### Added
 - Python script conversion: bump_version.py, create_release.py, manage_media.py, manage_live.py (ADR-014)
