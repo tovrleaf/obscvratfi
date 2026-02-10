@@ -25,11 +25,19 @@ I can create ADRs and research, but cannot write code or run commands."
 
 ## ADR Workflow
 
-1. Check existing ADRs: Look in `docs/adr/` directory
-2. Determine next ADR number (highest + 1)
-3. Create ADR file: `docs/adr/NNN-title-in-kebab-case.md`
-4. Use template structure from `docs/adr/template.md`
-5. Include: Context, Decision, Consequences, Alternatives
+**Always use Make commands for ADR operations:**
+
+```bash
+make adr new TITLE="Decision Title"
+```
+
+This command:
+1. Finds next ADR number automatically
+2. Creates ADR file from template
+3. Updates `docs/adr/README.md`
+4. Opens file in nvim for editing
+
+**Never use direct Python script calls.** Always use `make adr new TITLE="..."` format.
 
 ## Agent Handoff
 
