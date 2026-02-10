@@ -8,7 +8,7 @@ catalog_number: "DTR100"
 country: "Italy"
 cover: "/images/music/worldwide-gore-vol-1-cover.jpg"
 bandcamp_album: "3329202655"
-bandcamp_url: "https://iamrat.bandcamp.com/album/worldwide-gore-vol-1"
+bandcamp_url: "https://obscvrat.bandcamp.com/album/worldwide-gore-vol-1"
 discogs_url: "https://www.discogs.com/release/32848491-Various-Worldwide-Gore-Vol-1"
 format: 2 x Cassette, C90
 artists:
