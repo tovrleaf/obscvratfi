@@ -22,6 +22,62 @@ from typing import Dict, List, Optional, Tuple
 import yaml
 
 
+def fzf_select(options: List[str], prompt: str = "Select") -> Optional[str]:
+    """
+    Use fzf for selection if available, otherwise fall back to numbered menu.
+
+    Args:
+        options: List of options to select from
+        prompt: Prompt text for fzf
+
+    Returns:
+        Selected option or None if cancelled
+    """
+    if not options:
+        return None
+
+    # Check if fzf is available
+    if shutil.which("fzf"):
+        try:
+            result = subprocess.run(
+                [
+                    "fzf",
+                    "--prompt", f"{prompt}> ",
+                    "--height", "40%",
+                    "--reverse",
+                    "--border",
+                    "--no-mouse"
+                ],
+                input="\n".join(options),
+                capture_output=True,
+                text=True,
+                check=False,
+                env={**os.environ, "FZF_DEFAULT_OPTS": ""}  # Override user config
+            )
+            if result.returncode == 0:
+                return result.stdout.strip()
+            return None
+        except Exception:
+            pass  # Fall back to numbered selection
+
+    # Fallback: numbered selection
+    print(f"\n{prompt}:")
+    for i, option in enumerate(options, 1):
+        print(f"{i}) {option}")
+
+    try:
+        selection = input("\nSelect number (or 0 to cancel): ").strip()
+        if selection == "0":
+            return None
+        idx = int(selection) - 1
+        if 0 <= idx < len(options):
+            return options[idx]
+    except (ValueError, EOFError, KeyboardInterrupt):
+        pass
+
+    return None
+
+
 class LiveManager:
     """Manages live performances for the Obscvrat website."""
 
@@ -34,31 +90,28 @@ class LiveManager:
     def show_menu(self) -> None:
         """Display main menu and handle user selection."""
         while True:
-            print("\n" + "=" * 20 + " Live Performance Management " + "=" * 20)
-            print("1) Create new live performance")
-            print("2) List all live performances")
-            print("3) Edit existing live performance")
-            print("4) Delete live performance")
-            print("5) Exit")
+            options = [
+                "Create new live performance",
+                "List all live performances",
+                "Edit existing live performance",
+                "Delete live performance",
+                "Exit"
+            ]
 
-            try:
-                choice = input("\nChoose an option: ").strip()
-            except (EOFError, KeyboardInterrupt):
-                print("\nExiting...")
+            choice = fzf_select(options, "Live Performance Management")
+            if not choice:
                 return
 
-            if choice == "1":
+            if choice == "Create new live performance":
                 self.create_live()
-            elif choice == "2":
+            elif choice == "List all live performances":
                 self.list_live()
-            elif choice == "3":
+            elif choice == "Edit existing live performance":
                 self.edit_live()
-            elif choice == "4":
+            elif choice == "Delete live performance":
                 self.delete_live()
-            elif choice == "5":
+            elif choice == "Exit":
                 return
-            else:
-                print("✗ Invalid option")
 
     def download_poster(self, url: str, output_path: Path) -> bool:
         """Download poster from URL."""
@@ -273,8 +326,9 @@ class LiveManager:
             print("⚠ No live performances found")
             return None
 
-        print(f"\n{action}:")
-        for i, file_path in enumerate(files, 1):
+        # Build options list with metadata
+        options = []
+        for file_path in files:
             try:
                 with open(file_path, 'r') as f:
                     content = f.read()
@@ -283,23 +337,26 @@ class LiveManager:
                         if end_idx != -1:
                             data = yaml.safe_load(content[4:end_idx])
                             title = data.get('title', 'Unknown')
-                            print(f"{i}) {file_path.name} - {title}")
+                            options.append(f"{file_path.name} - {title}")
+                        else:
+                            options.append(f"{file_path.name}")
+                    else:
+                        options.append(f"{file_path.name}")
             except Exception:
-                print(f"{i}) {file_path.name} - (error reading)")
+                options.append(f"{file_path.name} - (error reading)")
 
-        try:
-            selection = input("\nSelect live performance number (or 0 to cancel): ").strip()
-            if selection == "0":
-                return None
-
-            idx = int(selection) - 1
-            if 0 <= idx < len(files):
-                return files[idx]
-            else:
-                print("✗ Invalid selection")
-                return None
-        except (ValueError, EOFError, KeyboardInterrupt):
+        # Use fzf or numbered selection
+        selected = fzf_select(options, action)
+        if not selected:
             return None
+
+        # Extract filename from selection
+        filename = selected.split(' - ')[0]
+        for file_path in files:
+            if file_path.name == filename:
+                return file_path
+
+        return None
 
     def parse_live_file(self, file_path: Path) -> Tuple[Dict, str]:
         """Parse live performance YAML file."""

@@ -24,12 +24,68 @@ from typing import Dict, List, Optional, Tuple
 import yaml
 
 
+def fzf_select(options: List[str], prompt: str = "Select") -> Optional[str]:
+    """
+    Use fzf for selection if available, otherwise fall back to numbered menu.
+
+    Args:
+        options: List of options to select from
+        prompt: Prompt text for fzf
+
+    Returns:
+        Selected option or None if cancelled
+    """
+    if not options:
+        return None
+
+    # Check if fzf is available
+    if shutil.which("fzf"):
+        try:
+            result = subprocess.run(
+                [
+                    "fzf",
+                    "--prompt", f"{prompt}> ",
+                    "--height", "40%",
+                    "--reverse",
+                    "--border",
+                    "--no-mouse"
+                ],
+                input="\n".join(options),
+                capture_output=True,
+                text=True,
+                check=False,
+                env={**os.environ, "FZF_DEFAULT_OPTS": ""}  # Override user config
+            )
+            if result.returncode == 0:
+                return result.stdout.strip()
+            return None
+        except Exception:
+            pass  # Fall back to numbered selection
+
+    # Fallback: numbered selection
+    print(f"\n{prompt}:")
+    for i, option in enumerate(options, 1):
+        print(f"{i}) {option}")
+
+    try:
+        selection = input("\nSelect number (or 0 to cancel): ").strip()
+        if selection == "0":
+            return None
+        idx = int(selection) - 1
+        if 0 <= idx < len(options):
+            return options[idx]
+    except (ValueError, EOFError, KeyboardInterrupt):
+        pass
+
+    return None
+
+
 class MediaManager:
     """Manages media content for the Obscvrat website."""
 
     def __init__(self, project_root: Path):
         self.project_root = project_root
-        self.live_dir = project_root / "website" / "content" / "live"
+        self.live_dir = project_root / "website" / "data" / "live"
         self.media_dir = project_root / "website" / "assets" / "media"
         self.others_file = project_root / "website" / "data" / "media" / "others.yaml"
         self.script_dir = project_root / "scripts"
@@ -37,43 +93,40 @@ class MediaManager:
     def show_menu(self) -> None:
         """Display main menu and handle user selection."""
         while True:
-            print("\n" + "=" * 20 + " Media Management " + "=" * 20)
-            print("1) Add pictures to live performance")
-            print("2) Add video to live performance")
-            print("3) Add standalone picture")
-            print("4) Add standalone video")
-            print("5) Add to Others (interview, mention, review)")
-            print("6) Edit Others item")
-            print("7) List media")
-            print("8) Exit")
-            print("9) Edit video")
+            options = [
+                "Add pictures to live performance",
+                "Add video to live performance",
+                "Add standalone picture",
+                "Add standalone video",
+                "Add to Others (interview, mention, review)",
+                "Edit Others item",
+                "List media",
+                "Edit video",
+                "Exit"
+            ]
 
-            try:
-                choice = input("\nChoose an option: ").strip()
-            except (EOFError, KeyboardInterrupt):
-                print("\nExiting...")
+            choice = fzf_select(options, "Media Management")
+            if not choice:
                 return
 
-            if choice == "1":
+            if choice == "Add pictures to live performance":
                 self.add_pictures()
-            elif choice == "2":
+            elif choice == "Add video to live performance":
                 self.add_video()
-            elif choice == "3":
+            elif choice == "Add standalone picture":
                 self.add_standalone_picture()
-            elif choice == "4":
+            elif choice == "Add standalone video":
                 self.add_standalone_video()
-            elif choice == "5":
+            elif choice == "Add to Others (interview, mention, review)":
                 self.add_others()
-            elif choice == "6":
+            elif choice == "Edit Others item":
                 self.edit_others()
-            elif choice == "7":
+            elif choice == "List media":
                 self.list_media()
-            elif choice == "8":
-                return
-            elif choice == "9":
+            elif choice == "Edit video":
                 self.edit_video()
-            else:
-                print("✗ Invalid option")
+            elif choice == "Exit":
+                return
 
     def get_live_performances(self) -> List[Tuple[Path, Dict]]:
         """Get list of live performance files with metadata."""
@@ -87,11 +140,17 @@ class MediaManager:
             try:
                 with open(file_path, 'r') as f:
                     content = f.read()
-                    # Extract frontmatter
+                    # Handle both pure YAML and Hugo frontmatter format
                     if content.startswith('---\n'):
+                        # Hugo frontmatter format
                         end_idx = content.find('\n---\n', 4)
                         if end_idx != -1:
                             frontmatter = yaml.safe_load(content[4:end_idx])
+                            performances.append((file_path, frontmatter))
+                    else:
+                        # Pure YAML format
+                        frontmatter = yaml.safe_load(content)
+                        if frontmatter:
                             performances.append((file_path, frontmatter))
             except (yaml.YAMLError, IOError) as e:
                 print(f"✗ Error reading {file_path}: {e}")
@@ -105,25 +164,24 @@ class MediaManager:
             print("⚠ No live performances found")
             return None
 
-        print("\nLive performances:")
-        for i, (_file_path, metadata) in enumerate(performances, 1):
+        # Build options list
+        options = []
+        for _file_path, metadata in performances:
             title = metadata.get('title', 'Unknown')
             date_str = metadata.get('date', 'Unknown')
-            print(f"{i}) {date_str} - {title}")
+            options.append(f"{date_str} - {title}")
 
-        try:
-            selection = input("\nSelect live performance number (or 0 to cancel): ").strip()
-            if selection == "0":
-                return None
-
-            idx = int(selection) - 1
-            if 0 <= idx < len(performances):
-                return performances[idx]
-            else:
-                print("✗ Invalid selection")
-                return None
-        except (ValueError, EOFError, KeyboardInterrupt):
+        # Use fzf or numbered selection
+        selected = fzf_select(options, "Select live performance")
+        if not selected:
             return None
+
+        # Find matching performance
+        for i, option in enumerate(options):
+            if option == selected:
+                return performances[i]
+
+        return None
 
     def download_file(self, url: str, output_path: Path) -> bool:
         """Download file from URL."""
@@ -167,18 +225,28 @@ class MediaManager:
             with open(file_path, 'r') as f:
                 content = f.read()
 
-            # Parse frontmatter
-            if not content.startswith('---\n'):
-                print("✗ Invalid YAML frontmatter")
-                return False
-
-            end_idx = content.find('\n---\n', 4)
-            if end_idx == -1:
-                print("✗ Invalid YAML frontmatter")
-                return False
-
-            frontmatter = yaml.safe_load(content[4:end_idx])
-            body = content[end_idx + 5:]
+            # Handle both pure YAML and Hugo frontmatter format
+            if content.startswith('---\n'):
+                # Hugo frontmatter format
+                end_idx = content.find('\n---\n', 4)
+                if end_idx == -1:
+                    print("✗ Invalid YAML frontmatter: missing closing ---")
+                    return False
+                frontmatter = yaml.safe_load(content[4:end_idx])
+                body = content[end_idx + 5:]
+                has_frontmatter = True
+            else:
+                # Pure YAML format
+                try:
+                    frontmatter = yaml.safe_load(content)
+                    if not frontmatter:
+                        print("✗ Empty YAML file")
+                        return False
+                except yaml.YAMLError as e:
+                    print(f"✗ YAML parsing error: {e}")
+                    return False
+                body = ""
+                has_frontmatter = False
 
             # Update media section
             if 'media' not in frontmatter:
@@ -186,16 +254,23 @@ class MediaManager:
 
             frontmatter['media'].update(media_data)
 
-            # Write back
+            # Write back in the same format
             with open(file_path, 'w') as f:
-                f.write('---\n')
-                yaml.dump(frontmatter, f, default_flow_style=False, allow_unicode=True)
-                f.write('---\n')
-                f.write(body)
+                if has_frontmatter:
+                    f.write('---\n')
+                    yaml.dump(frontmatter, f, default_flow_style=False, allow_unicode=True)
+                    f.write('---\n')
+                    f.write(body)
+                else:
+                    # Pure YAML format
+                    yaml.dump(frontmatter, f, default_flow_style=False, allow_unicode=True)
 
+            print(f"✓ Updated {file_path.name}")
             return True
         except Exception as e:
             print(f"✗ Error updating YAML: {e}")
+            import traceback
+            traceback.print_exc()
             return False
 
     def run_generate_markdown(self, content_type: str) -> None:
@@ -310,10 +385,10 @@ class MediaManager:
 
         # Collect credits
         credits = []
-        print("\nAdd credits (press Enter on credit type to finish):")
+        print("\nAdd credits (press Enter without typing to finish):")
         while True:
             try:
-                credit_type = input("  Credit type (e.g., Recorded, Mastered, Artwork): ").strip()
+                credit_type = input("  Credit type (e.g., Recorded, Mastered, Artwork) or Enter to finish: ").strip()
                 if not credit_type:
                     break
                 credit_name = input("  Name: ").strip()

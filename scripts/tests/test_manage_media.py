@@ -20,12 +20,19 @@ def temp_project_root(tmp_path):
     project_root.mkdir()
 
     # Create directory structure
-    (project_root / "website" / "content" / "live").mkdir(parents=True)
+    (project_root / "website" / "data" / "live").mkdir(parents=True)
     (project_root / "website" / "assets" / "media").mkdir(parents=True)
     (project_root / "website" / "data" / "media").mkdir(parents=True)
     (project_root / "scripts").mkdir()
 
     return project_root
+
+
+@pytest.fixture(autouse=True)
+def mock_fzf():
+    """Mock shutil.which to disable fzf in all tests."""
+    with patch('scripts.manage_media.shutil.which', return_value=None):
+        yield
 
 
 @pytest.fixture
@@ -37,7 +44,7 @@ def media_manager(temp_project_root):
 @pytest.fixture
 def sample_live_performance(temp_project_root):
     """Create sample live performance YAML file."""
-    live_file = temp_project_root / "website" / "content" / "live" / "2025-01-01-test-venue.yaml"
+    live_file = temp_project_root / "website" / "data" / "live" / "2025-01-01-test-venue.yaml"
     content = """---
 title: "Test Venue"
 date: 2025-01-01
@@ -66,7 +73,7 @@ class TestMediaManager:
         manager = MediaManager(temp_project_root)
 
         assert manager.project_root == temp_project_root
-        assert manager.live_dir == temp_project_root / "website" / "content" / "live"
+        assert manager.live_dir == temp_project_root / "website" / "data" / "live"
         assert manager.media_dir == temp_project_root / "website" / "assets" / "media"
         assert manager.others_file == temp_project_root / "website" / "data" / "media" / "others.yaml"
         assert manager.script_dir == temp_project_root / "scripts"
@@ -91,7 +98,7 @@ class TestMediaManager:
 
     def test_get_live_performances_invalid_yaml(self, media_manager, temp_project_root):
         """Test handling of invalid YAML files."""
-        invalid_file = temp_project_root / "website" / "content" / "live" / "invalid.yaml"
+        invalid_file = temp_project_root / "website" / "data" / "live" / "invalid.yaml"
         invalid_file.write_text("invalid: yaml: content:")
 
         performances = media_manager.get_live_performances()
@@ -283,6 +290,7 @@ items:
         # Should not raise exception
         media_manager.run_generate_markdown("live")
 
+
     @patch('builtins.input')
     def test_select_live_performance_cancel(self, mock_input, media_manager, sample_live_performance):
         """Test canceling live performance selection."""
@@ -291,6 +299,7 @@ items:
         result = media_manager.select_live_performance()
 
         assert result is None
+
 
     @patch('builtins.input')
     def test_select_live_performance_valid_selection(self, mock_input, media_manager, sample_live_performance):
@@ -302,6 +311,7 @@ items:
         assert result is not None
         file_path, metadata = result
         assert metadata['title'] == 'Test Venue'
+
 
     @patch('builtins.input')
     def test_select_live_performance_invalid_selection(self, mock_input, media_manager, sample_live_performance):
@@ -353,6 +363,7 @@ class TestMainFunction:
 class TestIntegrationWorkflows:
     """Integration tests for complete workflows."""
 
+
     @patch('builtins.input')
     @patch('urllib.request.urlretrieve')
     @patch('shutil.copy2')
@@ -382,6 +393,7 @@ class TestIntegrationWorkflows:
             content = f.read()
         assert 'media:' in content
         assert 'pictures:' in content
+
 
     @patch('builtins.input')
     def test_add_video_workflow(self, mock_input, media_manager, sample_live_performance):
@@ -432,7 +444,7 @@ class TestIntegrationWorkflows:
     @patch('builtins.input')
     def test_show_menu_exit(self, mock_input, media_manager):
         """Test show_menu exit option."""
-        mock_input.return_value = "8"
+        mock_input.return_value = "9"  # Exit is now option 9
 
         # Should exit without error
         media_manager.show_menu()
@@ -440,7 +452,7 @@ class TestIntegrationWorkflows:
     @patch('builtins.input')
     def test_show_menu_invalid_option(self, mock_input, media_manager):
         """Test show_menu with invalid option."""
-        mock_input.side_effect = ["invalid", "8"]  # Invalid then exit
+        mock_input.side_effect = ["invalid", "9"]  # Invalid then exit
 
         media_manager.show_menu()
 
@@ -640,8 +652,8 @@ class TestIntegrationWorkflows:
             "5", KeyboardInterrupt(),  # Add others, interrupt
             "6",  # Edit others (no file)
             "7", "",  # List media, continue
-            "9",  # Edit video
-            "8"   # Exit
+            "8",  # Edit video
+            "9"   # Exit
         ]
 
         media_manager.show_menu()
@@ -680,6 +692,7 @@ class TestIntegrationWorkflows:
         expected_file = media_manager.project_root / "website" / "content" / "media" / "videos"
         assert any(expected_file.glob("*.yaml"))
 
+
     @patch('builtins.input')
     def test_select_live_performance_eof_error(self, mock_input, media_manager, sample_live_performance):
         """Test select_live_performance with EOF error."""
@@ -687,6 +700,7 @@ class TestIntegrationWorkflows:
 
         result = media_manager.select_live_performance()
         assert result is None
+
 
     @patch('builtins.input')
     def test_select_live_performance_value_error(self, mock_input, media_manager, sample_live_performance):
