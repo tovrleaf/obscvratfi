@@ -219,8 +219,8 @@ Place logo in traditional header/navigation area.
   - Color on hover: primary-color (#e5e5e5)
 - **Social Media Links**: Configured in `website/hugo.toml`
   - Instagram: https://www.instagram.com/obscvrat/
-  - Bandcamp: https://iamrat.bandcamp.com/
-  - YouTube: https://www.youtube.com/@iamrat2
+  - Bandcamp: https://obscvrat.bandcamp.com/
+  - YouTube: https://www.youtube.com/@obscvrat
 - **Hero Image**: `website/static/picture.gif` (animated GIF)
   - Includes pulsing blur animation for continuous visual interest
   - Animation cycle: 12 seconds (ease-in-out timing)

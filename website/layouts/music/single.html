@@ -30,6 +30,24 @@
             </div>
             {{ end }}
             
+            {{ if .Params.gallery }}
+            <div class="album-gallery">
+                {{ range $index, $imagePath := .Params.gallery }}
+                    {{ $imgPath := strings.TrimPrefix "/" $imagePath }}
+                    {{ $img := resources.Get $imgPath }}
+                    {{ if $img }}
+                        {{ $thumb := $img.Resize "170x q85" }}
+                        {{ $lightbox := $img.Resize "1600x q90" }}
+                        <a href="#" class="gallery-thumb open-lightbox" 
+                           data-image-url="{{ $lightbox.RelPermalink }}"
+                           data-original-image="{{ $img.RelPermalink }}">
+                            <img src="{{ $thumb.RelPermalink }}" alt="Gallery image {{ add $index 1 }}">
+                        </a>
+                    {{ end }}
+                {{ end }}
+            </div>
+            {{ end }}
+            
             {{ if .Params.bandcamp_album }}
             <div class="album-tracklist">
                 <iframe style="border: 0; width: 100%; height: 241px;" src="https://bandcamp.com/EmbeddedPlayer/album={{ .Params.bandcamp_album }}/size=large/bgcol=000000/linkcol=0687f5/artwork=small/transparent=true/" seamless></iframe>
@@ -138,7 +156,7 @@
 .album-column-a {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 0.75rem;
 }
 
 .album-cover {
@@ -160,6 +178,30 @@
 .album-tracklist iframe {
     width: 100%;
     border-radius: 4px;
+}
+
+.album-gallery {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    column-gap: 0.5rem;
+    row-gap: 0.1rem;
+}
+
+.gallery-thumb {
+    display: block;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+}
+
+.gallery-thumb:hover {
+    opacity: 0.8;
+}
+
+.gallery-thumb img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 2px;
 }
 
 /* Column B: Info + Description */
@@ -347,13 +389,68 @@
     z-index: 10000;
 }
 
+.swiper-prev, .swiper-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 3rem;
+    color: var(--primary-color);
+    cursor: pointer;
+    background: rgba(0, 0, 0, 0.5);
+    border: none;
+    padding: 1rem 1.5rem;
+    z-index: 10000;
+    transition: background 0.3s ease;
+}
+
+.swiper-prev:hover, .swiper-next:hover {
+    background: rgba(0, 0, 0, 0.8);
+}
+
+.swiper-prev {
+    left: 2rem;
+}
+
+.swiper-next {
+    right: 2rem;
+}
+
+.swiper-counter {
+    position: absolute;
+    top: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--primary-color);
+    font-family: var(--font-display);
+    font-size: 1rem;
+    z-index: 10000;
+}
+
+.download-btn {
+    position: absolute;
+    bottom: 2rem;
+    right: 2rem;
+    padding: 0.5rem 1rem;
+    background: rgba(255,255,255,0.1);
+    color: white;
+    text-decoration: none;
+    border: 1px solid rgba(255,255,255,0.3);
+    font-family: var(--font-display);
+    font-size: 0.9rem;
+    transition: background 0.3s ease;
+}
+
+.download-btn:hover {
+    background: rgba(255,255,255,0.2);
+}
+
 @media (max-width: 768px) {
     .album-container {
         grid-template-columns: 1fr;
-        gap: 2rem;
+        gap: 0;
     }
     
-    /* Mobile order: cover, title, info, description, songs, bandcamp */
+    /* Mobile order: cover, gallery, title, info, description, songs, bandcamp */
     .album-column-a {
         display: contents;
     }
@@ -364,30 +461,48 @@
     
     .album-cover {
         order: 1;
+        margin-bottom: 0.75rem;
+    }
+    
+    .album-gallery {
+        order: 2;
+        margin-bottom: 1.5rem;
     }
     
     .album-header {
-        order: 2;
+        order: 3;
+        margin-bottom: 1rem;
     }
     
     .album-meta {
-        order: 3;
+        order: 4;
+        margin-bottom: 0.5rem;
     }
     
     .meta-divider {
-        order: 4;
+        order: 5;
+        margin-bottom: 0.5rem;
     }
     
     .album-description {
-        order: 5;
+        order: 6;
+        margin-bottom: 1rem;
     }
     
     .album-content {
-        order: 6;
+        order: 7;
+        margin-bottom: 1.5rem;
     }
     
     .album-tracklist {
-        order: 7;
+        order: 8;
+    }
+    
+    .album-links {
+        order: 9;
+        justify-content: center;
+        padding-right: 0;
+        margin-top: 1rem;
     }
     
     .album-title {
@@ -398,24 +513,89 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Collect all images (cover + gallery)
+    const allImages = [];
+    
     const coverImage = document.querySelector('.cover-image');
-    if (!coverImage) return;
+    if (coverImage) {
+        allImages.push({
+            url: coverImage.dataset.swiperImage,
+            original: coverImage.dataset.originalImage || coverImage.dataset.swiperImage
+        });
+    }
+    
+    const galleryThumbs = document.querySelectorAll('.open-lightbox');
+    galleryThumbs.forEach(thumb => {
+        allImages.push({
+            url: thumb.dataset.imageUrl,
+            original: thumb.dataset.originalImage || thumb.dataset.imageUrl
+        });
+    });
+    
+    if (allImages.length === 0) return;
+    
+    let currentIndex = 0;
     
     // Create modal
     const modal = document.createElement('div');
     modal.className = 'swiper-modal';
-    const originalUrl = coverImage.dataset.originalImage || coverImage.dataset.swiperImage;
     modal.innerHTML = `
         <button class="swiper-close">&times;</button>
-        <img src="${coverImage.dataset.swiperImage}" alt="Album cover">
-        <a href="${originalUrl}" download class="download-btn" style="position: absolute; bottom: 2rem; right: 2rem; padding: 0.5rem 1rem; background: rgba(255,255,255,0.1); color: white; text-decoration: none; border: 1px solid rgba(255,255,255,0.3);">Download</a>
+        <button class="swiper-prev">‹</button>
+        <button class="swiper-next">›</button>
+        <img src="" alt="Image">
+        <div class="swiper-counter"></div>
+        <a href="" download class="download-btn">Download</a>
     `;
     document.body.appendChild(modal);
     
-    // Open modal
-    coverImage.addEventListener('click', function() {
+    const modalImg = modal.querySelector('img');
+    const downloadBtn = modal.querySelector('.download-btn');
+    const counter = modal.querySelector('.swiper-counter');
+    const prevBtn = modal.querySelector('.swiper-prev');
+    const nextBtn = modal.querySelector('.swiper-next');
+    
+    // Function to show image at index
+    function showImage(index) {
+        currentIndex = index;
+        modalImg.src = allImages[index].url;
+        downloadBtn.href = allImages[index].original;
+        counter.textContent = `${index + 1} / ${allImages.length}`;
+    }
+    
+    // Function to open modal
+    function openModal(index) {
+        showImage(index);
         modal.classList.add('active');
         document.body.style.overflow = 'hidden';
+    }
+    
+    // Handle cover image click
+    if (coverImage) {
+        coverImage.addEventListener('click', function() {
+            openModal(0);
+        });
+    }
+    
+    // Handle gallery thumbnail clicks
+    galleryThumbs.forEach((thumb, index) => {
+        thumb.addEventListener('click', function(e) {
+            e.preventDefault();
+            openModal(index + 1); // +1 because cover is at index 0
+        });
+    });
+    
+    // Navigation
+    prevBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        currentIndex = (currentIndex - 1 + allImages.length) % allImages.length;
+        showImage(currentIndex);
+    });
+    
+    nextBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        currentIndex = (currentIndex + 1) % allImages.length;
+        showImage(currentIndex);
     });
     
     // Close modal
@@ -426,11 +606,17 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // ESC key to close
+    // Keyboard navigation
     document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && modal.classList.contains('active')) {
+        if (!modal.classList.contains('active')) return;
+        
+        if (e.key === 'Escape') {
             modal.classList.remove('active');
             document.body.style.overflow = '';
+        } else if (e.key === 'ArrowLeft') {
+            prevBtn.click();
+        } else if (e.key === 'ArrowRight') {
+            nextBtn.click();
         }
     });
 });

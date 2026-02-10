@@ -295,19 +295,16 @@ python3 scripts/bump_version.py major
 
 ### Creating a Release
 
-**IMPORTANT:** Tags must be created on main branch AFTER merging PR.
+**IMPORTANT:** Version bumping happens on feature branch BEFORE creating PR.
 
 1. **On feature branch:** Make changes and commit
-2. **Push and create PR** - Push branch and create pull request
-3. **Merge PR to main** - Merge after review and CI passes
-4. **Checkout main** - `git checkout main && git pull origin main`
-5. **Bump version** - `python3 scripts/bump_version.py minor` (or patch/major)
-6. **Fill CHANGELOG.md** - Add changes under appropriate sections
-7. **Commit version** - `git add CHANGELOG.md website/data/changelog.txt && git commit -m "Release v1.3.0: Description"`
-8. **Create git tag** - `git tag v1.3.0`
-9. **Push tag** - `git push origin v1.3.0`
-10. **Auto-deploy** - Deploy workflow runs with tag
-11. **GitHub release** - Created automatically from CHANGELOG
+2. **Bump version** - `python3 scripts/bump_version.py minor` (or patch/major)
+3. **Fill CHANGELOG.md** - Add changes under appropriate sections
+4. **Commit version** - `git add CHANGELOG.md website/data/changelog.txt README.md && git commit -m "Release v1.4.0: Description"`
+5. **Push and create PR** - Push branch and create pull request
+6. **Merge PR to main** - Merge after review and CI passes
+7. **Auto-deploy** - Deploy workflow runs automatically
+8. **GitHub release** - Created automatically from CHANGELOG
 
 **Version Guidelines:**
 - **Major (2.0.0)** - Breaking changes, major features
@@ -382,8 +379,7 @@ python3 scripts/bump_version.py major
 1. On feature branch
    → python3 scripts/bump_version.py minor
    → Fill CHANGELOG.md
-   → git commit -m "Release v1.3.0: Description"
-   → git tag v1.3.0
+   → git commit -m "Release v1.4.0: Description"
 
 2. @pr
    → Push and create PR

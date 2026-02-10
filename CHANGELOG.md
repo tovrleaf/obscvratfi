@@ -5,6 +5,33 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.0] - 2026-02-10
+
+### Added
+- Image gallery with lightbox navigation for music album pages
+- Prev/next navigation in lightbox modal with keyboard support (arrow keys, ESC)
+- Image counter in lightbox (e.g., "3 / 8")
+- Download button for full-resolution images in lightbox
+- fzf fuzzy finder integration for interactive menus with numbered fallback
+- Inside/booklet images for Fridlyst / Rauhoitettu album (2 images)
+- Inside/booklet images for World Rat Conspiracy album (7 images)
+- ADR-017: Makefile as Universal Command Interface
+- Python script for ADR creation (new_adr.py) replacing shell version
+
+### Changed
+- Updated YouTube channel URL from @iamrat2 to @obscvrat
+- Updated Bandcamp URL from iamrat.bandcamp.com to obscvrat.bandcamp.com
+- Music page gallery thumbnails display in 4-column grid
+- Mobile layout: gallery appears after cover, icons moved below player
+- Tight vertical spacing between thumbnail rows (0.1rem)
+- Interactive menu selection uses fzf when available, falls back to numbered selection
+- ADR Makefile now calls Python script instead of shell script
+
+### Fixed
+- Media manager now correctly reads live performance files from website/data/live
+- Media manager handles both pure YAML and Hugo frontmatter formats
+- Better error messages and debugging output for YAML operations
+
 ## [1.3.0] - 2026-02-05
 
 ### Added

@@ -25,7 +25,7 @@ new:
 		echo "Usage: make adr new TITLE=\"Your Decision Title\""; \
 		exit 1; \
 	fi
-	@cd ../.. && ./scripts/new-adr.sh "$(TITLE)"
+	@cd ../.. && python3 scripts/new_adr.py "$(TITLE)"
 
 list:
 	@cd ../.. && ./scripts/list-adrs.sh

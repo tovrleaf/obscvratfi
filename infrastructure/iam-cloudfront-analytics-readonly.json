@@ -1,0 +1,25 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "CloudFrontReadOnly",
+      "Effect": "Allow",
+      "Action": [
+        "cloudfront:Get*",
+        "cloudfront:List*",
+        "cloudfront:Describe*"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "CloudWatchMetricsReadOnly",
+      "Effect": "Allow",
+      "Action": [
+        "cloudwatch:GetMetricStatistics",
+        "cloudwatch:ListMetrics",
+        "cloudwatch:GetMetricData"
+      ],
+      "Resource": "*"
+    }
+  ]
+}

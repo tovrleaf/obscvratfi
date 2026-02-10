@@ -1,38 +1,50 @@
-# Workflow Lint Fix Changed Files
+# Workflow: Lint Fix Changed Files
 
-You are a linting fix specialist. Your role is to fix linting errors in
-changed files by alternating between Test Agent and Build Agent.
+You are the **Orchestrator Agent** coordinating a linting fix workflow.
 
-## Responsibilities
+## Objective
 
-- Test only changed/staged files for linting errors
-- Fix linting issues found
-- Iterate until all linting passes
-- Report final status
+Fix all linting errors in changed/staged files by alternating between Test Agent and Build Agent until all checks pass.
 
-## Workflow
+## Workflow Steps
 
-1. **Test Agent**: Run linting on changed files only
-   - `make test sh-commit` - Shell scripts in last commit
-   - `make test yaml-commit` - YAML files in last commit
-   - `make test md-commit` - Markdown files in last commit
-   - Or use `git diff --name-only --cached` to see staged files
+### 1. Test Agent - Check for linting errors
 
-2. **If linting fails**: Switch to Build Agent
-   - Build Agent fixes the linting errors
-   - Build Agent reports what was fixed
+Delegate to Test Agent:
+- Check changed files: `git diff --name-only --cached` (staged) and `git diff --name-only` (unstaged)
+- Run appropriate linting:
+  - `make test sh-commit` - Shell scripts in last commit
+  - `make test yaml-commit` - YAML files in last commit
+  - `make test md-commit` - Markdown files in last commit
+  - `make test py` - Python files
+- Report any linting errors found
 
-3. **Switch back to Test Agent**: Re-run linting on changed files
-   - Verify fixes resolved the issues
+### 2. Build Agent - Fix errors (if any found)
 
-4. **Repeat steps 2-3** until all linting passes
+If Test Agent found errors, delegate to Build Agent:
+- Fix the specific linting errors reported
+- Use auto-fix tools where possible (e.g., `ruff --fix`)
+- Report what was fixed
 
-5. **Report success**: "All linting checks passed for changed files"
+### 3. Test Agent - Verify fixes
 
-## Agent Alternation
+Delegate back to Test Agent:
+- Re-run linting on the same files
+- Confirm all issues are resolved
 
-```text
-Test Agent → finds linting errors
+### 4. Repeat if needed
+
+If Test Agent still finds errors, repeat steps 2-3.
+
+### 5. Report success
+
+When all linting passes, report:
+"✅ All linting checks passed for changed files"
+
+## Agent Alternation Pattern
+
+```
+Test Agent → finds errors
      ↓
 Build Agent → fixes errors
      ↓
@@ -40,45 +52,12 @@ Test Agent → verifies fixes
      ↓
 (repeat if needed)
      ↓
-Success → report to user
+Success
 ```
 
-## Testing Commands (Test Agent)
-
-For staged files:
-- `make test sh-commit` - Staged shell scripts
-- `make test yaml-commit` - Staged YAML files
-- `make test md-commit` - Staged markdown files
-
-For all changed files:
-- `git diff --name-only --cached` - List staged files
-- `git diff --name-only` - List unstaged changes
-
-## Common Linting Issues
-
-**Markdown (pymarkdown):**
-- MD013: Line too long (wrap at 80 chars)
-- MD022: Headings need blank lines around them
-- MD031: Code blocks need blank lines around them
-- MD032: Lists need blank lines around them
-- MD034: Use proper links, not bare URLs
-- MD036: Use headings, not bold text for titles
-- MD040: Code blocks need language specified
-
-**Shell (shellcheck):**
-- Quote variables: `"$var"` not `$var`
-- Use `[[ ]]` not `[ ]` for tests
-- Check command existence before use
-
-**YAML (yamllint):**
-- Fix indentation (2 spaces)
-- Line length under 80 chars
-- Proper list formatting
-
-## Important
+## Important Notes
 
 - Only test changed/staged files, not entire codebase
-- Alternate between Test and Build agents
-- Continue until all linting passes
 - Do not commit - just fix and verify
-- Report final status to user
+- Continue until all linting passes
+- Report clear status at each step
