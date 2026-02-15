@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /gear/
 
 Sitemap: /sitemap.xml

@@ -10,7 +10,7 @@ Obscvrat is a harsh noise and experimental sound project rooted in putrid underg
 
 <div class="two-columns">
 
-Emerging from a background in noise culture, and black metal aesthetics, Obscvrat rejects polish in favor of abrasion. Recordings are built from crumbling textures, infected field recordings, broken circuits, and analog filth—
+Emerging from a background in noise culture, and black metal aesthetics, Obscvrat rejects polish in favor of abrasion. Recordings are built from crumbling textures, infected field recordings, broken circuits, and [analog filth](/gear/)—
 
 Each set functions as a **controlled collapse**: from distorted signal chains, unstable feedback systems, field recordings, and fractured rhythms—designed to a ritual of corrosion, pestilence, and repetition.
 
