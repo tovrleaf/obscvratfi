@@ -40,6 +40,7 @@ decision made, alternatives considered, and consequences.
 - **[015](015-image-optimization-with-hugo-processing.md)** - Image Optimization (Accepted, 2026-02-05)
 - **[016](016-cloudfront-analytics-for-website-traffic-monitoring.md)** - CloudFront Analytics (Accepted, 2026-02-09)
 - **[017](017-makefile-as-universal-command-interface.md)** - Makefile as Universal Interface (Accepted, 2026-02-10)
+- **[018](018-gear-inventory-management-and-display-system.md)** - Gear Inventory Management (Proposed, 2026-02-15)
 
 ## Creating a New ADR
 
