@@ -1,0 +1,13 @@
+name: "Space Bender"
+manufacturer: "Death By Audio"
+category: "Pedal"
+types: ["Modulation", "Chorus", "Vibrato"]
+technology: "Analog"
+settings:
+  - "Speed"
+  - "Depth"
+  - "Delay Time"
+  - "Modulator"
+  - "Intensity"
+description: "Analog chorus and vibrato pedal with lush, warbling modulation. From subtle shimmer to seasick pitch bending, with a blend control for mixing dry and wet signals."
+url: "https://www.deathbyaudio.com/space-bender"

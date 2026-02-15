@@ -1,0 +1,11 @@
+name: "Hizumitas"
+manufacturer: "EarthQuaker Devices"
+category: "Pedal"
+types: ["Fuzz", "Distortion"]
+technology: "Analog"
+settings:
+  - "Sustain"
+  - "Tone"
+  - "Level"
+description: "Faithful sonic recreation of the Elusive Muff, a vintage fuzz pedal used by Boris guitarist Wata. Thick, creamy fuzz with massive sustain and a wide range of tonal possibilities."
+url: "https://www.earthquakerdevices.com/hizumitas"

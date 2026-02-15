@@ -1,0 +1,10 @@
+name: "Freeze"
+manufacturer: "Electro-Harmonix"
+category: "Pedal"
+types: ["Sound Sustainer", "Effect"]
+technology: "Digital"
+settings:
+  - "Mode Switch (3-position)"
+  - "Level"
+description: "Infinite sustain pedal that captures and holds a note or chord indefinitely. Creates drone-like textures and ambient soundscapes with three freeze modes for different playing styles."
+url: "https://www.ehx.com/products/freeze/"

@@ -1,0 +1,11 @@
+name: "wata fUZZ"
+manufacturer: "M.A.S.F. Pedals"
+category: "Pedal"
+types: ["Fuzz", "Distortion"]
+technology: "Analog"
+settings:
+  - "Volume"
+  - "Tone"
+  - "Fuzz"
+description: "Signature fuzz pedal designed with Boris guitarist Wata. Delivers thick, saturated fuzz tones with excellent note definition and a wide range of tonal shaping from dark and woolly to bright and cutting."
+url: "https://masfpedals.com/wata-fuzz"

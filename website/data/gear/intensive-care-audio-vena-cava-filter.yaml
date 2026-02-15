@@ -1,0 +1,16 @@
+name: "Vena Cava Filter"
+manufacturer: "Intensive Care Audio"
+category: "Pedal"
+types: ["Filter", "Effect"]
+technology: "Analog"
+settings:
+  - "Wave Function Rotary Switch (8-positions)"
+  - "Freq"
+  - "Ring"
+  - "Ring Switch (2-positions)"
+  - "Voice Switch (2-positions)"
+  - "Volume"
+  - "Peak"
+  - "Gain"
+description: "Multi-mode analog filter pedal with envelope follower and LFO modulation. Features lowpass, bandpass, and highpass modes with voltage-controlled resonance for synth-like filtering effects."
+url: "https://intensivecareaudio.com/vena-cava-filter"
