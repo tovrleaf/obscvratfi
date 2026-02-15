@@ -21,3 +21,6 @@ html5lib>=1.1             # HTML5 parser and validator
 
 # Secret scanning (pure Python)
 detect-secrets>=1.5.0     # Yelp's secret scanner
+
+# Web search for gear management
+ddgs>=1.0.0               # DuckDuckGo search API (renamed from duckduckgo-search)
