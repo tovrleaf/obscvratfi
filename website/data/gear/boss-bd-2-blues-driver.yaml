@@ -1,0 +1,12 @@
+name: "BD-2 Blues Driver"
+manufacturer: "BOSS"
+category: "Pedal"
+types:
+  - "Overdrive"
+technology: "Analog"
+settings:
+  - "Level"
+  - "Tone"
+  - "Gain"
+description: "Classic overdrive pedal with warm, tube-like tone and responsive touch sensitivity. Known for its smooth, natural breakup and ability to retain guitar character."
+url: "https://www.boss.info/us/products/bd-2/"

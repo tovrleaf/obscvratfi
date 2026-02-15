@@ -63,8 +63,26 @@ jobs:
             --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
             --paths "/*"
 
+      - name: Extract version from CHANGELOG
+        id: version
+        if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_run'
+        run: |
+          VERSION=$(grep -m 1 '## \[' CHANGELOG.md | sed 's/## \[\(.*\)\].*/\1/')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Found version: $VERSION"
+
+      - name: Create and push tag
+        if: steps.version.outputs.version != ''
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag "v${{ steps.version.outputs.version }}"
+          git push origin "v${{ steps.version.outputs.version }}"
+          echo "Tag v${{ steps.version.outputs.version }} created and pushed"
+          sleep 2
+
       - name: Create GitHub Release
-        if: startsWith(github.ref, 'refs/tags/v')
+        if: steps.version.outputs.version != ''
         run: |
           python3 scripts/create_release.py
         env:
@@ -76,6 +94,7 @@ jobs:
           echo "🌐 Website: https://obscvrat.fi"
           echo "📦 S3 Bucket: ${{ secrets.S3_BUCKET_NAME }}"
           echo "🔄 CloudFront invalidation created"
-          if [[ "${{ github.ref }}" == refs/tags/v* ]]; then
-            echo "🏷️  GitHub Release created"
+          if [[ -n "${{ steps.version.outputs.version }}" ]]; then
+            echo "🏷️  Tag v${{ steps.version.outputs.version }} created"
+            echo "📦 GitHub Release created"
           fi

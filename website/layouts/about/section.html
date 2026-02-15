@@ -531,10 +531,14 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Add target blank to all links in nest
+    // Add target blank only to external links in two-columns
     document.querySelectorAll('.two-columns a').forEach(link => {
-        link.setAttribute('target', '_blank');
-        link.setAttribute('rel', 'noopener noreferrer');
+        const href = link.getAttribute('href');
+        // Only add target blank for external links (starting with http:// or https://)
+        if (href && (href.startsWith('http://') || href.startsWith('https://'))) {
+            link.setAttribute('target', '_blank');
+            link.setAttribute('rel', 'noopener noreferrer');
+        }
     });
 
     // Scroll-triggered fade-in animation

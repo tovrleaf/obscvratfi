@@ -1,0 +1,14 @@
+name: "RingerBringer"
+manufacturer: "Warm Audio"
+category: "Pedal"
+types:
+  - "Ring Modulator"
+technology: "Analog"
+settings:
+  - "Amount"
+  - "Rate"
+  - "Drive"
+  - "Mix"
+  - "Frequency"
+description: "Analog ring modulator pedal delivering metallic, bell-like tones and dissonant harmonics. Creates unique modulation effects from subtle shimmer to extreme robotic sounds."
+url: "https://www.warmaudio.com/ringerbringer/"

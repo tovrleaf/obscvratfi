@@ -1,0 +1,284 @@
+{{ define "main" }}
+<svg style="position: absolute; width: 0; height: 0;">
+    <filter id="rough">
+        <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="4" result="noise" seed="2" />
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="4" xChannelSelector="R" yChannelSelector="G" />
+    </filter>
+</svg>
+
+<div class="gear-page">
+    <h1>Gear</h1>
+    
+    <div class="gear-controls">
+        <div class="input-wrapper">
+            <input type="text" id="gear-search" placeholder="Search gear..." />
+        </div>
+        
+        <div class="input-wrapper">
+            <select id="filter-category">
+                <option value="">Select Category</option>
+                {{- $categories := slice -}}
+                {{- range $index, $file := (readDir "data/gear") -}}
+                    {{- if strings.HasSuffix $file.Name ".yaml" -}}
+                        {{- $gear := index $.Site.Data.gear (strings.TrimSuffix ".yaml" $file.Name) -}}
+                        {{- if $gear -}}
+                            {{- $categories = $categories | append $gear.category -}}
+                        {{- end -}}
+                    {{- end -}}
+                {{- end -}}
+                {{- range $categories | uniq | sort -}}
+                    <option value="{{ . }}">{{ . }}s</option>
+                {{- end -}}
+            </select>
+        </div>
+        
+        <div class="input-wrapper">
+            <select id="filter-manufacturer">
+                <option value="">Select Manufacturer</option>
+            </select>
+        </div>
+        
+        <div class="input-wrapper">
+            <select id="filter-type">
+                <option value="">Select Type</option>
+            </select>
+        </div>
+    </div>
+    
+    <div id="active-filters" class="active-filters"></div>
+    </div>
+    
+    <div class="gear-list">
+        {{ range $index, $file := (readDir "data/gear") }}
+            {{ if strings.HasSuffix $file.Name ".yaml" }}
+                {{ $gear := index $.Site.Data.gear (strings.TrimSuffix ".yaml" $file.Name) }}
+                {{ if $gear }}
+                <div class="gear-item" 
+                     data-category="{{ $gear.category }}"
+                     data-manufacturer="{{ $gear.manufacturer }}"
+                     data-types="{{ delimit $gear.types "," }}"
+                     data-technology="{{ $gear.technology }}"
+                     data-search="{{ $gear.manufacturer }} {{ $gear.name }} {{ $gear.description }} {{ delimit $gear.types " " }}">
+                    
+                    <div class="gear-header" onclick="toggleGear(this)">
+                        <span class="gear-title">{{ $gear.manufacturer }} - {{ $gear.name }}</span>
+                        <span class="gear-expand">▼</span>
+                    </div>
+                    
+                    <div class="gear-details">
+                        <div class="gear-meta">
+                            <span class="gear-category">{{ $gear.category }}</span>
+                            {{ if $gear.types }}
+                                <span class="gear-types">{{ delimit $gear.types ", " }}</span>
+                            {{ end }}
+                            <span class="gear-tech">{{ $gear.technology }}</span>
+                        </div>
+                        
+                        {{ if $gear.description }}
+                        <p class="gear-description">{{ $gear.description }}</p>
+                        {{ end }}
+                        
+                        {{ if $gear.settings }}
+                        <div class="gear-settings">
+                            <strong>Controls:</strong>
+                            {{ if reflect.IsMap $gear.settings }}
+                                {{/* Nested settings with sections */}}
+                                {{ range $section, $controls := $gear.settings }}
+                                    <div class="settings-section">
+                                        <em>{{ $section }}:</em> {{ delimit $controls ", " }}
+                                    </div>
+                                {{ end }}
+                            {{ else }}
+                                {{/* Flat list of settings */}}
+                                {{ delimit $gear.settings ", " }}
+                            {{ end }}
+                        </div>
+                        {{ end }}
+                        
+                        <div class="gear-links">
+                            {{ if $gear.url }}
+                            <a href="{{ $gear.url }}" target="_blank" rel="noopener">Product Page</a>
+                            {{ end }}
+                        </div>
+                    </div>
+                </div>
+                {{ end }}
+            {{ end }}
+        {{ end }}
+    </div>
+    
+    <div id="no-results" style="display: none;">
+        <p>No gear found matching filters.</p>
+    </div>
+</div>
+
+<script>
+// Active filters state
+const activeFilters = {
+    categories: new Set(),
+    manufacturers: new Set(),
+    types: new Set()
+};
+
+// Populate filter dropdowns
+document.addEventListener('DOMContentLoaded', function() {
+    const items = document.querySelectorAll('.gear-item');
+    const manufacturers = new Set();
+    const types = new Set();
+    
+    items.forEach(item => {
+        manufacturers.add(item.dataset.manufacturer);
+        item.dataset.types.split(',').forEach(t => types.add(t.trim()));
+    });
+    
+    const mfrSelect = document.getElementById('filter-manufacturer');
+    Array.from(manufacturers).sort().forEach(mfr => {
+        const opt = document.createElement('option');
+        opt.value = mfr;
+        opt.textContent = mfr;
+        mfrSelect.appendChild(opt);
+    });
+    
+    const typeSelect = document.getElementById('filter-type');
+    Array.from(types).sort().forEach(type => {
+        const opt = document.createElement('option');
+        opt.value = type;
+        opt.textContent = type;
+        typeSelect.appendChild(opt);
+    });
+});
+
+// Add filter tag
+function addFilter(filterType, value, label) {
+    activeFilters[filterType].add(value);
+    updateFilterTags();
+    filterGear();
+}
+
+// Remove filter tag
+function removeFilter(filterType, value) {
+    activeFilters[filterType].delete(value);
+    updateFilterTags();
+    filterGear();
+}
+
+// Update filter tags display
+function updateFilterTags() {
+    const container = document.getElementById('active-filters');
+    container.innerHTML = '';
+    
+    // Add category tags
+    activeFilters.categories.forEach(cat => {
+        const tag = createFilterTag('categories', cat, cat + 's');
+        container.appendChild(tag);
+    });
+    
+    // Add manufacturer tags
+    activeFilters.manufacturers.forEach(mfr => {
+        const tag = createFilterTag('manufacturers', mfr, mfr);
+        container.appendChild(tag);
+    });
+    
+    // Add type tags
+    activeFilters.types.forEach(type => {
+        const tag = createFilterTag('types', type, type);
+        container.appendChild(tag);
+    });
+}
+
+// Create filter tag element
+function createFilterTag(filterType, value, label) {
+    const tag = document.createElement('span');
+    tag.className = 'filter-tag';
+    tag.innerHTML = `${label} <span class="filter-tag-remove">×</span>`;
+    tag.onclick = () => removeFilter(filterType, value);
+    return tag;
+}
+
+// Toggle gear details
+function toggleGear(header) {
+    const item = header.parentElement;
+    const details = item.querySelector('.gear-details');
+    const expand = header.querySelector('.gear-expand');
+    
+    if (details.style.display === 'block') {
+        details.style.display = 'none';
+        expand.textContent = '▼';
+        item.classList.remove('expanded');
+    } else {
+        details.style.display = 'block';
+        expand.textContent = '▲';
+        item.classList.add('expanded');
+    }
+}
+
+// Filter gear
+function filterGear() {
+    const search = document.getElementById('gear-search').value.toLowerCase();
+    const items = document.querySelectorAll('.gear-item');
+    let visibleCount = 0;
+    
+    items.forEach(item => {
+        let show = true;
+        
+        // Search filter
+        if (search && !item.dataset.search.toLowerCase().includes(search)) {
+            show = false;
+        }
+        
+        // Category filter (OR logic - show if matches any selected category)
+        if (activeFilters.categories.size > 0) {
+            if (!activeFilters.categories.has(item.dataset.category)) {
+                show = false;
+            }
+        }
+        
+        // Manufacturer filter (OR logic)
+        if (activeFilters.manufacturers.size > 0) {
+            if (!activeFilters.manufacturers.has(item.dataset.manufacturer)) {
+                show = false;
+            }
+        }
+        
+        // Type filter (OR logic - show if matches any selected type)
+        if (activeFilters.types.size > 0) {
+            const itemTypes = item.dataset.types.split(',').map(t => t.trim());
+            const hasMatchingType = itemTypes.some(t => activeFilters.types.has(t));
+            if (!hasMatchingType) {
+                show = false;
+            }
+        }
+        
+        item.style.display = show ? 'block' : 'none';
+        if (show) visibleCount++;
+    });
+    
+    // Show/hide no results message
+    document.getElementById('no-results').style.display = visibleCount === 0 ? 'block' : 'none';
+}
+
+// Attach filter listeners
+document.getElementById('gear-search').addEventListener('input', filterGear);
+
+document.getElementById('filter-category').addEventListener('change', function(e) {
+    if (e.target.value) {
+        addFilter('categories', e.target.value, e.target.options[e.target.selectedIndex].text);
+        e.target.value = ''; // Reset dropdown
+    }
+});
+
+document.getElementById('filter-manufacturer').addEventListener('change', function(e) {
+    if (e.target.value) {
+        addFilter('manufacturers', e.target.value, e.target.value);
+        e.target.value = ''; // Reset dropdown
+    }
+});
+
+document.getElementById('filter-type').addEventListener('change', function(e) {
+    if (e.target.value) {
+        addFilter('types', e.target.value, e.target.value);
+        e.target.value = ''; // Reset dropdown
+    }
+});
+</script>
+{{ end }}
