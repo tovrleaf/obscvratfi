@@ -530,7 +530,7 @@ See `docs/DEPLOYMENT.md` for detailed deployment instructions.
 ## Additional Resources
 
 ### For AI Agents
-- [.kiro/instructions/](. kiro/instructions/) - Agent-specific instructions
+- [.kiro/instructions/](.kiro/instructions/) - Agent-specific instructions
   - `build.md` - Build Agent code style and testing
   - `commit.md` - Commit Agent git workflow
   - `test.md` - Test Agent validation commands
