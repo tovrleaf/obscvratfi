@@ -43,7 +43,10 @@
         </div>
         
         <div class="input-wrapper">
-            <button id="toggle-all" class="toggle-all-btn">Expand All</button>
+            <button id="toggle-all" class="toggle-all-btn">
+                <span class="collapse-icon">▲</span>
+                <span class="expand-icon active">▼</span>
+            </button>
         </div>
     </div>
     
@@ -168,7 +171,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
             
-            this.textContent = allExpanded ? 'Expand All' : 'Collapse All';
+            // Toggle icon highlighting
+            const expandIcon = this.querySelector('.expand-icon');
+            const collapseIcon = this.querySelector('.collapse-icon');
+            
+            if (allExpanded) {
+                expandIcon.classList.add('active');
+                collapseIcon.classList.remove('active');
+            } else {
+                expandIcon.classList.remove('active');
+                collapseIcon.classList.add('active');
+            }
         });
     }
 });
