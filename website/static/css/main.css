@@ -1064,12 +1064,25 @@
     cursor: pointer;
     transition: all 0.2s ease;
     width: 100%;
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    align-items: center;
+}
+
+.toggle-all-btn .expand-icon,
+.toggle-all-btn .collapse-icon {
+    opacity: 0.3;
+    transition: opacity 0.2s ease;
+}
+
+.toggle-all-btn .expand-icon.active,
+.toggle-all-btn .collapse-icon.active {
+    opacity: 1;
 }
 
 .toggle-all-btn:hover {
     background: rgba(229, 229, 229, 0.1);
-    border-color: rgba(229, 229, 229, 0.4);
-}
     border-color: rgba(229, 229, 229, 0.4);
 }
 
