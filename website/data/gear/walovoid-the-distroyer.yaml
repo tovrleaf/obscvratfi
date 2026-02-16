@@ -1,0 +1,14 @@
+name: "The Distroyer"
+manufacturer: "Walovoid"
+category: "Pedal"
+types: ["Distortion", "Octataver"]
+technology: "Analog"
+settings:
+  - "Depth Rotary Switch (4-position)"
+  - "Gain"
+  - "High"
+  - "Response"
+  - "Octave"
+  - "Master"
+description: "High-gain distortion/fuzz pedal with aggressive, thick saturation. Features a voice switch for tonal variations from tight modern distortion to loose vintage fuzz textures."
+url: "https://walovoid.com/the-distroyer"
