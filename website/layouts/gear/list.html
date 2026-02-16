@@ -9,14 +9,14 @@
 <div class="gear-page">
     <h1>Gear</h1>
     
+    <div class="gear-search-wrapper">
+        <input type="text" id="gear-search" placeholder="Search gear..." />
+    </div>
+    
     <div class="gear-controls">
         <div class="input-wrapper">
-            <input type="text" id="gear-search" placeholder="Search gear..." />
-        </div>
-        
-        <div class="input-wrapper">
-            <select id="filter-category">
-                <option value="">Select Category</option>
+            <input list="category-list" id="filter-category" placeholder="Select Category" />
+            <datalist id="category-list">
                 {{- $categories := slice -}}
                 {{- range $index, $file := (readDir "data/gear") -}}
                     {{- if strings.HasSuffix $file.Name ".yaml" -}}
@@ -29,24 +29,25 @@
                 {{- range $categories | uniq | sort -}}
                     <option value="{{ . }}">{{ . }}s</option>
                 {{- end -}}
-            </select>
+            </datalist>
         </div>
         
         <div class="input-wrapper">
-            <select id="filter-manufacturer">
-                <option value="">Select Manufacturer</option>
-            </select>
+            <input list="manufacturer-list" id="filter-manufacturer" placeholder="Select Manufacturer" />
+            <datalist id="manufacturer-list"></datalist>
         </div>
         
         <div class="input-wrapper">
-            <select id="filter-type">
-                <option value="">Select Type</option>
-            </select>
+            <input list="type-list" id="filter-type" placeholder="Select Type" />
+            <datalist id="type-list"></datalist>
+        </div>
+        
+        <div class="input-wrapper">
+            <button id="toggle-all" class="toggle-all-btn">Expand All</button>
         </div>
     </div>
     
     <div id="active-filters" class="active-filters"></div>
-    </div>
     
     <div class="gear-list">
         {{ range $index, $file := (readDir "data/gear") }}
@@ -131,21 +132,45 @@ document.addEventListener('DOMContentLoaded', function() {
         item.dataset.types.split(',').forEach(t => types.add(t.trim()));
     });
     
-    const mfrSelect = document.getElementById('filter-manufacturer');
+    const mfrList = document.getElementById('manufacturer-list');
     Array.from(manufacturers).sort().forEach(mfr => {
         const opt = document.createElement('option');
         opt.value = mfr;
-        opt.textContent = mfr;
-        mfrSelect.appendChild(opt);
+        mfrList.appendChild(opt);
     });
     
-    const typeSelect = document.getElementById('filter-type');
+    const typeList = document.getElementById('type-list');
     Array.from(types).sort().forEach(type => {
         const opt = document.createElement('option');
         opt.value = type;
-        opt.textContent = type;
-        typeSelect.appendChild(opt);
+        typeList.appendChild(opt);
     });
+    
+    // Toggle all gear items
+    const toggleBtn = document.getElementById('toggle-all');
+    if (toggleBtn) {
+        toggleBtn.addEventListener('click', function() {
+            const items = document.querySelectorAll('.gear-item');
+            const allExpanded = Array.from(items).every(item => item.classList.contains('expanded'));
+            
+            items.forEach(item => {
+                const details = item.querySelector('.gear-details');
+                const expand = item.querySelector('.gear-expand');
+                
+                if (allExpanded) {
+                    details.style.display = 'none';
+                    expand.textContent = '▼';
+                    item.classList.remove('expanded');
+                } else {
+                    details.style.display = 'block';
+                    expand.textContent = '▲';
+                    item.classList.add('expanded');
+                }
+            });
+            
+            this.textContent = allExpanded ? 'Expand All' : 'Collapse All';
+        });
+    }
 });
 
 // Add filter tag
@@ -261,23 +286,39 @@ function filterGear() {
 document.getElementById('gear-search').addEventListener('input', filterGear);
 
 document.getElementById('filter-category').addEventListener('change', function(e) {
-    if (e.target.value) {
-        addFilter('categories', e.target.value, e.target.options[e.target.selectedIndex].text);
-        e.target.value = ''; // Reset dropdown
+    const value = e.target.value.trim();
+    if (value) {
+        // Check if value exists in datalist
+        const datalist = document.getElementById('category-list');
+        const options = Array.from(datalist.options).map(opt => opt.value);
+        if (options.includes(value)) {
+            addFilter('categories', value, value + 's');
+            e.target.value = ''; // Reset input
+        }
     }
 });
 
 document.getElementById('filter-manufacturer').addEventListener('change', function(e) {
-    if (e.target.value) {
-        addFilter('manufacturers', e.target.value, e.target.value);
-        e.target.value = ''; // Reset dropdown
+    const value = e.target.value.trim();
+    if (value) {
+        const datalist = document.getElementById('manufacturer-list');
+        const options = Array.from(datalist.options).map(opt => opt.value);
+        if (options.includes(value)) {
+            addFilter('manufacturers', value, value);
+            e.target.value = ''; // Reset input
+        }
     }
 });
 
 document.getElementById('filter-type').addEventListener('change', function(e) {
-    if (e.target.value) {
-        addFilter('types', e.target.value, e.target.value);
-        e.target.value = ''; // Reset dropdown
+    const value = e.target.value.trim();
+    if (value) {
+        const datalist = document.getElementById('type-list');
+        const options = Array.from(datalist.options).map(opt => opt.value);
+        if (options.includes(value)) {
+            addFilter('types', value, value);
+            e.target.value = ''; // Reset input
+        }
     }
 });
 </script>
