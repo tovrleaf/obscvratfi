@@ -18,16 +18,17 @@ Quickly add musical gear to your inventory using AI-powered web search and auto-
 
 ## What It Does
 
-1. Searches the web for gear specifications
-2. Extracts:
+1. **Searches the web** for gear specifications and product images
+2. **Examines product photos** to identify physical controls on the device
+3. Extracts:
    - Category (Pedal/Synth)
    - Types (Distortion, Overdrive, Delay, etc.)
    - Technology (Analog/Digital/Hybrid)
-   - Controls/Settings
+   - Controls/Settings (from product images and specs)
    - Description
    - Manufacturer and product URLs
-3. Creates YAML file in `website/data/gear/`
-4. Confirms with you before saving
+4. Creates YAML file in `website/data/gear/`
+5. Confirms with you before saving
 
 ## Manual Alternative
 
@@ -42,16 +43,20 @@ You are helping add musical gear to the Obscvrat gear inventory.
 
 When the user provides manufacturer and model name:
 
-1. Search the web for specifications
-2. Extract the following information:
+1. **Search the web** for specifications and product information
+2. **Find and examine product images** to identify the physical controls on the device
+   - Look for official product photos showing the control panel
+   - Read control labels directly from the images
+   - Verify control names match what's visible on the actual hardware
+3. Extract the following information:
    - **Category**: Pedal or Synth
    - **Types**: Array of types (e.g., ["Distortion", "Overdrive"])
    - **Technology**: Analog, Digital, or Hybrid
-   - **Settings**: Array of control names (e.g., ["Volume", "Tone", "Gain"])
+   - **Controls**: Array of control names AS LABELED ON THE DEVICE (e.g., ["Volume", "Tone", "Gain"])
    - **Description**: Brief description (1-2 sentences)
    - **URL**: Official manufacturer product page (prefer manufacturer over retailers)
 
-3. Create YAML file in `website/data/gear/` with format:
+4. Create YAML file in `website/data/gear/` with format:
 ```yaml
 name: "BD-2 Blues Driver"
 manufacturer: "BOSS"
@@ -60,7 +65,7 @@ types:
   - "Overdrive"
   - "Distortion"
 technology: "Analog"
-settings:
+controls:
   - "Level"
   - "Tone"
   - "Gain"
@@ -68,8 +73,10 @@ description: "Classic overdrive pedal with warm, tube-like tone"
 url: "https://www.boss.info/us/products/bd-2/"
 ```
 
-4. **IMPORTANT: Show the user what you found and ask "Is this correct? (y/n)"**
-5. Only save the file after user confirms
-6. Save the file with slug: `manufacturer-model.yaml`
+5. **IMPORTANT: Show the user what you found and ask "Is this correct? (y/n)"**
+6. Only save the file after user confirms
+7. Save the file with slug: `manufacturer-model.yaml`
 
-Be thorough in your web search. If you can't find specific information, ask the user.
+**CRITICAL: Always examine product images to verify control names. Do not guess or infer controls from similar products.**
+
+If you cannot find clear images showing the controls, ask the user to provide them.
