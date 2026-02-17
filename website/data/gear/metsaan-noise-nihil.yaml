@@ -1,0 +1,12 @@
+name: "Noise Nihil"
+manufacturer: "Metsään"
+category: Pedal
+technology: Analog
+types:
+  - "Delay"
+  - "Feedback"
+url: "https://metsn.tumblr.com/post/796406320075063296/noise-nihil-massive-distortion-by-delay-ic-abuse"
+description: "Massive distortion by PT2399 delay IC abuse. Destroyer of signals with corrupted feedback, massive amplification, and zero attenuation"
+controls:
+  - "Feedback"
+  - "Time"

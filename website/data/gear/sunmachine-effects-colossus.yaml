@@ -1,0 +1,24 @@
+name: "Colossus"
+manufacturer: "Sunmachine Effects"
+category: Pedal
+technology: Analog
+types:
+  - "Distortion"
+  - "Fuzz"
+url: "https://sunmachine-effects.blogspot.com/p/colossus.html"
+description: "Multi-mode distortion and fuzz device with three circuits: Power Amp Distortion, Doom Drone Device, and Fuzz"
+controls:
+  - "Tone"
+  - "Mode Switch (3-position)"
+  - "Mosfet Switch (3-position)"
+  - "Blend"
+  - "Filter"
+  - "Low Gain Switch (2-position)"
+  - "Color Switch (3-position)"
+  - "Low Pass"
+  - "Titan Gain"
+  - "Titan Volume"
+  - "Sunn Model T Volume"
+  - "Sunn Model T Gain"
+  - "Fuzz Volume"
+  - "Fuzz Dist"

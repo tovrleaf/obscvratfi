@@ -1,0 +1,18 @@
+name: "Bent Time Drive"
+manufacturer: "Rucci Electronics"
+category: Synth
+technology: Analog
+types:
+  - "Delay"
+  - "Distortion"
+  - "Circuit Bending"
+url: "https://handmadeelectronicinstruments.com/product/bent-time-drive/"
+description: "Circuit-bent delay and drive pedal with momentary and switched bend points for glitchy, unpredictable sounds"
+controls:
+  - "Drive"
+  - "Time"
+  - "Feedback"
+  - "Filter"
+  - "Volume"
+  - "3 Bent Points Switches (2 position)"
+  - "3 Bent Points Buttons"
