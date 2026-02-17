@@ -1336,9 +1336,22 @@
     font-family: 'Fira Mono', monospace;
     font-size: 0.8rem;
     padding: 0.25rem 0.5rem;
-    background: rgba(229, 229, 229, 0.1);
     border: 1px solid rgba(229, 229, 229, 0.2);
     color: rgba(229, 229, 229, 0.7);
+}
+
+.gear-category {
+    background: rgba(229, 229, 229, 0.1);
+}
+
+.gear-types {
+    background: rgba(180, 120, 80, 0.15);
+    border-color: rgba(180, 120, 80, 0.3);
+}
+
+.gear-tech {
+    background: rgba(100, 150, 180, 0.15);
+    border-color: rgba(100, 150, 180, 0.3);
 }
 
 .gear-description {
@@ -1409,7 +1422,6 @@
     }
     
     .gear-meta {
-        flex-direction: column;
         gap: 0.5rem;
     }
 }
