@@ -1,10 +1,10 @@
 name: "BD-2 Blues Driver"
 manufacturer: "BOSS"
-category: "Pedal"
+category: Pedal
 types:
   - "Overdrive"
-technology: "Analog"
-settings:
+technology: Analog
+controls:
   - "Level"
   - "Tone"
   - "Gain"

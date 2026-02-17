@@ -1,9 +1,9 @@
 name: "The Distroyer"
 manufacturer: "Walovoid"
-category: "Pedal"
+category: Pedal
 types: ["Distortion", "Octataver"]
-technology: "Analog"
-settings:
+technology: Analog
+controls:
   - "Depth Rotary Switch (4-position)"
   - "Gain"
   - "High"

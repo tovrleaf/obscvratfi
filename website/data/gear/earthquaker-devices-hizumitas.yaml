@@ -1,9 +1,9 @@
 name: "Hizumitas"
 manufacturer: "EarthQuaker Devices"
-category: "Pedal"
+category: Pedal
 types: ["Fuzz", "Distortion"]
-technology: "Analog"
-settings:
+technology: Analog
+controls:
   - "Sustain"
   - "Tone"
   - "Level"

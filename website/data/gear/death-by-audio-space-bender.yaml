@@ -1,9 +1,9 @@
 name: "Space Bender"
 manufacturer: "Death By Audio"
-category: "Pedal"
+category: Pedal
 types: ["Modulation", "Chorus", "Vibrato"]
-technology: "Analog"
-settings:
+technology: Analog
+controls:
   - "Speed"
   - "Depth"
   - "Delay Time"

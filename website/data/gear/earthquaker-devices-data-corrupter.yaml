@@ -1,11 +1,11 @@
 name: "Data Corrupter"
 manufacturer: "EarthQuaker Devices"
-category: "Pedal"
+category: Pedal
 types:
   - "Harmonizer"
   - "PLL"
-technology: "Analog"
-settings:
+technology: Analog
+controls:
   Voice Mixer:
     - "Square"
     - "Subharmonic"

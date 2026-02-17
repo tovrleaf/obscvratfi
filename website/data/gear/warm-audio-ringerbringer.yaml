@@ -1,10 +1,10 @@
 name: "RingerBringer"
 manufacturer: "Warm Audio"
-category: "Pedal"
+category: Pedal
 types:
   - "Ring Modulator"
-technology: "Analog"
-settings:
+technology: Analog
+controls:
   - "Amount"
   - "Rate"
   - "Drive"

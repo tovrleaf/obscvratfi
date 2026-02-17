@@ -1,9 +1,9 @@
 name: "Super Duper 2-in-1"
 manufacturer: "ZVEX Effects"
-category: "Pedal"
+category: Pedal
 types: ["Boost", "Overdrive"]
-technology: "Analog"
-settings:
+technology: Analog
+controls:
   Channel 1:
     - "Volume"
     - "Crackle"

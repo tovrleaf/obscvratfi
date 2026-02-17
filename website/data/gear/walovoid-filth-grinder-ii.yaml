@@ -1,9 +1,9 @@
 name: "Filth Grinder II"
 manufacturer: "Walovoid"
-category: "Pedal"
+category: Pedal
 types: ["Fuzz", "Octaver"]
-technology: "Analog"
-settings:
+technology: Analog
+controls:
   - "Mode Switch (2-position)"
   - "Low"
   - "High"

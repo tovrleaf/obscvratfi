@@ -1,9 +1,9 @@
 name: "wata fUZZ"
 manufacturer: "M.A.S.F. Pedals"
-category: "Pedal"
+category: Pedal
 types: ["Fuzz", "Distortion"]
-technology: "Analog"
-settings:
+technology: Analog
+controls:
   - "Volume"
   - "Tone"
   - "Fuzz"

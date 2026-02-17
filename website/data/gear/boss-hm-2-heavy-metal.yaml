@@ -1,7 +1,7 @@
 name: "HM-2 Heavy Metal"
 manufacturer: "BOSS"
-category: "pedal"
-technology: "Analog"
+category: Pedal
+technology: Analog
 types:
   - "Distortion"
   - "Fuzz"

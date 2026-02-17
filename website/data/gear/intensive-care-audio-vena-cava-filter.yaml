@@ -1,9 +1,9 @@
 name: "Vena Cava Filter"
 manufacturer: "Intensive Care Audio"
-category: "Pedal"
+category: Pedal
 types: ["Filter", "Effect"]
-technology: "Analog"
-settings:
+technology: Analog
+controls:
   - "Wave Function Rotary Switch (8-positions)"
   - "Freq"
   - "Ring"
