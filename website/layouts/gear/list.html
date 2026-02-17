@@ -73,7 +73,9 @@
                         <div class="gear-meta">
                             <span class="gear-category">{{ $gear.category }}</span>
                             {{ if $gear.types }}
-                                <span class="gear-types">{{ delimit $gear.types ", " }}</span>
+                                {{ range $gear.types }}
+                                    <span class="gear-types">{{ . }}</span>
+                                {{ end }}
                             {{ end }}
                             <span class="gear-tech">{{ $gear.technology }}</span>
                         </div>
@@ -82,19 +84,19 @@
                         <p class="gear-description">{{ $gear.description }}</p>
                         {{ end }}
                         
-                        {{ if $gear.settings }}
+                        {{ if $gear.controls }}
                         <div class="gear-settings">
                             <strong>Controls:</strong>
-                            {{ if reflect.IsMap $gear.settings }}
-                                {{/* Nested settings with sections */}}
-                                {{ range $section, $controls := $gear.settings }}
+                            {{ if reflect.IsMap $gear.controls }}
+                                {{/* Nested controls with sections */}}
+                                {{ range $section, $controls := $gear.controls }}
                                     <div class="settings-section">
                                         <em>{{ $section }}:</em> {{ delimit $controls ", " }}
                                     </div>
                                 {{ end }}
                             {{ else }}
-                                {{/* Flat list of settings */}}
-                                {{ delimit $gear.settings ", " }}
+                                {{/* Flat list of controls */}}
+                                {{ delimit $gear.controls ", " }}
                             {{ end }}
                         </div>
                         {{ end }}
