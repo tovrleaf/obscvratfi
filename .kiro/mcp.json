@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "gear": {
+      "command": "uv",
+      "args": ["run", ".mcp/gear-server/server.py"],
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "GEAR_DATA_DIR": "${workspaceFolder}/website/data/gear"
+      }
+    }
+  }
+}

@@ -27,8 +27,18 @@ Quickly add musical gear to your inventory using AI-powered web search and auto-
    - Controls/Settings (from product images and specs)
    - Description
    - Manufacturer and product URLs
-4. Creates YAML file in `website/data/gear/`
+4. **Uses MCP gear server** to add gear with validation
 5. Confirms with you before saving
+
+## MCP Server
+
+This prompt uses the `gear` MCP server which provides:
+- **add_gear** - Add with validation
+- **update_gear** - Update existing gear
+- **list_gear** - List with filters
+- **search_gear** - Search inventory
+
+See `.mcp/gear-server/README.md` for details.
 
 ## Manual Alternative
 
@@ -39,7 +49,7 @@ make gear
 
 ## Prompt
 
-You are helping add musical gear to the Obscvrat gear inventory.
+You are helping add musical gear to the Obscvrat gear inventory using the MCP gear server.
 
 When the user provides manufacturer and model name:
 
@@ -56,27 +66,27 @@ When the user provides manufacturer and model name:
    - **Description**: Brief description (1-2 sentences)
    - **URL**: Official manufacturer product page (prefer manufacturer over retailers)
 
-4. Create YAML file in `website/data/gear/` with format:
-```yaml
-name: "BD-2 Blues Driver"
-manufacturer: "BOSS"
-category: "Pedal"
-types:
-  - "Overdrive"
-  - "Distortion"
-technology: "Analog"
-controls:
-  - "Level"
-  - "Tone"
-  - "Gain"
-description: "Classic overdrive pedal with warm, tube-like tone"
-url: "https://www.boss.info/us/products/bd-2/"
+4. **Use the add_gear MCP tool** to add the gear:
+```python
+add_gear(
+    name="BD-2 Blues Driver",
+    manufacturer="BOSS",
+    category="Pedal",
+    technology="Analog",
+    types=["Overdrive", "Distortion"],
+    controls=["Level", "Tone", "Gain"],
+    url="https://www.boss.info/us/products/bd-2/",
+    description="Classic overdrive pedal with warm, tube-like tone"
+)
 ```
 
 5. **IMPORTANT: Show the user what you found and ask "Is this correct? (y/n)"**
-6. Only save the file after user confirms
-7. Save the file with slug: `manufacturer-model.yaml`
+6. Only call add_gear after user confirms
+7. If you cannot find clear images showing the controls, ask the user to provide them
 
 **CRITICAL: Always examine product images to verify control names. Do not guess or infer controls from similar products.**
 
-If you cannot find clear images showing the controls, ask the user to provide them.
+**If missing optional fields (controls, url, description):**
+- You can still add the gear with required fields only
+- Inform the user which fields are missing
+- They can be added later with update_gear tool
