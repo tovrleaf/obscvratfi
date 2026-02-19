@@ -1,0 +1,9 @@
+name: "Acapulco Gold"
+manufacturer: "EarthQuaker Devices"
+category: Pedal
+types: ["Distortion"]
+technology: Analog
+controls:
+  - "Volume"
+description: "Dirt-simple distortion modeled after a cranked vintage Model T amplifier, delivering openness, clarity, and crunch with just a single volume control."
+url: "https://www.earthquakerdevices.com/acapulco-gold"

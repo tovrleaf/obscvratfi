@@ -1,0 +1,17 @@
+name: "Rooms"
+manufacturer: "Death By Audio"
+category: Pedal
+types: ["Reverb"]
+technology: Digital
+controls:
+  - "Freq"
+  - "Depth"
+  - "Time"
+  - "Dry"
+  - "Fx"
+  - "Alt"
+  - "F"
+  - "D"
+  - "T"
+description: "Stereo multi-function digital reverb with six algorithms (ROOM, DIGIT, PEAK, GATE, WAVE, GONG), studio-quality mixer section, and expression pedal control."
+url: "https://deathbyaudio.com/collections/reverb/products/rooms"

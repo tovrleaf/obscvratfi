@@ -1,0 +1,15 @@
+name: "Evil Filter"
+manufacturer: "Death By Audio"
+category: Pedal
+types: ["Filter", "Fuzz"]
+technology: Analog
+controls:
+  - "Filter Frequency"
+  - "Filter Output"
+  - "Filter Selector Rotary Switch (3-position)"
+  - "Resonance Switch (2-position)"
+  - "Filter Resonance"
+  - "Fuzz Output"
+  - "Fuzz Shape Switch (2-position)"
+description: "Psycho multimode filter with medical-grade IC chip offering high pass, bandpass, and low pass modes with screaming resonance, plus two fuzz types and CV/expression control."
+url: "https://deathbyaudio.com/products/evil-filter"
