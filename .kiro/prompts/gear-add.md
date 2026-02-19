@@ -5,15 +5,15 @@ Quickly add musical gear to your inventory using AI-powered web search and auto-
 ## Usage
 
 ```
-@add-gear MANUFACTURER MODEL
+@gear-add MANUFACTURER MODEL
 ```
 
 ## Examples
 
 ```
-@add-gear BOSS BD-2 Blues Driver
-@add-gear Electro-Harmonix Big Muff Pi
-@add-gear Moog Mother-32
+@gear-add BOSS BD-2 Blues Driver
+@gear-add Electro-Harmonix Big Muff Pi
+@gear-add Moog Mother-32
 ```
 
 ## What It Does
@@ -79,6 +79,8 @@ add_gear(
     description="Classic overdrive pedal with warm, tube-like tone"
 )
 ```
+
+**IMPORTANT: Format control names in Title Case (e.g., "Freq", "Depth", "Time" not "FREQ", "DEPTH", "TIME")**
 
 5. **IMPORTANT: Show the user what you found and ask "Is this correct? (y/n)"**
 6. Only call add_gear after user confirms
