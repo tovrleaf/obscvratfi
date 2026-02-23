@@ -1340,6 +1340,17 @@
     color: rgba(229, 229, 229, 0.7);
 }
 
+.clickable-filter {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.clickable-filter:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    border-color: rgba(229, 229, 229, 0.4);
+}
+
 .gear-category {
     background: rgba(229, 229, 229, 0.1);
 }
