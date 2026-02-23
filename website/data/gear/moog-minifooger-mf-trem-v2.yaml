@@ -1,0 +1,12 @@
+name: "Minifooger MF Trem v2"
+manufacturer: "Moog"
+category: Pedal
+types: ["Tremolo", "Modulation"]
+technology: Analog
+controls:
+  - "Speed"
+  - "Depth"
+  - "Shape"
+  - "Tone"
+description: "Analog tremolo pedal with variable waveform control. Features adjustable speed and depth, tone shaping, and shape control for classic to choppy tremolo effects with Moog's signature sound quality."
+url: "https://www.moogmusic.com/"

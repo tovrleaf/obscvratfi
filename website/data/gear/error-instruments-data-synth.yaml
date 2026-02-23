@@ -1,0 +1,14 @@
+name: "DATA Synth"
+manufacturer: "Error Instruments"
+category: Synth
+types: ["Noise", "Glitch"]
+technology: Digital
+controls:
+  - "Pitch"
+  - "X"
+  - "Y"
+  - "Algorithm"
+  - "Disorder Switch"
+  - "Confusion Switch"
+description: "Digital noise synthesizer that corrupts and manipulates data streams to create glitchy, unpredictable sounds. Features pitch control, X/Y parameters, algorithm selection, and disorder/confusion switches for experimental sound design."
+url: "https://errorinstruments.com/"

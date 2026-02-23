@@ -1,0 +1,12 @@
+name: "4 Loop Looper"
+manufacturer: "Saturnworks"
+category: Pedal
+types: ["Loop Switcher", "Utility"]
+technology: Analog
+controls:
+  - "Loop 1 Switch"
+  - "Loop 2 Switch"
+  - "Loop 3 Switch"
+  - "Loop 4 Switch"
+description: "True bypass loop switcher with 4 independent loops. Allows you to engage/bypass multiple pedals simultaneously with individual footswitches, simplifying pedalboard routing and signal path management."
+url: "https://saturnworkspedals.com/"

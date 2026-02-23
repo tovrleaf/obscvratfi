@@ -1,0 +1,8 @@
+name: "Dual Clipper Mic"
+manufacturer: "Dassum"
+category: Instrument
+types: ["Contact Mic", "Clipper", "Piezo"]
+technology: Analog
+controls: []
+description: "Dual contact microphone system with clipper attachments. Captures vibrations from two sources simultaneously for stereo field recording, amplified object performances, and experimental sound design."
+url: ""

@@ -1,0 +1,11 @@
+name: "Absolute Destruction"
+manufacturer: "Death By Audio"
+category: Pedal
+types: ["Fuzz", "Distortion"]
+technology: Analog
+controls:
+  - "Master Volume"
+  - "Overload"
+  - "Gain"
+description: "Extreme fuzz/distortion pedal with power amplifier IC circuit. Features interactive Gain and Overload sliders for sounds ranging from thick fuzz to self-destructing signal starvation with screaming octaves and psychotic compression."
+url: "https://deathbyaudio.com/products/absolute-destruction"

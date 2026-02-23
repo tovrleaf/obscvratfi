@@ -1,0 +1,8 @@
+name: "Shake Box"
+manufacturer: "Dassum"
+category: Instrument
+types: ["Percussion", "Contact Mic", "Shaker", "Piezo"]
+technology: Analog
+controls: []
+description: "Amplified shaker instrument with built-in contact microphone. Creates percussive and textural sounds through shaking, tapping, and manipulating the resonant chamber for experimental performances."
+url: ""

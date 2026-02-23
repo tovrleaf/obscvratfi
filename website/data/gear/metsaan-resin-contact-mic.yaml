@@ -1,0 +1,8 @@
+name: "Resin Contact Mic"
+manufacturer: "Metsään"
+category: Instrument
+types: ["Contact Mic", "Piezo"]
+technology: Analog
+controls: []
+description: "Piezoelectric contact microphone embedded in resin. Captures vibrations and resonances from surfaces for experimental sound design, field recording, and amplified object performances."
+url: "https://metsaeaen.weebly.com/"
