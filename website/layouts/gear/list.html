@@ -43,11 +43,6 @@
         </div>
         
         <div class="input-wrapper">
-            <input list="technology-list" id="filter-technology" placeholder="Select Technology" />
-            <datalist id="technology-list"></datalist>
-        </div>
-        
-        <div class="input-wrapper">
             <button id="toggle-all" class="toggle-all-btn">
                 <span class="collapse-icon">▲</span>
                 <span class="expand-icon active">▼</span>
@@ -137,12 +132,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const items = document.querySelectorAll('.gear-item');
     const manufacturers = new Set();
     const types = new Set();
-    const technologies = new Set();
     
     items.forEach(item => {
         manufacturers.add(item.dataset.manufacturer);
         item.dataset.types.split(',').forEach(t => types.add(t.trim()));
-        technologies.add(item.dataset.technology);
     });
     
     const mfrList = document.getElementById('manufacturer-list');
@@ -157,13 +150,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const opt = document.createElement('option');
         opt.value = type;
         typeList.appendChild(opt);
-    });
-    
-    const techList = document.getElementById('technology-list');
-    Array.from(technologies).sort().forEach(tech => {
-        const opt = document.createElement('option');
-        opt.value = tech;
-        techList.appendChild(opt);
     });
     
     // Toggle all gear items
@@ -360,18 +346,6 @@ document.getElementById('filter-type').addEventListener('change', function(e) {
         const options = Array.from(datalist.options).map(opt => opt.value);
         if (options.includes(value)) {
             addFilter('types', value, value);
-            e.target.value = ''; // Reset input
-        }
-    }
-});
-
-document.getElementById('filter-technology').addEventListener('change', function(e) {
-    const value = e.target.value.trim();
-    if (value) {
-        const datalist = document.getElementById('technology-list');
-        const options = Array.from(datalist.options).map(opt => opt.value);
-        if (options.includes(value)) {
-            addFilter('technology', value, value);
             e.target.value = ''; // Reset input
         }
     }
