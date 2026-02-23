@@ -1,0 +1,14 @@
+name: "Echoblender"
+manufacturer: "Metsään"
+category: Pedal
+types: ["Delay", "Distortion"]
+technology: Analog
+controls:
+  - "Dry Volume"
+  - "Feedback (Distortion)"
+  - "Wet Volume"
+  - "Coarse Time"
+  - "Fine Time"
+  - "Repeats"
+description: "Experimental delay/distortion pedal based on Casper Electronics Echobender. Features dark low-pass filtered echoes, internal distortion feedback, and separate dry/wet volume controls for precise mixing."
+url: "https://metsaeaen.weebly.com/echoblender.html"

@@ -1,0 +1,10 @@
+name: "Ditto Looper X2"
+manufacturer: "TC Electronic"
+category: Pedal
+types: ["Looper"]
+technology: Digital
+controls:
+  - "Mode Switch (2-position)"
+  - "Loop Level"
+description: "Dual-switch looper with 5 minutes of loop time and unlimited overdubs. Features dedicated stop footswitch, loop level control, and mode switch for different playback options."
+url: "https://www.tcelectronic.com/product.html?modelCode=P0CM6"

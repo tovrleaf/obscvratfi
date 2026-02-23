@@ -1,0 +1,15 @@
+name: "Total Control"
+manufacturer: "Metsään"
+category: Pedal
+types: ["Filter", "EQ"]
+technology: Analog
+controls:
+  - "Resonant"
+  - "Frequency"
+  - "Volpass"
+  - "Hipass"
+  - "Bandpass"
+  - "Lopass"
+  - "Boost Switch (2-position)"
+description: "3-band resonance filter based on Anderton Super Tone Control. Features lowpass, highpass, and bandpass filtering with resonance and frequency controls. Includes notch filter mode and boost switch for versatile tone shaping."
+url: "https://metsn.tumblr.com/post/182948309308/total-control-3-band-resonance-filter"
