@@ -1,9 +1,9 @@
-{{- /* Extract version from data/changelog.txt */ -}}
+{{- /* Extract version from static/changelog.txt */ -}}
 {{- $changelog := "" -}}
-{{- with resources.Get "data/changelog.txt" -}}
+{{- with resources.Get "changelog.txt" -}}
     {{- $changelog = .Content -}}
 {{- else -}}
-    {{- with os.ReadFile "data/changelog.txt" -}}
+    {{- with os.ReadFile "static/changelog.txt" -}}
         {{- $changelog = . -}}
     {{- end -}}
 {{- end -}}
