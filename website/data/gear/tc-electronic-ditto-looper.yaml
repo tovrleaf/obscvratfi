@@ -1,0 +1,9 @@
+name: "Ditto Looper"
+manufacturer: "TC Electronic"
+category: Pedal
+types: ["Looper"]
+technology: Digital
+controls:
+  - "Level"
+description: "Simple, compact looper pedal with 5 minutes of loop time and unlimited overdubs. Single knob controls playback level, footswitch handles record/play/stop functions."
+url: "https://www.tcelectronic.com/product.html?modelCode=P0CKP"

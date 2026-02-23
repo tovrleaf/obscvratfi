@@ -1,0 +1,11 @@
+name: "Fuzz War"
+manufacturer: "Death By Audio"
+category: Pedal
+types: ["Fuzz", "Distortion"]
+technology: Analog
+controls:
+  - "Volume"
+  - "Fuzz"
+  - "Tone"
+description: "Extreme fuzz pedal with massive sustain and output. Features active multi-curve tone control ranging from deep bass sludge to screaming highs, with enough gain to go from boost to full-on fuzz war."
+url: "https://deathbyaudio.com/products/fuzz-war"
