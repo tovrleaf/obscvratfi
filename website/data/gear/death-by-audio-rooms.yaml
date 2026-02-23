@@ -1,7 +1,7 @@
 name: "Rooms"
 manufacturer: "Death By Audio"
 category: Pedal
-types: ["Reverb"]
+types: ["Reverb", "Stereo"]
 technology: Digital
 controls:
   - "Freq"
