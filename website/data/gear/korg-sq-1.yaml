@@ -1,0 +1,12 @@
+name: "SQ-1"
+manufacturer: "Korg"
+category: Synth
+types: ["Sequencer", "CV/Gate"]
+technology: Analog
+controls:
+  - "Play"
+  - "Function"
+  - "Mode Clear"
+  - "Mode Rotary Switch"
+description: "Compact 2x8 step analog sequencer with CV/Gate outputs, MIDI, and USB connectivity. Modern evolution of the classic SQ-10, designed to control analog synthesizers and modular systems."
+url: "https://www.korg.com/us/products/dj/sq_1/"
