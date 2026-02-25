@@ -1,0 +1,12 @@
+name: Digital Delay DL5
+manufacturer: Ibanez
+category: Pedal
+types:
+  - Delay
+technology: Digital
+controls:
+  - Delay Time
+  - Repeat
+  - Level
+description: Digital delay pedal
+url: ''

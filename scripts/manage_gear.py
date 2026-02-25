@@ -269,6 +269,68 @@ def delete_gear():
     else:
         print("❌ Cancelled")
 
+def archive_gear():
+    """Archive gear by moving to archived directory."""
+    gear_list = load_gear()
+    
+    if not gear_list:
+        print("No gear found")
+        return
+    
+    options = [f"{g['manufacturer']} - {g['name']}" for g in gear_list]
+    selected = fzf_select(options, "Select gear to archive")
+    
+    if not selected:
+        print("❌ Cancelled")
+        return
+    
+    idx = options.index(selected)
+    gear = gear_list[idx]
+    
+    archived_dir = GEAR_DIR / "archived"
+    archived_dir.mkdir(exist_ok=True)
+    
+    src = GEAR_DIR / gear['_filename']
+    dst = archived_dir / gear['_filename']
+    
+    shutil.move(str(src), str(dst))
+    print(f"✅ Archived: {gear['manufacturer']} - {gear['name']}")
+
+def unarchive_gear():
+    """Unarchive gear by moving back to main directory."""
+    archived_dir = GEAR_DIR / "archived"
+    
+    if not archived_dir.exists():
+        print("No archived gear found")
+        return
+    
+    gear_list = []
+    for file in archived_dir.glob("*.yaml"):
+        with open(file, 'r', encoding='utf-8') as f:
+            data = yaml.safe_load(f)
+            data['_filename'] = file.name
+            gear_list.append(data)
+    
+    if not gear_list:
+        print("No archived gear found")
+        return
+    
+    options = [f"{g['manufacturer']} - {g['name']}" for g in gear_list]
+    selected = fzf_select(options, "Select gear to unarchive")
+    
+    if not selected:
+        print("❌ Cancelled")
+        return
+    
+    idx = options.index(selected)
+    gear = gear_list[idx]
+    
+    src = archived_dir / gear['_filename']
+    dst = GEAR_DIR / gear['_filename']
+    
+    shutil.move(str(src), str(dst))
+    print(f"✅ Unarchived: {gear['manufacturer']} - {gear['name']}")
+
 def main_menu():
     """Display main menu."""
     while True:
@@ -280,6 +342,8 @@ def main_menu():
             "Search gear",
             "Edit gear",
             "Delete gear",
+            "Archive gear",
+            "Unarchive gear",
             "Exit"
         ]
         
@@ -307,6 +371,10 @@ def main_menu():
             edit_gear()
         elif choice == "Delete gear":
             delete_gear()
+        elif choice == "Archive gear":
+            archive_gear()
+        elif choice == "Unarchive gear":
+            unarchive_gear()
 
 if __name__ == '__main__':
     try:

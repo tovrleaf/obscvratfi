@@ -1,0 +1,22 @@
+name: AD30 HTC
+manufacturer: Orange
+category: Amplifier
+types:
+  - Tube Amp
+  - Guitar Amp
+technology: Analog
+controls:
+  Channel 1:
+    - Gain 1
+    - Volume 1
+    - Treble 1
+    - Middle 1
+    - Bass 1
+  Channel 2:
+    - Gain 2
+    - Volume 2
+    - Treble 2
+    - Middle 2
+    - Bass 2
+description: 30-watt tube guitar amplifier with classic Orange tone
+url: https://orangeamps.com/ad30htc/

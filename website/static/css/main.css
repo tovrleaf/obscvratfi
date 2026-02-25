@@ -1418,6 +1418,22 @@
     color: rgba(229, 229, 229, 0.5);
 }
 
+/* Archived gear styling */
+.gear-item.archived {
+    opacity: 0.5;
+}
+
+.gear-item.archived .gear-title {
+    font-style: italic;
+    color: #888;
+}
+
+.gear-item.archived .gear-description,
+.gear-item.archived .gear-meta,
+.gear-item.archived .gear-settings {
+    color: #888;
+}
+
 @media (max-width: 768px) {
     .gear-list {
         column-count: 1;

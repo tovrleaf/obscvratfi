@@ -1,0 +1,12 @@
+name: BFD
+manufacturer: Bad Cat Amplifiers
+category: Pedal
+types:
+  - Tremolo
+technology: Analog
+controls:
+  - Volume
+  - Tone
+  - Gain
+description: Overdrive/distortion pedal
+url: ''

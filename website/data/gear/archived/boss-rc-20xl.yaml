@@ -1,0 +1,13 @@
+name: RC-20XL
+manufacturer: Boss
+category: Pedal
+types:
+  - Loop Station
+  - Delay
+technology: Digital
+controls:
+  - Level
+  - Mode
+  - Tempo
+description: Loop station pedal with 16 minutes recording time
+url: https://www.boss.info/us/products/rc-20xl/

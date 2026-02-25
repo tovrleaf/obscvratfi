@@ -53,6 +53,7 @@
     <div id="active-filters" class="active-filters"></div>
     
     <div class="gear-list">
+        {{/* Active gear */}}
         {{ range $index, $file := (readDir "data/gear") }}
             {{ if strings.HasSuffix $file.Name ".yaml" }}
                 {{ $gear := index $.Site.Data.gear (strings.TrimSuffix ".yaml" $file.Name) }}
@@ -62,6 +63,7 @@
                      data-manufacturer="{{ $gear.manufacturer }}"
                      data-types="{{ delimit $gear.types "," }}"
                      data-technology="{{ $gear.technology }}"
+                     data-archived="false"
                      data-search="{{ $gear.manufacturer }} {{ $gear.name }} {{ $gear.description }} {{ delimit $gear.types " " }}">
                     
                     <div class="gear-header" onclick="toggleGear(this)">
@@ -111,6 +113,71 @@
                 {{ end }}
             {{ end }}
         {{ end }}
+        
+        {{/* Archived gear - only if ?archived parameter present */}}
+        {{ $archivedDir := "data/gear/archived" }}
+        {{ if fileExists $archivedDir }}
+            {{ range $index, $file := (readDir $archivedDir) }}
+                {{ if strings.HasSuffix $file.Name ".yaml" }}
+                    {{ $gear := index $.Site.Data.gear.archived (strings.TrimSuffix ".yaml" $file.Name) }}
+                    {{ if $gear }}
+                    <div class="gear-item archived" 
+                         data-category="{{ $gear.category }}"
+                         data-manufacturer="{{ $gear.manufacturer }}"
+                         data-types="{{ delimit $gear.types "," }}"
+                         data-technology="{{ $gear.technology }}"
+                         data-archived="true"
+                         data-search="{{ $gear.manufacturer }} {{ $gear.name }} {{ $gear.description }} {{ delimit $gear.types " " }}"
+                         style="display: none;">
+                        
+                        <div class="gear-header" onclick="toggleGear(this)">
+                            <span class="gear-title">{{ $gear.manufacturer }} - {{ $gear.name }}</span>
+                            <span class="gear-expand">▼</span>
+                        </div>
+                        
+                        <div class="gear-details">
+                            <div class="gear-meta">
+                                <span class="gear-category clickable-filter" onclick="event.stopPropagation(); addFilter('categories', '{{ $gear.category }}', '{{ $gear.category }}s')">{{ $gear.category }}</span>
+                                {{ if $gear.types }}
+                                    {{ range $gear.types }}
+                                        <span class="gear-types clickable-filter" onclick="event.stopPropagation(); addFilter('types', '{{ . }}', '{{ . }}')">{{ . }}</span>
+                                    {{ end }}
+                                {{ end }}
+                                <span class="gear-tech clickable-filter" onclick="event.stopPropagation(); addFilter('technology', '{{ $gear.technology }}', '{{ $gear.technology }}')">{{ $gear.technology }}</span>
+                            </div>
+                            
+                            {{ if $gear.description }}
+                            <p class="gear-description">{{ $gear.description }}</p>
+                            {{ end }}
+                            
+                            {{ if $gear.controls }}
+                            <div class="gear-settings">
+                                <strong>Controls:</strong>
+                                {{ if reflect.IsMap $gear.controls }}
+                                    {{/* Nested controls with sections */}}
+                                    {{ range $section, $controls := $gear.controls }}
+                                        <div class="settings-section">
+                                            <em>{{ $section }}:</em> {{ delimit $controls ", " }}
+                                        </div>
+                                    {{ end }}
+                                {{ else }}
+                                    {{/* Flat list of controls */}}
+                                    {{ delimit $gear.controls ", " }}
+                                {{ end }}
+                            </div>
+                            {{ end }}
+                            
+                            <div class="gear-links">
+                                {{ if $gear.url }}
+                                <a href="{{ $gear.url }}" target="_blank" rel="noopener">Product Page</a>
+                                {{ end }}
+                            </div>
+                        </div>
+                    </div>
+                    {{ end }}
+                {{ end }}
+            {{ end }}
+        {{ end }}
     </div>
     
     <div id="no-results" style="display: none;">
@@ -129,6 +196,14 @@ const activeFilters = {
 
 // Populate filter dropdowns
 document.addEventListener('DOMContentLoaded', function() {
+    // Show archived items if ?archived parameter present
+    const showArchived = new URLSearchParams(window.location.search).has('archived');
+    if (showArchived) {
+        document.querySelectorAll('[data-archived="true"]').forEach(el => {
+            el.style.display = 'block';
+        });
+    }
+    
     const items = document.querySelectorAll('.gear-item');
     const manufacturers = new Set();
     const types = new Set();

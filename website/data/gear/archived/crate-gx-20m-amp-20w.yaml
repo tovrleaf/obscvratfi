@@ -1,0 +1,15 @@
+name: GX-20M AMP 20W
+manufacturer: Crate
+category: Amplifier
+types:
+  - Combo Amp
+  - Practice Amp
+technology: Analog
+controls:
+  - Volume
+  - Treble
+  - Middle
+  - Bass
+  - Gain
+description: 20-watt solid-state combo amplifier
+url: ''
