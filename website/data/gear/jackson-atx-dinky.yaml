@@ -1,0 +1,12 @@
+name: ATX Dinky
+manufacturer: Jackson
+category: Instrument
+types:
+  - Electric Guitar
+technology: Analog
+controls:
+  - Volume
+  - Tone
+  - Pickup Selector
+description: ATX Dinky electric guitar
+url: https://www.jacksonguitars.com/

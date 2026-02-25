@@ -1,0 +1,13 @@
+name: Gibson Stratocaster
+manufacturer: Epiphone
+category: Instrument
+types:
+  - Electric Guitar
+technology: Analog
+controls:
+  - Volume
+  - Tone (Neck)
+  - Tone (Middle)
+  - Pickup Selector
+description: Stratocaster-style electric guitar
+url: https://www.epiphone.com/

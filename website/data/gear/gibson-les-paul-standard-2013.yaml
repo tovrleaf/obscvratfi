@@ -1,0 +1,14 @@
+name: Les Paul Standard 2013
+manufacturer: Gibson
+category: Instrument
+types:
+  - Electric Guitar
+technology: Analog
+controls:
+  - Volume (Neck)
+  - Volume (Bridge)
+  - Tone (Neck)
+  - Tone (Bridge)
+  - Pickup Selector
+description: Les Paul Standard electric guitar from 2013
+url: https://www.gibson.com/

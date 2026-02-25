@@ -1,0 +1,15 @@
+name: Mark 4 (MKIV) 120 ('75)
+manufacturer: Sound City
+category: Amplifier
+types:
+  - Amplifier Head
+  - Tube Amp
+technology: Analog
+controls:
+  - Volume
+  - Treble
+  - Middle
+  - Bass
+  - Presence
+description: 120-watt tube amplifier head from 1975
+url: ''
