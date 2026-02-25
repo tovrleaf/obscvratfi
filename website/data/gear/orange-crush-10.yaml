@@ -1,6 +1,6 @@
 name: "Crush 10"
 manufacturer: "Orange"
-category: Instrument
+category: Amplifier
 types: ["Combo Amp", "Practice Amp"]
 technology: Analog
 controls:

@@ -1,6 +1,6 @@
 name: "PPC112"
 manufacturer: "Orange"
-category: Instrument
+category: Amplifier
 types: ["Speaker Cabinet"]
 technology: Analog
 controls: []

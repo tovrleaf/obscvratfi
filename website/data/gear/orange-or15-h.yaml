@@ -1,6 +1,6 @@
 name: "OR15 H"
 manufacturer: "Orange"
-category: Instrument
+category: Amplifier
 types: ["Amplifier Head", "Tube Amp"]
 technology: Analog
 controls:
