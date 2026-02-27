@@ -101,6 +101,24 @@ def update_changelog(changelog_path: Path, new_version: str) -> None:
     changelog_path.write_text('\n'.join(lines))
 
 
+def update_readme(readme_path: Path, new_version: str) -> None:
+    """
+    Update README.md with new version.
+
+    Args:
+        readme_path: Path to README.md
+        new_version: New version string
+    """
+    content = readme_path.read_text()
+    # Update version in footer line
+    updated = re.sub(
+        r'\*\*Version:\*\* \d+\.\d+\.\d+',
+        f'**Version:** {new_version}',
+        content
+    )
+    readme_path.write_text(updated)
+
+
 def main_function(bump_type: str) -> int:
     """
     Main logic function.
@@ -112,7 +130,8 @@ def main_function(bump_type: str) -> int:
         Exit code (0 for success)
     """
     changelog_path = Path("CHANGELOG.md")
-    data_changelog_path = Path("website/data/changelog.txt")
+    static_changelog_path = Path("website/static/changelog.txt")
+    readme_path = Path("README.md")
 
     if not changelog_path.exists():
         print(f"Error: {changelog_path} not found", file=sys.stderr)
@@ -126,9 +145,13 @@ def main_function(bump_type: str) -> int:
 
         update_changelog(changelog_path, new_version)
 
-        # Copy to website/data for Hugo
-        data_changelog_path.parent.mkdir(parents=True, exist_ok=True)
-        data_changelog_path.write_text(changelog_path.read_text())
+        # Copy to website/static for Hugo version.html partial
+        static_changelog_path.parent.mkdir(parents=True, exist_ok=True)
+        static_changelog_path.write_text(changelog_path.read_text())
+
+        # Update README.md version
+        if readme_path.exists():
+            update_readme(readme_path, new_version)
 
         print(new_version)
         return 0

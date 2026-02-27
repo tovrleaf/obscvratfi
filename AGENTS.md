@@ -135,6 +135,22 @@ Manual with validation:
        └─────────────────┘ (if tests fail, back to Build)
 ```
 
+## Agent Limitations
+
+**Important:** Agents may occasionally violate their role boundaries. Current enforcement relies on self-discipline rather than technical restrictions.
+
+**Known issues:**
+- Commit Agent may modify code files when it should only commit changes made by Build Agent
+- Agents may perform actions outside their designated capabilities
+
+**Best practices:**
+- Review `git diff` output carefully before commits
+- Question unexpected file changes (e.g., code changes from Commit Agent)
+- Explicitly switch agents when crossing role boundaries
+- If an agent violates boundaries, point it out and request the correct agent
+
+**Future improvement:** Technical enforcement of agent file permissions would prevent these violations.
+
 ## Available Prompts
 
 Prompts streamline common workflows. Invoke with `@prompt-name`.

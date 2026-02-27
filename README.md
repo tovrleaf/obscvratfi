@@ -56,4 +56,4 @@ make deploy production
 
 ---
 
-**Version:** 1.4.0 | **License:** MIT & CC BY-NC-SA 4.0 | **Site:** https://obscvrat.fi
+**Version:** 1.5.0 | **License:** MIT & CC BY-NC-SA 4.0 | **Site:** https://obscvrat.fi
