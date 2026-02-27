@@ -1,0 +1,14 @@
+name: "Filth Grinder II"
+manufacturer: "Walovoid"
+category: Pedal
+types: ["Fuzz", "Octaver"]
+technology: Analog
+controls:
+  - "Mode Switch (2-position)"
+  - "Low"
+  - "High"
+  - "Low Cut Rotary Switch (4-position)"
+  - "Saturator"
+  - "Volume"
+description: "Octave fuzz pedal combining thick fuzz tones with analog octave-up generation. Blendable octave control allows mixing from pure fuzz to synth-like octave textures for aggressive, harmonically rich sounds."
+url: "https://walovoid.com/filth-grinder-ii"

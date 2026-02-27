@@ -1,0 +1,16 @@
+name: Ottobit Jr.
+manufacturer: Meris
+category: Pedal
+technology: Hybrid
+types:
+  - Bitcrusher
+  - Sequencer
+url: https://www.meris.us/product/ottobit-jr/
+description: Bit crusher and sequencer pedal with stutter, filter, and arpeggiator effects
+controls:
+  - Sample Rate
+  - Filter
+  - Bits
+  - Stutter
+  - Sequencer
+  - Sequencer Mult

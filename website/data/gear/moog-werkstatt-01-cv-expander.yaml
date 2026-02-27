@@ -1,0 +1,19 @@
+name: "Werkstatt-01 & CV Expander"
+manufacturer: "Moog"
+category: Synth
+types: ["Monophonic", "Analog", "Patchable"]
+technology: Analog
+controls:
+  - "VCO Frequency"
+  - "VCO Waveform"
+  - "VCF Cutoff"
+  - "VCF Resonance"
+  - "VCF Envelope Amount"
+  - "VCA Envelope Amount"
+  - "LFO Rate"
+  - "LFO Waveform"
+  - "Glide"
+  - "Volume"
+  - "CV Expander Patch Points"
+description: "Compact patchable analog synthesizer kit with single oscillator, Moog ladder filter, and LFO. CV Expander adds modular connectivity with multiple CV/Gate inputs and outputs for integration with modular systems."
+url: "https://www.moogmusic.com/"

@@ -20,6 +20,20 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        a:active,
+        button:active,
+        .clickable:active {
+            opacity: 0.6;
+            transform: scale(0.98);
+        }
+        
+        a,
+        button,
+        .clickable {
+            transition: opacity 0.15s ease, transform 0.15s ease;
         }
         
         body {
@@ -153,7 +167,7 @@
             align-items: center;
             justify-content: center;
             filter: drop-shadow(0 0 60px rgba(0, 0, 0, 0.3));
-            transform: translateX(3%) translateY(-2%);
+            transform: translateX(0) translateY(-2%);
             animation: fadeIn 0.8s ease-in-out forwards, pulseBlur 12s ease-in-out infinite;
         }
         
@@ -961,10 +975,14 @@
                 min-height: 70vh;
             }
             
-            .hero-logo {
+            .hero-logo-container {
+                transform: translateX(0) translateY(-2%);
+            }
+            
+            .hero-logo-top,
+            .hero-logo-bottom {
                 width: 65%;
                 max-width: 100%;
-                transform: translateX(5%) translateY(-3%);
             }
             
             .latest-gigs,
@@ -986,3 +1004,471 @@
                 min-width: 55px;
             }
         }
+
+/* Gear Page Styles */
+.gear-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+.gear-page h1 {
+    font-family: 'Fira Mono', monospace;
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    color: var(--primary-color);
+}
+
+.gear-controls {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.gear-controls input,
+.gear-controls select {
+    padding: 0.5rem;
+    background: rgba(229, 229, 229, 0.05);
+    border: 1px solid rgba(229, 229, 229, 0.3);
+    color: var(--primary-color);
+    font-family: 'Fira Mono', monospace;
+    font-size: 0.9rem;
+}
+
+.gear-search-wrapper {
+    margin-bottom: 1rem;
+    position: relative;
+}
+
+.gear-search-wrapper::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 1px solid rgba(229, 229, 229, 0.3);
+    filter: url(#rough);
+    pointer-events: none;
+}
+
+.gear-search-wrapper input {
+    width: 100%;
+    padding: 0.5rem;
+    background: rgba(229, 229, 229, 0.05);
+    border: 1px solid rgba(229, 229, 229, 0.3);
+    color: var(--primary-color);
+    font-family: 'Fira Mono', monospace;
+    font-size: 0.9rem;
+}
+
+.gear-search-wrapper input:focus {
+    outline: none;
+    border-color: rgba(229, 229, 229, 0.4);
+}
+
+.toggle-all-btn {
+    padding: 0.5rem 1rem;
+    background: rgba(229, 229, 229, 0.05);
+    border: 1px solid rgba(229, 229, 229, 0.3);
+    color: var(--primary-color);
+    font-family: 'Fira Mono', monospace;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    width: 100%;
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    align-items: center;
+}
+
+.toggle-all-btn .expand-icon,
+.toggle-all-btn .collapse-icon {
+    opacity: 0.3;
+    transition: opacity 0.2s ease;
+}
+
+.toggle-all-btn .expand-icon.active,
+.toggle-all-btn .collapse-icon.active {
+    opacity: 1;
+}
+
+.toggle-all-btn:hover {
+    background: rgba(229, 229, 229, 0.1);
+    border-color: rgba(229, 229, 229, 0.4);
+}
+
+.input-wrapper {
+    filter: url(#rough);
+    display: inline-block;
+}
+
+.active-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    min-height: 2rem;
+}
+
+.filter-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.9rem;
+    background: 
+        linear-gradient(to right, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 15%),
+        radial-gradient(ellipse at 35% 45%, 
+            rgba(180, 90, 70, 0.75) 0%, 
+            rgba(165, 82, 62, 0.62) 8%, 
+            rgba(150, 75, 55, 0.5) 14%, 
+            rgba(135, 68, 50, 0.4) 19%, 
+            rgba(120, 60, 45, 0.3) 24%, 
+            rgba(105, 52, 38, 0.22) 28%, 
+            rgba(90, 45, 32, 0.15) 32%, 
+            rgba(75, 38, 27, 0.1) 35%, 
+            rgba(60, 30, 20, 0.06) 38%, 
+            rgba(45, 22, 15, 0.03) 41%, 
+            rgba(30, 15, 10, 0.01) 44%, 
+            transparent 48%),
+        radial-gradient(ellipse at 55% 30%, 
+            rgba(140, 70, 50, 0.6) 0%, 
+            rgba(127, 63, 45, 0.5) 8%, 
+            rgba(115, 57, 41, 0.4) 14%, 
+            rgba(102, 51, 37, 0.32) 19%, 
+            rgba(90, 45, 32, 0.24) 24%, 
+            rgba(77, 38, 27, 0.18) 28%, 
+            rgba(65, 32, 23, 0.12) 32%, 
+            rgba(52, 26, 18, 0.08) 35%, 
+            rgba(40, 20, 14, 0.04) 38%, 
+            rgba(27, 13, 9, 0.02) 41%, 
+            rgba(15, 7, 5, 0.005) 44%, 
+            transparent 46%),
+        radial-gradient(ellipse at 45% 70%, 
+            rgba(120, 60, 45, 0.55) 0%, 
+            rgba(108, 54, 40, 0.46) 8%, 
+            rgba(96, 48, 36, 0.38) 14%, 
+            rgba(84, 42, 31, 0.3) 19%, 
+            rgba(72, 36, 27, 0.23) 24%, 
+            rgba(60, 30, 22, 0.16) 28%, 
+            rgba(48, 24, 18, 0.11) 32%, 
+            rgba(36, 18, 13, 0.07) 35%, 
+            rgba(24, 12, 9, 0.03) 38%, 
+            rgba(12, 6, 4, 0.01) 41%, 
+            transparent 44%),
+        radial-gradient(ellipse at 50% 50%, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0.9) 70%, rgba(0, 0, 0, 0.95) 100%);
+    border-radius: 4px;
+    font-family: 'Fira Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--primary-color);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 
+        inset 0 0 8px rgba(160, 80, 60, 0.15),
+        0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+.filter-tag:hover {
+    background: 
+        linear-gradient(to right, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 15%),
+        radial-gradient(ellipse at 40% 50%, 
+            rgba(200, 100, 80, 0.85) 0%, 
+            rgba(185, 92, 74, 0.72) 8%, 
+            rgba(170, 85, 68, 0.6) 14%, 
+            rgba(155, 77, 62, 0.5) 19%, 
+            rgba(140, 70, 56, 0.4) 24%, 
+            rgba(125, 62, 50, 0.31) 28%, 
+            rgba(110, 55, 44, 0.23) 32%, 
+            rgba(95, 47, 38, 0.16) 35%, 
+            rgba(80, 40, 32, 0.1) 38%, 
+            rgba(65, 32, 26, 0.05) 41%, 
+            rgba(40, 20, 16, 0.02) 44%, 
+            transparent 48%),
+        radial-gradient(ellipse at 60% 25%, 
+            rgba(160, 80, 60, 0.7) 0%, 
+            rgba(147, 73, 55, 0.59) 8%, 
+            rgba(135, 67, 50, 0.49) 14%, 
+            rgba(122, 61, 45, 0.4) 19%, 
+            rgba(110, 55, 41, 0.31) 24%, 
+            rgba(97, 48, 36, 0.23) 28%, 
+            rgba(85, 42, 31, 0.17) 32%, 
+            rgba(72, 36, 27, 0.11) 35%, 
+            rgba(60, 30, 22, 0.06) 38%, 
+            rgba(47, 23, 17, 0.03) 41%, 
+            rgba(25, 12, 9, 0.01) 44%, 
+            transparent 46%),
+        radial-gradient(ellipse at 50% 75%, 
+            rgba(140, 70, 55, 0.65) 0%, 
+            rgba(128, 64, 50, 0.55) 8%, 
+            rgba(116, 58, 45, 0.46) 14%, 
+            rgba(104, 52, 40, 0.37) 19%, 
+            rgba(92, 46, 36, 0.29) 24%, 
+            rgba(80, 40, 31, 0.21) 28%, 
+            rgba(68, 34, 26, 0.15) 32%, 
+            rgba(56, 28, 22, 0.1) 35%, 
+            rgba(44, 22, 17, 0.05) 38%, 
+            rgba(32, 16, 12, 0.02) 41%, 
+            rgba(16, 8, 6, 0.008) 44%, 
+            transparent 44%),
+        radial-gradient(ellipse at 50% 50%, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.85) 70%, rgba(0, 0, 0, 0.92) 100%);
+    transform: translateY(-1px);
+    box-shadow: 
+        inset 0 0 10px rgba(180, 90, 70, 0.2),
+        0 3px 8px rgba(0, 0, 0, 0.6);
+}
+
+.filter-tag-remove {
+    font-size: 1.3rem;
+    line-height: 1;
+    color: rgba(229, 229, 229, 0.5);
+    transition: color 0.2s ease;
+    font-weight: bold;
+}
+
+.filter-tag:hover .filter-tag-remove {
+    color: var(--primary-color);
+}
+
+.gear-controls input {
+    flex: 1;
+    min-width: 200px;
+    width: 100%;
+}
+
+.gear-controls select {
+    min-width: 150px;
+}
+
+.input-wrapper {
+    display: inline-block;
+    position: relative;
+}
+
+.input-wrapper::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 1px solid rgba(229, 229, 229, 0.3);
+    filter: url(#rough);
+    pointer-events: none;
+}
+
+.input-wrapper:has(input) {
+    flex: 1;
+    min-width: 200px;
+}
+
+.gear-controls input:focus,
+.gear-controls select:focus {
+    outline: none;
+    border-color: rgba(229, 229, 229, 0.4);
+}
+
+.gear-list {
+    column-count: 3;
+    column-gap: 0.5rem;
+}
+
+.gear-item {
+    break-inside: avoid;
+    margin-bottom: 0.5rem;
+    background: rgba(229, 229, 229, 0.03);
+    border: 1px solid rgba(229, 229, 229, 0.1);
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.gear-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 1px solid rgba(229, 229, 229, 0.1);
+    filter: url(#rough);
+    pointer-events: none;
+}
+
+.gear-item:hover {
+    background: rgba(229, 229, 229, 0.05);
+    border-color: rgba(229, 229, 229, 0.2);
+}
+
+.gear-header {
+    padding: 1rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+    filter: none;
+}
+
+.gear-title {
+    font-family: 'Fira Mono', monospace;
+    font-size: 1rem;
+    color: var(--primary-color);
+    filter: none;
+}
+
+.gear-expand {
+    color: rgba(229, 229, 229, 0.5);
+    font-size: 0.8rem;
+    transition: transform 0.2s ease;
+}
+
+.gear-item.expanded .gear-expand {
+    transform: rotate(180deg);
+}
+
+.gear-item.expanded .gear-details {
+    border-top: none;
+}
+
+.gear-details {
+    display: none;
+    padding: 0 1rem 1rem 1rem;
+    border-top: 1px solid rgba(229, 229, 229, 0.1);
+}
+
+.gear-meta {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.gear-category,
+.gear-types,
+.gear-tech {
+    font-family: 'Fira Mono', monospace;
+    font-size: 0.8rem;
+    padding: 0.25rem 0.5rem;
+    border: 1px solid rgba(229, 229, 229, 0.2);
+    color: rgba(229, 229, 229, 0.7);
+}
+
+.clickable-filter {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.clickable-filter:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    border-color: rgba(229, 229, 229, 0.4);
+}
+
+.gear-category {
+    background: rgba(229, 229, 229, 0.1);
+}
+
+.gear-types {
+    background: rgba(180, 120, 80, 0.15);
+    border-color: rgba(180, 120, 80, 0.3);
+}
+
+.gear-tech {
+    background: rgba(100, 150, 180, 0.15);
+    border-color: rgba(100, 150, 180, 0.3);
+}
+
+.gear-description {
+    margin-bottom: 1rem;
+    line-height: 1.6;
+    color: rgba(229, 229, 229, 0.8);
+    filter: none;
+}
+
+.gear-settings {
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    color: rgba(229, 229, 229, 0.7);
+}
+
+.gear-settings strong {
+    color: var(--primary-color);
+}
+
+.settings-section {
+    margin-left: 1rem;
+    margin-top: 0.25rem;
+}
+
+.settings-section em {
+    color: rgba(229, 229, 229, 0.8);
+    font-style: normal;
+    font-weight: 500;
+}
+
+.gear-links {
+    display: flex;
+    gap: 1rem;
+}
+
+.gear-links a {
+    font-family: 'Fira Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--secondary-color);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(229, 229, 229, 0.3);
+    transition: all 0.2s ease;
+}
+
+.gear-links a:hover {
+    color: var(--primary-color);
+    border-bottom-color: var(--primary-color);
+}
+
+#no-results {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: rgba(229, 229, 229, 0.5);
+}
+
+/* Archived gear styling */
+.gear-item.archived {
+    opacity: 0.5;
+}
+
+.gear-item.archived .gear-title {
+    font-style: italic;
+    color: #888;
+}
+
+.gear-item.archived .gear-description,
+.gear-item.archived .gear-meta,
+.gear-item.archived .gear-settings {
+    color: #888;
+}
+
+@media (max-width: 768px) {
+    .gear-list {
+        column-count: 1;
+    }
+    
+    .gear-controls {
+        flex-direction: column;
+    }
+    
+    .gear-controls input,
+    .gear-controls select {
+        width: 100%;
+    }
+    
+    .gear-meta {
+        gap: 0.5rem;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    .gear-list {
+        column-count: 2;
+    }
+}

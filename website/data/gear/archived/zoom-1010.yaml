@@ -1,0 +1,12 @@
+name: 1010
+manufacturer: Zoom
+category: Pedal
+types:
+  - Multi-Effects
+technology: Digital
+controls:
+  - Parameter
+  - Value
+  - Effect Select
+description: Multi-effects processor
+url: ''

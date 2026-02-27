@@ -1,0 +1,14 @@
+name: "OR15 H"
+manufacturer: "Orange"
+category: Amplifier
+types: ["Amplifier Head", "Tube Amp"]
+technology: Analog
+controls:
+  - "Gain"
+  - "Volume"
+  - "High"
+  - "Middle"
+  - "Low"
+  - "Watt Switch"
+description: "15-watt all-tube guitar amplifier head with single channel. Features EL84 power tubes, simple 3-knob control layout, and switchable output (15W/7W) for bedroom to stage versatility with classic Orange tone."
+url: "https://orangeamps.com/"

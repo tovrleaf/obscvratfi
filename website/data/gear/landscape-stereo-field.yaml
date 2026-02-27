@@ -1,0 +1,14 @@
+name: "Stereo Field"
+manufacturer: "Landscape"
+category: Synth
+types: ["Feedback", "Noise", "Controller", "Stereo"]
+technology: Analog
+controls:
+  - "Volume Left"
+  - "Volume Right"
+  - "Gain Left"
+  - "Gain Right"
+  - "Touch Plates"
+  - "Quad CV Inputs (8)"
+description: "Touch-reactive feedback synthesizer and chaotic audio processor. Features capacitive touch plates for hands-on control, stereo feedback paths, and CV inputs for modular integration. Creates unpredictable noise textures through physical interaction."
+url: "https://www.landscape.fm/stereofield"

@@ -1,8 +1,14 @@
-# Obscvrat Website
+<p align="center">
+  <img src="logo.png" alt="Obscvrat">
+</p>
 
-**Built entirely with AI.** This project is developed through AI agents following instructions in AGENTS.md. Humans provide direction, AI implements everything.
+<p align="center">
+  Built entirely with AI. Develop. Preview. Ship.
+</p>
 
-Official noisework website for Obscvrat - static site built with Hugo, deployed to AWS CloudFront.
+<p align="center">
+  <a href="AGENTS.md">Documentation</a> · <a href="CHANGELOG.md">Changelog</a> · <a href="docs/adr/">Architecture</a> · <a href="docs/CI-CD.md">CI/CD</a>
+</p>
 
 ## For AI Agents
 

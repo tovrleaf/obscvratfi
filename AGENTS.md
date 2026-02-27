@@ -14,6 +14,30 @@ kiro-cli settings chat.enableSubagent true
 This is a one-time global setting that enables subagent functionality
 across all projects.
 
+## MCP Servers
+
+The project uses Model Context Protocol (MCP) servers to provide specialized tools for agents.
+
+### Gear Management Server
+
+Located in `.mcp/gear-server/`, provides tools for managing the gear inventory:
+
+- **add_gear** - Add new gear with validation
+- **list_gear** - List all gear with optional filters  
+- **search_gear** - Search by name, manufacturer, types, or description
+- **update_gear** - Update existing gear fields
+- **delete_gear** - Remove gear from inventory
+
+**Configuration:** `.kiro/mcp.json`
+
+**Usage:** Tools are automatically available to agents. See `.mcp/gear-server/README.md` for details.
+
+**Benefits:**
+- Type-safe data validation
+- Consistent YAML formatting
+- Duplicate prevention
+- Atomic file operations
+
 ## Agent Workflow
 
 The project uses a specialized five-agent architecture (see ADR-010):
@@ -530,7 +554,7 @@ See `docs/DEPLOYMENT.md` for detailed deployment instructions.
 ## Additional Resources
 
 ### For AI Agents
-- [.kiro/instructions/](. kiro/instructions/) - Agent-specific instructions
+- [.kiro/instructions/](.kiro/instructions/) - Agent-specific instructions
   - `build.md` - Build Agent code style and testing
   - `commit.md` - Commit Agent git workflow
   - `test.md` - Test Agent validation commands

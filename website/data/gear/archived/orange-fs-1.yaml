@@ -1,0 +1,9 @@
+name: FS-1
+manufacturer: Orange
+category: Amplifier
+types:
+  - Footswitch
+technology: Analog
+controls: []
+description: Single-button footswitch for Orange amplifiers
+url: ''

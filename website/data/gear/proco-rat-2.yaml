@@ -1,0 +1,11 @@
+name: "Rat 2"
+manufacturer: "Proco"
+category: Pedal
+types: ["Distortion", "Overdrive"]
+technology: Analog
+controls:
+  - "Distortion"
+  - "Filter"
+  - "Volume"
+description: "Classic distortion pedal with aggressive, versatile tone. Features simple three-knob control for distortion amount, tone filtering, and output level. Known for its thick, saturated sound from fuzzy overdrive to heavy distortion."
+url: "https://www.procorat.com/"

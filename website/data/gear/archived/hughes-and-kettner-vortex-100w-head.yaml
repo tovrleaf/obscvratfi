@@ -1,0 +1,15 @@
+name: Vortex 100W Head
+manufacturer: Hughes & Kettner
+category: Amplifier
+types:
+  - Amplifier Head
+  - Solid State
+technology: Analog
+controls:
+  - Gain
+  - Volume
+  - Treble
+  - Middle
+  - Bass
+description: 100-watt solid-state guitar amplifier head
+url: ''

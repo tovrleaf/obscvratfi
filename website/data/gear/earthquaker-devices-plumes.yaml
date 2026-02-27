@@ -1,0 +1,12 @@
+name: "Plumes"
+manufacturer: "EarthQuaker Devices"
+category: Pedal
+types: ["Overdrive"]
+technology: Analog
+controls:
+  - "Level"
+  - "Gain"
+  - "Tone"
+  - "Mode Switch (3-Position)"
+description: "All-analog tube-like overdrive with 3 clipping voices, loads of headroom, and reimagined tone control for sculpting low end, clear top end, and focused midrange."
+url: "https://www.earthquakerdevices.com/plumes"

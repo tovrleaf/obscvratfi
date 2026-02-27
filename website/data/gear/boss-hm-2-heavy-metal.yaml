@@ -1,0 +1,14 @@
+name: "HM-2 Heavy Metal"
+manufacturer: "BOSS"
+category: Pedal
+technology: Analog
+types:
+  - "Distortion"
+  - "Fuzz"
+url: "https://www.boss.info/us/products/hm-2/"
+description: "Legendary chainsaw distortion pedal with aggressive high-gain tone and powerful EQ"
+controls:
+  - "Level"
+  - "Low"
+  - "High"
+  - "Distortion"

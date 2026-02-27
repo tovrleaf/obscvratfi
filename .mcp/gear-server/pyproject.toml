@@ -1,0 +1,13 @@
+[project]
+name = "gear-server"
+version = "0.1.0"
+description = "MCP server for managing Obscvrat gear inventory"
+requires-python = ">=3.9"
+dependencies = [
+    "mcp>=1.0.0",
+    "pyyaml>=6.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

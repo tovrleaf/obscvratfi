@@ -1,0 +1,429 @@
+{{ define "main" }}
+<svg style="position: absolute; width: 0; height: 0;">
+    <filter id="rough">
+        <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="4" result="noise" seed="2" />
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="4" xChannelSelector="R" yChannelSelector="G" />
+    </filter>
+</svg>
+
+<div class="gear-page">
+    <h1>Gear</h1>
+    
+    <div class="gear-search-wrapper">
+        <input type="text" id="gear-search" placeholder="Search gear..." />
+    </div>
+    
+    <div class="gear-controls">
+        <div class="input-wrapper">
+            <input list="category-list" id="filter-category" placeholder="Select Category" />
+            <datalist id="category-list">
+                {{- $categories := slice -}}
+                {{- range $index, $file := (readDir "data/gear") -}}
+                    {{- if strings.HasSuffix $file.Name ".yaml" -}}
+                        {{- $gear := index $.Site.Data.gear (strings.TrimSuffix ".yaml" $file.Name) -}}
+                        {{- if $gear -}}
+                            {{- $categories = $categories | append $gear.category -}}
+                        {{- end -}}
+                    {{- end -}}
+                {{- end -}}
+                {{- range $categories | uniq | sort -}}
+                    <option value="{{ . }}">{{ . }}s</option>
+                {{- end -}}
+            </datalist>
+        </div>
+        
+        <div class="input-wrapper">
+            <input list="manufacturer-list" id="filter-manufacturer" placeholder="Select Manufacturer" />
+            <datalist id="manufacturer-list"></datalist>
+        </div>
+        
+        <div class="input-wrapper">
+            <input list="type-list" id="filter-type" placeholder="Select Type" />
+            <datalist id="type-list"></datalist>
+        </div>
+        
+        <div class="input-wrapper">
+            <button id="toggle-all" class="toggle-all-btn">
+                <span class="collapse-icon">▲</span>
+                <span class="expand-icon active">▼</span>
+            </button>
+        </div>
+    </div>
+    
+    <div id="active-filters" class="active-filters"></div>
+    
+    <div class="gear-list">
+        {{/* Active gear */}}
+        {{ range $index, $file := (readDir "data/gear") }}
+            {{ if strings.HasSuffix $file.Name ".yaml" }}
+                {{ $gear := index $.Site.Data.gear (strings.TrimSuffix ".yaml" $file.Name) }}
+                {{ if $gear }}
+                <div class="gear-item" 
+                     data-category="{{ $gear.category }}"
+                     data-manufacturer="{{ $gear.manufacturer }}"
+                     data-types="{{ delimit $gear.types "," }}"
+                     data-technology="{{ $gear.technology }}"
+                     data-archived="false"
+                     data-search="{{ $gear.manufacturer }} {{ $gear.name }} {{ $gear.description }} {{ delimit $gear.types " " }}">
+                    
+                    <div class="gear-header" onclick="toggleGear(this)">
+                        <span class="gear-title">{{ $gear.manufacturer }} - {{ $gear.name }}</span>
+                        <span class="gear-expand">▼</span>
+                    </div>
+                    
+                    <div class="gear-details">
+                        <div class="gear-meta">
+                            <span class="gear-category clickable-filter" onclick="event.stopPropagation(); addFilter('categories', '{{ $gear.category }}', '{{ $gear.category }}s')">{{ $gear.category }}</span>
+                            {{ if $gear.types }}
+                                {{ range $gear.types }}
+                                    <span class="gear-types clickable-filter" onclick="event.stopPropagation(); addFilter('types', '{{ . }}', '{{ . }}')">{{ . }}</span>
+                                {{ end }}
+                            {{ end }}
+                            <span class="gear-tech clickable-filter" onclick="event.stopPropagation(); addFilter('technology', '{{ $gear.technology }}', '{{ $gear.technology }}')">{{ $gear.technology }}</span>
+                        </div>
+                        
+                        {{ if $gear.description }}
+                        <p class="gear-description">{{ $gear.description }}</p>
+                        {{ end }}
+                        
+                        {{ if $gear.controls }}
+                        <div class="gear-settings">
+                            <strong>Controls:</strong>
+                            {{ if reflect.IsMap $gear.controls }}
+                                {{/* Nested controls with sections */}}
+                                {{ range $section, $controls := $gear.controls }}
+                                    <div class="settings-section">
+                                        <em>{{ $section }}:</em> {{ delimit $controls ", " }}
+                                    </div>
+                                {{ end }}
+                            {{ else }}
+                                {{/* Flat list of controls */}}
+                                {{ delimit $gear.controls ", " }}
+                            {{ end }}
+                        </div>
+                        {{ end }}
+                        
+                        <div class="gear-links">
+                            {{ if $gear.url }}
+                            <a href="{{ $gear.url }}" target="_blank" rel="noopener">Product Page</a>
+                            {{ end }}
+                        </div>
+                    </div>
+                </div>
+                {{ end }}
+            {{ end }}
+        {{ end }}
+        
+        {{/* Archived gear - only if ?archived parameter present */}}
+        {{ $archivedDir := "data/gear/archived" }}
+        {{ if fileExists $archivedDir }}
+            {{ range $index, $file := (readDir $archivedDir) }}
+                {{ if strings.HasSuffix $file.Name ".yaml" }}
+                    {{ $gear := index $.Site.Data.gear.archived (strings.TrimSuffix ".yaml" $file.Name) }}
+                    {{ if $gear }}
+                    <div class="gear-item archived" 
+                         data-category="{{ $gear.category }}"
+                         data-manufacturer="{{ $gear.manufacturer }}"
+                         data-types="{{ delimit $gear.types "," }}"
+                         data-technology="{{ $gear.technology }}"
+                         data-archived="true"
+                         data-search="{{ $gear.manufacturer }} {{ $gear.name }} {{ $gear.description }} {{ delimit $gear.types " " }}"
+                         style="display: none;">
+                        
+                        <div class="gear-header" onclick="toggleGear(this)">
+                            <span class="gear-title">{{ $gear.manufacturer }} - {{ $gear.name }}</span>
+                            <span class="gear-expand">▼</span>
+                        </div>
+                        
+                        <div class="gear-details">
+                            <div class="gear-meta">
+                                <span class="gear-category clickable-filter" onclick="event.stopPropagation(); addFilter('categories', '{{ $gear.category }}', '{{ $gear.category }}s')">{{ $gear.category }}</span>
+                                {{ if $gear.types }}
+                                    {{ range $gear.types }}
+                                        <span class="gear-types clickable-filter" onclick="event.stopPropagation(); addFilter('types', '{{ . }}', '{{ . }}')">{{ . }}</span>
+                                    {{ end }}
+                                {{ end }}
+                                <span class="gear-tech clickable-filter" onclick="event.stopPropagation(); addFilter('technology', '{{ $gear.technology }}', '{{ $gear.technology }}')">{{ $gear.technology }}</span>
+                            </div>
+                            
+                            {{ if $gear.description }}
+                            <p class="gear-description">{{ $gear.description }}</p>
+                            {{ end }}
+                            
+                            {{ if $gear.controls }}
+                            <div class="gear-settings">
+                                <strong>Controls:</strong>
+                                {{ if reflect.IsMap $gear.controls }}
+                                    {{/* Nested controls with sections */}}
+                                    {{ range $section, $controls := $gear.controls }}
+                                        <div class="settings-section">
+                                            <em>{{ $section }}:</em> {{ delimit $controls ", " }}
+                                        </div>
+                                    {{ end }}
+                                {{ else }}
+                                    {{/* Flat list of controls */}}
+                                    {{ delimit $gear.controls ", " }}
+                                {{ end }}
+                            </div>
+                            {{ end }}
+                            
+                            <div class="gear-links">
+                                {{ if $gear.url }}
+                                <a href="{{ $gear.url }}" target="_blank" rel="noopener">Product Page</a>
+                                {{ end }}
+                            </div>
+                        </div>
+                    </div>
+                    {{ end }}
+                {{ end }}
+            {{ end }}
+        {{ end }}
+    </div>
+    
+    <div id="no-results" style="display: none;">
+        <p>No gear found matching filters.</p>
+    </div>
+</div>
+
+<script>
+// Active filters state
+const activeFilters = {
+    categories: new Set(),
+    manufacturers: new Set(),
+    types: new Set(),
+    technology: new Set()
+};
+
+// Populate filter dropdowns
+document.addEventListener('DOMContentLoaded', function() {
+    // Show archived items if ?archived parameter present
+    const showArchived = new URLSearchParams(window.location.search).has('archived');
+    if (showArchived) {
+        document.querySelectorAll('[data-archived="true"]').forEach(el => {
+            el.style.display = 'block';
+        });
+    }
+    
+    const items = document.querySelectorAll('.gear-item');
+    const manufacturers = new Set();
+    const types = new Set();
+    
+    items.forEach(item => {
+        manufacturers.add(item.dataset.manufacturer);
+        item.dataset.types.split(',').forEach(t => types.add(t.trim()));
+    });
+    
+    const mfrList = document.getElementById('manufacturer-list');
+    Array.from(manufacturers).sort().forEach(mfr => {
+        const opt = document.createElement('option');
+        opt.value = mfr;
+        mfrList.appendChild(opt);
+    });
+    
+    const typeList = document.getElementById('type-list');
+    Array.from(types).sort().forEach(type => {
+        const opt = document.createElement('option');
+        opt.value = type;
+        typeList.appendChild(opt);
+    });
+    
+    // Toggle all gear items
+    const toggleBtn = document.getElementById('toggle-all');
+    if (toggleBtn) {
+        toggleBtn.addEventListener('click', function() {
+            const items = document.querySelectorAll('.gear-item');
+            const allExpanded = Array.from(items).every(item => item.classList.contains('expanded'));
+            
+            items.forEach(item => {
+                const details = item.querySelector('.gear-details');
+                const expand = item.querySelector('.gear-expand');
+                
+                if (allExpanded) {
+                    details.style.display = 'none';
+                    expand.textContent = '▼';
+                    item.classList.remove('expanded');
+                } else {
+                    details.style.display = 'block';
+                    expand.textContent = '▲';
+                    item.classList.add('expanded');
+                }
+            });
+            
+            // Toggle icon highlighting
+            const expandIcon = this.querySelector('.expand-icon');
+            const collapseIcon = this.querySelector('.collapse-icon');
+            
+            if (allExpanded) {
+                expandIcon.classList.add('active');
+                collapseIcon.classList.remove('active');
+            } else {
+                expandIcon.classList.remove('active');
+                collapseIcon.classList.add('active');
+            }
+        });
+    }
+});
+
+// Add filter tag
+function addFilter(filterType, value, label) {
+    activeFilters[filterType].add(value);
+    updateFilterTags();
+    filterGear();
+}
+
+// Remove filter tag
+function removeFilter(filterType, value) {
+    activeFilters[filterType].delete(value);
+    updateFilterTags();
+    filterGear();
+}
+
+// Update filter tags display
+function updateFilterTags() {
+    const container = document.getElementById('active-filters');
+    container.innerHTML = '';
+    
+    // Add category tags
+    activeFilters.categories.forEach(cat => {
+        const tag = createFilterTag('categories', cat, cat + 's');
+        container.appendChild(tag);
+    });
+    
+    // Add manufacturer tags
+    activeFilters.manufacturers.forEach(mfr => {
+        const tag = createFilterTag('manufacturers', mfr, mfr);
+        container.appendChild(tag);
+    });
+    
+    // Add type tags
+    activeFilters.types.forEach(type => {
+        const tag = createFilterTag('types', type, type);
+        container.appendChild(tag);
+    });
+    
+    // Add technology tags
+    activeFilters.technology.forEach(tech => {
+        const tag = createFilterTag('technology', tech, tech);
+        container.appendChild(tag);
+    });
+}
+
+// Create filter tag element
+function createFilterTag(filterType, value, label) {
+    const tag = document.createElement('span');
+    tag.className = 'filter-tag';
+    tag.innerHTML = `${label} <span class="filter-tag-remove">×</span>`;
+    tag.onclick = () => removeFilter(filterType, value);
+    return tag;
+}
+
+// Toggle gear details
+function toggleGear(header) {
+    const item = header.parentElement;
+    const details = item.querySelector('.gear-details');
+    const expand = header.querySelector('.gear-expand');
+    
+    if (details.style.display === 'block') {
+        details.style.display = 'none';
+        expand.textContent = '▼';
+        item.classList.remove('expanded');
+    } else {
+        details.style.display = 'block';
+        expand.textContent = '▲';
+        item.classList.add('expanded');
+    }
+}
+
+// Filter gear
+function filterGear() {
+    const search = document.getElementById('gear-search').value.toLowerCase();
+    const items = document.querySelectorAll('.gear-item');
+    let visibleCount = 0;
+    
+    items.forEach(item => {
+        let show = true;
+        
+        // Search filter
+        if (search && !item.dataset.search.toLowerCase().includes(search)) {
+            show = false;
+        }
+        
+        // Category filter (OR logic - show if matches any selected category)
+        if (activeFilters.categories.size > 0) {
+            if (!activeFilters.categories.has(item.dataset.category)) {
+                show = false;
+            }
+        }
+        
+        // Manufacturer filter (OR logic)
+        if (activeFilters.manufacturers.size > 0) {
+            if (!activeFilters.manufacturers.has(item.dataset.manufacturer)) {
+                show = false;
+            }
+        }
+        
+        // Type filter (OR logic - show if matches any selected type)
+        if (activeFilters.types.size > 0) {
+            const itemTypes = item.dataset.types.split(',').map(t => t.trim());
+            const hasMatchingType = itemTypes.some(t => activeFilters.types.has(t));
+            if (!hasMatchingType) {
+                show = false;
+            }
+        }
+        
+        // Technology filter (OR logic)
+        if (activeFilters.technology.size > 0) {
+            if (!activeFilters.technology.has(item.dataset.technology)) {
+                show = false;
+            }
+        }
+        
+        item.style.display = show ? 'block' : 'none';
+        if (show) visibleCount++;
+    });
+    
+    // Show/hide no results message
+    document.getElementById('no-results').style.display = visibleCount === 0 ? 'block' : 'none';
+}
+
+// Attach filter listeners
+document.getElementById('gear-search').addEventListener('input', filterGear);
+
+document.getElementById('filter-category').addEventListener('change', function(e) {
+    const value = e.target.value.trim();
+    if (value) {
+        // Check if value exists in datalist
+        const datalist = document.getElementById('category-list');
+        const options = Array.from(datalist.options).map(opt => opt.value);
+        if (options.includes(value)) {
+            addFilter('categories', value, value + 's');
+            e.target.value = ''; // Reset input
+        }
+    }
+});
+
+document.getElementById('filter-manufacturer').addEventListener('change', function(e) {
+    const value = e.target.value.trim();
+    if (value) {
+        const datalist = document.getElementById('manufacturer-list');
+        const options = Array.from(datalist.options).map(opt => opt.value);
+        if (options.includes(value)) {
+            addFilter('manufacturers', value, value);
+            e.target.value = ''; // Reset input
+        }
+    }
+});
+
+document.getElementById('filter-type').addEventListener('change', function(e) {
+    const value = e.target.value.trim();
+    if (value) {
+        const datalist = document.getElementById('type-list');
+        const options = Array.from(datalist.options).map(opt => opt.value);
+        if (options.includes(value)) {
+            addFilter('types', value, value);
+            e.target.value = ''; // Reset input
+        }
+    }
+});
+</script>
+{{ end }}

@@ -3,6 +3,7 @@
 # Include all modular makefiles
 include mk/adr.mk
 include mk/generate.mk
+include mk/gear.mk
 include mk/hooks.mk
 include mk/live.mk
 include mk/media.mk
@@ -21,6 +22,7 @@ help: ## Show this help
 	@echo "  make live                      - Manage live performances"
 	@echo "  make media                     - Manage media (pictures, videos)"
 	@echo "  make music                     - Manage music/albums"
+	@echo "  make gear                      - Manage gear inventory"
 	@echo "  make generate                  - Generate markdown from YAML data"
 	@echo "  make bump-version              - Bump version in CHANGELOG.md"
 	@echo "  make create-release            - Create GitHub release from CHANGELOG.md"

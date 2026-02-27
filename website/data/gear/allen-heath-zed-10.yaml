@@ -1,0 +1,16 @@
+name: "ZED-10"
+manufacturer: "Allen & Heath"
+category: Instrument
+types: ["Mixer", "Audio Interface"]
+technology: Analog
+controls:
+  - "Channel Gain"
+  - "EQ (High/Mid/Low)"
+  - "Aux Send"
+  - "Pan"
+  - "Fader"
+  - "Master Fader"
+  - "Headphone Level"
+  - "Monitor Level"
+description: "Compact 4-channel analog mixer with USB audio interface. Features 2 mic/line inputs with preamps, 2 stereo line inputs, 3-band EQ, aux send, and USB connectivity for recording and playback."
+url: "https://www.allen-heath.com/"

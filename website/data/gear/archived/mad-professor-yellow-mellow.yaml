@@ -1,0 +1,12 @@
+name: Yellow Mellow
+manufacturer: Mad Professor
+category: Pedal
+types:
+  - Tremolo
+technology: Analog
+controls:
+  - Volume
+  - Tone
+  - Drive
+description: Vintage-style overdrive pedal
+url: https://www.mpamp.com/

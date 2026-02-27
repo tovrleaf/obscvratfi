@@ -1,0 +1,15 @@
+name: "Long Life"
+manufacturer: "Fairfield Circuitry"
+category: Pedal
+types: ["EQ", "Filter"]
+technology: Analog
+controls:
+  - "Q"
+  - "Gain"
+  - "Tilt"
+  - "Vol"
+  - "Freq"
+  - "CV Q"
+  - "CV F"
+description: "Parametric EQ pedal with voltage control inputs. Features adjustable Q, frequency, gain, and tilt controls with CV inputs for dynamic frequency and Q modulation."
+url: "https://www.fairfieldcircuitry.com/products/long-life"

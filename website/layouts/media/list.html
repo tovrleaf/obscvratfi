@@ -19,7 +19,7 @@
     TYPOGRAPHY:
     - Event names: h3 tags, normal weight
     - Dates: Fira Mono (var(--font-display)), 0.9rem
-    - Photo credits: Camera icon (fa-camera) + photographer name
+    - Photo credits: Camera icon + photographer name
     - Dotted separator: Only between date and photographer (photos only)
     
     OTHERS SECTION:
@@ -91,9 +91,9 @@
                                     <p class="media-date">{{ $date }}</p>
                                     <p class="media-author">
                                     {{ if $authorUrl }}
-                                        <i class="fa-solid fa-camera"></i> <a href="{{ $authorUrl }}" target="_blank">{{ $author }}</a>
+                                        <img src="/icons/camera.svg" alt="" width="14" height="14" class="camera-icon"> <a href="{{ $authorUrl }}" target="_blank">{{ $author }}</a>
                                     {{ else }}
-                                        <i class="fa-solid fa-camera"></i> {{ $author }}
+                                        <img src="/icons/camera.svg" alt="" width="14" height="14" class="camera-icon"> {{ $author }}
                                     {{ end }}
                                 </p>
                             </div>
@@ -118,9 +118,9 @@
                         {{ end }}
                         <p class="media-author">
                             {{ if .Params.author_url }}
-                                <i class="fa-solid fa-camera"></i> <a href="{{ .Params.author_url }}" target="_blank">{{ .Params.author }}</a>
+                                <img src="/icons/camera.svg" alt="" width="14" height="14" class="camera-icon"> <a href="{{ .Params.author_url }}" target="_blank">{{ .Params.author }}</a>
                             {{ else }}
-                                <i class="fa-solid fa-camera"></i> {{ .Params.author }}
+                                <img src="/icons/camera.svg" alt="" width="14" height="14" class="camera-icon"> {{ .Params.author }}
                             {{ end }}
                         </p>
                     </div>
@@ -401,6 +401,17 @@
     transition: transform 0.3s ease, filter 0.3s ease;
 }
 
+.media-item a::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.5);
+    pointer-events: none;
+}
+
 .media-item:hover img {
     transform: scale(1.05);
     filter: blur(2px) brightness(0.5);
@@ -508,6 +519,17 @@
     color: var(--primary-color);
     text-shadow: 0 0 8px rgba(0, 0, 0, 0.9), 0 0 4px rgba(0, 0, 0, 0.9);
     white-space: nowrap;
+}
+
+.camera-icon {
+    display: inline-block !important;
+    vertical-align: middle;
+    margin-right: 0.25rem;
+    width: 14px !important;
+    height: 14px !important;
+    max-width: 14px !important;
+    max-height: 14px !important;
+    filter: blur(0) !important;
 }
 
 .media-author a {

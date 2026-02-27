@@ -1,0 +1,13 @@
+name: SV-1 Supervibe
+manufacturer: Marshall
+category: Pedal
+types:
+  - Vibrato
+  - Chorus
+technology: Analog
+controls:
+  - Speed
+  - Depth
+  - Mode
+description: Vibrato/chorus pedal
+url: ''

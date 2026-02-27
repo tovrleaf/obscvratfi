@@ -1,0 +1,14 @@
+name: IBZ3 24W
+manufacturer: Ibanez
+category: Amplifier
+types:
+  - Combo Amp
+  - Practice Amp
+technology: Analog
+controls:
+  - Volume
+  - Treble
+  - Middle
+  - Bass
+description: 24-watt solid-state combo amplifier
+url: ''

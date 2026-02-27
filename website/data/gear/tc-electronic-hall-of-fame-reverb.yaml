@@ -1,0 +1,12 @@
+name: "Hall Of Fame Reverb"
+manufacturer: "TC Electronic"
+category: Pedal
+types: ["Reverb", "Stereo"]
+technology: Digital
+controls:
+  - "Decay"
+  - "Tone"
+  - "FX Level"
+  - "Reverb Type"
+description: "Versatile digital reverb pedal with 10 reverb types including spring, hall, and plate. Features TonePrint technology for custom reverb settings via smartphone app."
+url: "https://www.tcelectronic.com/product.html?modelCode=P0CM5"

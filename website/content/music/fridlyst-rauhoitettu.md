@@ -7,8 +7,8 @@ discogs_url: "https://www.discogs.com/release/33857796-Heppakirjat-BRYSKT-Obscvr
 release_type: "album"
 cover: "/images/music/fridlyst-rauhoitettu-cover.jpg"
 gallery:
-  - "/images/music/fridlyst-rauhoitettu-inside-1.jpeg"
-  - "/images/music/fridlyst-rauhoitettu-inside-2.jpeg"
+  - /images/music/fridlyst-rauhoitettu-inside-1.jpeg
+  - /images/music/fridlyst-rauhoitettu-inside-2.jpeg
 label: "ÄLÄ LÖI TAPES"
 label_url: "https://alaloi.bandcamp.com/"
 catalog_number: "ÄLÄ009"

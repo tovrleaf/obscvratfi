@@ -1,0 +1,10 @@
+name: "Rita's Cracked Pointe Shoe"
+manufacturer: "TH/FX Noisedevices"
+category: Pedal
+technology: Analog
+types:
+  - "Noise Generator"
+url: "https://thfxnoisedevices.com/ritas-cracked-pointe-shoe-2/"
+description: "Minimal noise generator and distortion pedal with single intensity control"
+controls:
+  - "Intensity"

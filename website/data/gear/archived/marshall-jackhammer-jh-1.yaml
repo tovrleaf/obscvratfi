@@ -1,0 +1,14 @@
+name: Jackhammer JH-1
+manufacturer: Marshall
+category: Pedal
+types:
+  - Overdrive
+  - Distortion
+technology: Analog
+controls:
+  - Volume
+  - Tone
+  - Gain
+  - Contour
+description: Overdrive/distortion pedal with contour control
+url: ''

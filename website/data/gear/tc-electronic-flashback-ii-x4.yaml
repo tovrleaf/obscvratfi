@@ -1,0 +1,14 @@
+name: "Flashback II X4"
+manufacturer: "TC Electronic"
+category: Pedal
+technology: Digital
+types:
+  - "Delay"
+url: "https://www.tcelectronic.com/de/product.html?modelCode=0709-AIP"
+description: "Multi-mode digital delay pedal with MASH footswitch technology and four presets"
+controls:
+  - "Delay Type"
+  - "Subdiv"
+  - "Delay"
+  - "Feedback"
+  - "Level"

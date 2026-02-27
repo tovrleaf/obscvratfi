@@ -1,0 +1,25 @@
+name: "Data Corrupter"
+manufacturer: "EarthQuaker Devices"
+category: Pedal
+types:
+  - "Harmonizer"
+  - "PLL"
+technology: Analog
+controls:
+  Voice Mixer:
+    - "Square"
+    - "Subharmonic"
+    - "Oscillator"
+  Master Oscillator (PLL):
+    - "Rotary Switch (8-position)"
+    - "Root Switch (3-position)"
+  Frequency Modulator:
+    - "Glide Switch (2-position)"
+    - "Rate"
+  Subharmonic:
+    - "Rotary Switch (8-position)"
+    - "Root Switch (2-position)"
+  Output:
+    - "Level"
+description: "Monophonic harmonizing PLL (Phase-Locked Loop) pedal that creates wild, glitchy synthesizer-like tones. Features voice mixer with square wave fuzz, subharmonics, and modulated master oscillator for chaotic, robotic sounds."
+url: "https://www.earthquakerdevices.com/data-corrupter"

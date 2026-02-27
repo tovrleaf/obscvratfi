@@ -1,0 +1,14 @@
+name: "Crush 10"
+manufacturer: "Orange"
+category: Amplifier
+types: ["Combo Amp", "Practice Amp"]
+technology: Analog
+controls:
+  - "Gain 1"
+  - "Gain 2"
+  - "Volume"
+  - "High"
+  - "Middle"
+  - "Low"
+description: "10-watt solid-state practice combo amplifier with 6\" speaker. Features dual gain channels, 3-band EQ, and classic Orange tone in a compact, portable package perfect for home practice."
+url: "https://orangeamps.com/"

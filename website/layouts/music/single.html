@@ -59,7 +59,21 @@
         <div class="album-column-b">
             <div class="album-header">
                 <h1 class="album-title">{{ .Title }}</h1>
-                <p class="album-artist">by {{ delimit .Params.artists ", " }}</p>
+                <div class="artist-with-icons">
+                    <p class="album-artist">by {{ delimit .Params.artists ", " }}</p>
+                    <div class="header-icons">
+                        {{ if .Params.bandcamp_url }}
+                        <a href="{{ .Params.bandcamp_url }}" target="_blank" class="header-icon-link">
+                            <img src="/icons/bandcamp.svg" alt="Bandcamp">
+                        </a>
+                        {{ end }}
+                        {{ if .Params.discogs_url }}
+                        <a href="{{ .Params.discogs_url }}" target="_blank" class="header-icon-link">
+                            <img src="/icons/discogs.svg" alt="Discogs">
+                        </a>
+                        {{ end }}
+                    </div>
+                </div>
             </div>
             
             <div class="album-meta">
@@ -214,6 +228,36 @@
 .album-header {
     border-bottom: 1px solid var(--border-color);
     padding-bottom: 1rem;
+}
+
+.artist-with-icons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.header-icons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.header-icon-link {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    opacity: 0.6;
+    transition: opacity 0.3s ease;
+}
+
+.header-icon-link:hover {
+    opacity: 1;
+}
+
+.header-icon-link img {
+    width: 100%;
+    height: 100%;
 }
 
 .album-title {
@@ -448,6 +492,11 @@
     .album-container {
         grid-template-columns: 1fr;
         gap: 0;
+    }
+    
+    .artist-with-icons {
+        flex-direction: column;
+        align-items: flex-start;
     }
     
     /* Mobile order: cover, gallery, title, info, description, songs, bandcamp */

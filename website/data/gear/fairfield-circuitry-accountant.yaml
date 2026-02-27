@@ -1,0 +1,11 @@
+name: "Accountant"
+manufacturer: "Fairfield Circuitry"
+category: Pedal
+types: ["Compressor"]
+technology: Analog
+controls:
+  - "Volume"
+  - "Pad (3-position)"
+  - "Ratio (3-position)"
+description: "All-analog JFET feedback compressor with simple control interface for threshold, compression ratio, and makeup gain. Works with guitars, bass, vocals, synths, and whole mixes."
+url: "https://www.fairfieldcircuitry.com/products/the-accountant"

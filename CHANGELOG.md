@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.0] - 2026-02-27
+
+### Added
+- Vercel-style README header with centered logo and documentation links
+- Social media preview image (Open Graph and Twitter Card meta tags)
+- Mobile tap feedback for better touch interaction (opacity + scale on active)
+- Gallery images to World Rat Conspiracy album page (7 inside images)
+- Gallery images to Fridlyst / Rauhoitettu album page (2 inside images)
+- Custom SVG icons for Instagram, Bandcamp, YouTube, and Camera
+- Vignette effect on video thumbnails in media page
+
+### Changed
+- Replaced Font Awesome library with custom SVG icons (~70KB saved)
+- Moved Bandcamp/Discogs icons to album header next to artist name
+- Icons align right on desktop, wrap below if needed, stack on mobile
+- All footer and media icons now use consistent #b0b0b0 color
+
+### Fixed
+- Camera icon now sharp and visible on media page hover states
+
 ## [1.4.0] - 2026-02-10
 
 ### Added

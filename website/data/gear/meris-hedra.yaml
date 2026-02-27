@@ -1,0 +1,15 @@
+name: Hedra
+manufacturer: Meris
+category: Pedal
+technology: Hybrid
+types:
+  - Pitch Shifter
+url: https://www.meris.us/product/hedra-pedal/
+description: Three-voice modulation pedal with chorus, flanger, phaser, and vibrato modes
+controls:
+  - Key
+  - Micro Tune
+  - Mix
+  - Pitch 1
+  - Pitch 2
+  - Pitch 3

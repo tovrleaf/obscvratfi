@@ -1,0 +1,11 @@
+name: "4060"
+manufacturer: "Olegtron"
+category: Synth
+types: ["Drone", "Noise", "Oscillator"]
+technology: Analog
+controls:
+  - "Starve"
+  - "Frequency"
+  - "Patchboard"
+description: "Compact analog drone synthesizer based on the 4060 CMOS chip. Features starve control for voltage manipulation, frequency adjustment, and patchboard for creating hypnotic drone sounds and rhythmic patterns."
+url: "https://olegtron.com/"

@@ -1,0 +1,11 @@
+name: Holy Grail
+manufacturer: Electro-Harmonix
+category: Pedal
+types:
+  - Reverb
+technology: Digital
+controls:
+  - Reverb
+  - Mode
+description: Digital reverb pedal with spring, hall, and plate modes
+url: https://www.ehx.com/products/holy-grail/

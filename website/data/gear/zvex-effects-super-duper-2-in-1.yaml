@@ -1,0 +1,16 @@
+name: "Super Duper 2-in-1"
+manufacturer: "ZVEX Effects"
+category: Pedal
+types: ["Boost", "Overdrive"]
+technology: Analog
+controls:
+  Channel 1:
+    - "Volume"
+    - "Crackle"
+    - "Tone"
+  Channel 2:
+    - "Volume"
+    - "Crackle"
+    - "Tone"
+description: "Dual channel boost/overdrive pedal featuring two independent Super Hard On circuits. Each channel provides clean boost to gritty overdrive with unique crackle control for added texture and harmonics."
+url: "https://www.zvex.com/guitar-pedals/super-duper-2-in-1"
