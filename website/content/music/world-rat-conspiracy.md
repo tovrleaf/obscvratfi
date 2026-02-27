@@ -7,6 +7,14 @@ label_url: "https://deepthroatrecords.bandcamp.com/"
 catalog_number: "DTR150"
 country: "Italy"
 cover: "/images/music/world-rat-conspiracy-cover.jpg"
+gallery:
+  - /images/music/world-rat-conspiracy-inside-1.jpg
+  - /images/music/world-rat-conspiracy-inside-2.jpg
+  - /images/music/world-rat-conspiracy-inside-3.jpg
+  - /images/music/world-rat-conspiracy-inside-4.jpg
+  - /images/music/world-rat-conspiracy-inside-5.jpg
+  - /images/music/world-rat-conspiracy-inside-6.jpg
+  - /images/music/world-rat-conspiracy-inside-7.jpg
 bandcamp_album: "2673369501"
 bandcamp_url: "https://obscvrat.bandcamp.com/album/world-rat-conspiracy"
 discogs_url: "https://www.discogs.com/release/35199499-Obscvrat-Rotat-Whiterat-World-Rat-Conspiracy"
