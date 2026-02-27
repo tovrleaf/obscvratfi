@@ -1,0 +1,15 @@
+name: Unpleasant Surprise
+manufacturer: Fairfield Circuitry
+category: Pedal
+technology: Analog
+types:
+  - Fuzz
+  - Gate
+controls:
+  - Volume
+  - Onset
+  - Treble Switch (2-position)
+  - Gain Switch (2-position)
+  - Crush Switch (2-position)
+url: https://fairfieldcircuitry.com/products/the-unpleasant-surprise
+description: Fuzz pedal with gate functionality and switchable tone controls
