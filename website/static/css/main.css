@@ -899,7 +899,7 @@
         footer {
             background: transparent;
             padding: 2rem;
-            margin-top: 4rem;
+            margin-top: 0;
             text-align: center;
             color: var(--secondary-color);
             border-top: none;
@@ -917,6 +917,14 @@
             font-size: 0.8rem;
         }
         
+        .footer-divider {
+            width: 200px;
+            border: none;
+            border-top: 1px solid rgba(229, 229, 229, 0.2);
+            margin: 1rem auto;
+            opacity: 0.5;
+        }
+        
         .footer-license-link,
         .footer-version-link {
             color: var(--secondary-color);
@@ -931,6 +939,19 @@
         .footer-license-link:hover,
         .footer-version-link:hover {
             border-bottom-color: var(--primary-color);
+        }
+        
+        .footer-logo {
+            max-width: 350px;
+            height: auto;
+            margin: 0 auto 0.75rem;
+            display: block;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+        
+        .footer-logo:hover {
+            opacity: 1;
         }
         
         .footer-social {
