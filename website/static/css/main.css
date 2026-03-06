@@ -52,18 +52,18 @@
             bottom: 0;
             left: 0;
             right: 0;
-            height: 1200px;
+            height: 1800px;
             background: 
-                radial-gradient(ellipse 1000px 800px at 15% 100%, rgba(70, 70, 70, 0.6) 0%, transparent 60%),
-                radial-gradient(ellipse 800px 700px at 85% 100%, rgba(60, 60, 60, 0.7) 0%, transparent 55%),
-                radial-gradient(ellipse 900px 750px at 45% 100%, rgba(75, 75, 75, 0.8) 0%, transparent 65%),
-                radial-gradient(ellipse 700px 600px at 60% 100%, rgba(65, 65, 65, 0.6) 0%, transparent 50%),
-                radial-gradient(ellipse 600px 500px at 30% 100%, rgba(55, 55, 55, 0.5) 0%, transparent 50%),
-                radial-gradient(ellipse 750px 650px at 70% 100%, rgba(58, 58, 62, 0.5) 0%, transparent 55%),
-                radial-gradient(ellipse 650px 550px at 25% 100%, rgba(62, 58, 58, 0.4) 0%, transparent 50%),
-                radial-gradient(ellipse 550px 450px at 50% 100%, rgba(68, 68, 68, 0.5) 0%, transparent 48%),
-                radial-gradient(ellipse 700px 600px at 38% 100%, rgba(52, 52, 52, 0.4) 0%, transparent 52%),
-                radial-gradient(ellipse 620px 520px at 78% 100%, rgba(64, 64, 66, 0.5) 0%, transparent 50%);
+                radial-gradient(ellipse 1000px 800px at 15% 100%, rgba(0, 0, 0, 0.6) 0%, transparent 60%),
+                radial-gradient(ellipse 800px 700px at 85% 100%, rgba(0, 0, 0, 0.7) 0%, transparent 55%),
+                radial-gradient(ellipse 900px 750px at 45% 100%, rgba(0, 0, 0, 0.8) 0%, transparent 65%),
+                radial-gradient(ellipse 700px 600px at 60% 100%, rgba(0, 0, 0, 0.6) 0%, transparent 50%),
+                radial-gradient(ellipse 600px 500px at 30% 100%, rgba(0, 0, 0, 0.5) 0%, transparent 50%),
+                radial-gradient(ellipse 750px 650px at 70% 100%, rgba(0, 0, 0, 0.5) 0%, transparent 55%),
+                radial-gradient(ellipse 650px 550px at 25% 100%, rgba(0, 0, 0, 0.4) 0%, transparent 50%),
+                radial-gradient(ellipse 550px 450px at 50% 100%, rgba(0, 0, 0, 0.5) 0%, transparent 48%),
+                radial-gradient(ellipse 700px 600px at 38% 100%, rgba(0, 0, 0, 0.4) 0%, transparent 52%),
+                radial-gradient(ellipse 620px 520px at 78% 100%, rgba(0, 0, 0, 0.5) 0%, transparent 50%);
             z-index: -1;
             animation: smokeRise 20s ease-in-out infinite;
             filter: blur(40px) contrast(1.5);
@@ -905,16 +905,52 @@
             border-top: none;
         }
         
+        @media (min-width: 769px) {
+            footer {
+                padding-top: 20rem;
+            }
+        }
+        
+        footer::before {
+            content: '';
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: url('/images/footer-background.jpg') center bottom / 100% auto no-repeat;
+            z-index: -2;
+            opacity: var(--footer-bg-opacity, 0);
+            transition: opacity 0.3s ease;
+        }
+        
         .footer-content {
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        @media (min-width: 769px) {
+            .footer-content {
+                transform: translateY(-300px);
+            }
         }
         
         .footer-copyright {
             margin: 0;
             font-size: 0.8rem;
+            line-height: 1.2;
+        }
+        
+        .footer-text-bg {
+            background: rgb(0, 0, 0);
+            padding: 0.25rem 0.5rem;
+            border-radius: 2px;
+            display: inline-block;
+            margin-bottom: 0.5rem;
         }
         
         .footer-divider {
@@ -977,6 +1013,7 @@
             height: 40px;
             border-radius: 50%;
             border: 0.5px solid rgba(229, 229, 229, 0.3);
+            background: rgb(0, 0, 0);
             color: var(--secondary-color);
             text-decoration: none;
             transition: all 0.3s ease;

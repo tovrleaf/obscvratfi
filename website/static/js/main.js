@@ -32,3 +32,21 @@
             // Toggle states every 6 seconds
             setInterval(toggleTextState, 6000);
         }
+
+        // Footer background fade on scroll
+        const footer = document.querySelector('footer');
+        if (footer) {
+            window.addEventListener('scroll', () => {
+                const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+                const scrolled = window.scrollY;
+                const scrollPercent = scrolled / scrollHeight;
+                
+                if (scrollPercent >= 0.67) {
+                    const fadeProgress = (scrollPercent - 0.67) / 0.33;
+                    const opacity = Math.min(fadeProgress * 0.8, 0.8);
+                    footer.style.setProperty('--footer-bg-opacity', opacity);
+                } else {
+                    footer.style.setProperty('--footer-bg-opacity', 0);
+                }
+            });
+        }
