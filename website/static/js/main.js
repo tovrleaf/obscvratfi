@@ -41,12 +41,15 @@
                 const scrolled = window.scrollY;
                 const scrollPercent = scrolled / scrollHeight;
                 
-                if (scrollPercent >= 0.67) {
-                    const fadeProgress = (scrollPercent - 0.67) / 0.33;
-                    const opacity = Math.min(fadeProgress * 0.8, 0.8);
-                    footer.style.setProperty('--footer-bg-opacity', opacity);
+                if (scrollPercent >= 0.33) {
+                    const fadeProgress = (scrollPercent - 0.33) / 0.67;
+                    const bgOpacity = Math.min(fadeProgress * 0.8, 0.8);
+                    const logoOpacity = Math.min(fadeProgress, 1);
+                    footer.style.setProperty('--footer-bg-opacity', bgOpacity);
+                    footer.style.setProperty('--footer-logo-opacity', logoOpacity);
                 } else {
                     footer.style.setProperty('--footer-bg-opacity', 0);
+                    footer.style.setProperty('--footer-logo-opacity', 0);
                 }
             });
         }
