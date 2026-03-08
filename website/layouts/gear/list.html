@@ -47,9 +47,6 @@
                 <input type="checkbox" id="show-sold" />
                 Sold
             </label>
-        </div>
-        
-        <div class="input-wrapper">
             <label>
                 <input type="checkbox" id="show-want" />
                 Want
@@ -429,11 +426,17 @@ function toggleGear(header) {
 // Filter gear
 function filterGear() {
     const search = document.getElementById('gear-search').value.toLowerCase();
+    const showSold = document.getElementById('show-sold').checked;
+    const showWant = document.getElementById('show-want').checked;
     const items = document.querySelectorAll('.gear-item');
     let visibleCount = 0;
     
     items.forEach(item => {
         let show = true;
+        
+        // Hide sold/want unless checkbox checked
+        if (item.dataset.sold === 'true' && !showSold) show = false;
+        if (item.dataset.want === 'true' && !showWant) show = false;
         
         // Search filter
         if (search && !item.dataset.search.toLowerCase().includes(search)) {

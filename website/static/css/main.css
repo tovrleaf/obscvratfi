@@ -1285,7 +1285,7 @@
     color: var(--primary-color);
 }
 
-.gear-controls input {
+.gear-controls input:not([type="checkbox"]) {
     flex: 1;
     min-width: 200px;
     width: 100%;
@@ -1312,7 +1312,38 @@
     pointer-events: none;
 }
 
-.input-wrapper:has(input) {
+.input-wrapper:has(input[type="checkbox"]) {
+    border: none;
+    flex: 0 0 auto;
+    min-width: auto;
+    align-self: flex-start;
+}
+
+.input-wrapper:has(input[type="checkbox"])::before {
+    display: none;
+}
+
+.input-wrapper:has(input[type="checkbox"]) label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin-right: 1rem;
+}
+
+.gear-controls input[type="checkbox"] {
+    appearance: none;
+    width: 1rem;
+    height: 1rem;
+    background: rgba(229, 229, 229, 0.05);
+    border: 1px solid rgba(229, 229, 229, 0.3);
+    cursor: pointer;
+}
+
+.gear-controls input[type="checkbox"]:checked {
+    background: rgba(229, 229, 229, 0.3);
+}
+
+.input-wrapper:has(input:not([type="checkbox"])) {
     flex: 1;
     min-width: 200px;
 }
@@ -1349,10 +1380,6 @@
     pointer-events: none;
 }
 
-.gear-item:hover {
-    background: rgba(229, 229, 229, 0.05);
-    border-color: rgba(229, 229, 229, 0.2);
-}
 
 .gear-header {
     padding: 1rem;
@@ -1497,12 +1524,6 @@
     color: #ff6666;
 }
 
-.gear-item.sold .gear-description,
-.gear-item.sold .gear-meta,
-.gear-item.sold .gear-settings {
-    color: #cc5555;
-}
-
 /* Want gear styling */
 .gear-item.want {
     opacity: 0.7;
@@ -1514,12 +1535,6 @@
     color: #66ff66;
 }
 
-.gear-item.want .gear-description,
-.gear-item.want .gear-meta,
-.gear-item.want .gear-settings {
-    color: #55cc55;
-}
-
 @media (max-width: 768px) {
     .gear-list {
         column-count: 1;
@@ -1529,8 +1544,15 @@
         flex-direction: column;
     }
     
-    .gear-controls input,
+    .gear-controls input:not([type="checkbox"]),
     .gear-controls select {
+        width: 100%;
+    }
+    
+    .input-wrapper:has(input[type="checkbox"]) {
+        display: inline-block;
+        margin-right: 1rem;
+        text-align: center;
         width: 100%;
     }
     
