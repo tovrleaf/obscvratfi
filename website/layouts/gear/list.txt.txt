@@ -1,0 +1,8 @@
+{{- range $file := (readDir "data/gear") -}}
+{{- if strings.HasSuffix $file.Name ".yaml" -}}
+{{- $item := index $.Site.Data.gear (strings.TrimSuffix ".yaml" $file.Name) -}}
+{{- if $item -}}
+{{ $item.manufacturer }} - {{ $item.name }} ({{ $item.category }}, {{ delimit $item.types ", " }}, {{ $item.technology }})
+{{ end -}}
+{{- end -}}
+{{- end -}}

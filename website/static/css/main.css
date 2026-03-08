@@ -52,18 +52,18 @@
             bottom: 0;
             left: 0;
             right: 0;
-            height: 1200px;
+            height: 1800px;
             background: 
-                radial-gradient(ellipse 1000px 800px at 15% 100%, rgba(70, 70, 70, 0.6) 0%, transparent 60%),
-                radial-gradient(ellipse 800px 700px at 85% 100%, rgba(60, 60, 60, 0.7) 0%, transparent 55%),
-                radial-gradient(ellipse 900px 750px at 45% 100%, rgba(75, 75, 75, 0.8) 0%, transparent 65%),
-                radial-gradient(ellipse 700px 600px at 60% 100%, rgba(65, 65, 65, 0.6) 0%, transparent 50%),
-                radial-gradient(ellipse 600px 500px at 30% 100%, rgba(55, 55, 55, 0.5) 0%, transparent 50%),
-                radial-gradient(ellipse 750px 650px at 70% 100%, rgba(58, 58, 62, 0.5) 0%, transparent 55%),
-                radial-gradient(ellipse 650px 550px at 25% 100%, rgba(62, 58, 58, 0.4) 0%, transparent 50%),
-                radial-gradient(ellipse 550px 450px at 50% 100%, rgba(68, 68, 68, 0.5) 0%, transparent 48%),
-                radial-gradient(ellipse 700px 600px at 38% 100%, rgba(52, 52, 52, 0.4) 0%, transparent 52%),
-                radial-gradient(ellipse 620px 520px at 78% 100%, rgba(64, 64, 66, 0.5) 0%, transparent 50%);
+                radial-gradient(ellipse 1000px 800px at 15% 100%, rgba(0, 0, 0, 0.6) 0%, transparent 60%),
+                radial-gradient(ellipse 800px 700px at 85% 100%, rgba(0, 0, 0, 0.7) 0%, transparent 55%),
+                radial-gradient(ellipse 900px 750px at 45% 100%, rgba(0, 0, 0, 0.8) 0%, transparent 65%),
+                radial-gradient(ellipse 700px 600px at 60% 100%, rgba(0, 0, 0, 0.6) 0%, transparent 50%),
+                radial-gradient(ellipse 600px 500px at 30% 100%, rgba(0, 0, 0, 0.5) 0%, transparent 50%),
+                radial-gradient(ellipse 750px 650px at 70% 100%, rgba(0, 0, 0, 0.5) 0%, transparent 55%),
+                radial-gradient(ellipse 650px 550px at 25% 100%, rgba(0, 0, 0, 0.4) 0%, transparent 50%),
+                radial-gradient(ellipse 550px 450px at 50% 100%, rgba(0, 0, 0, 0.5) 0%, transparent 48%),
+                radial-gradient(ellipse 700px 600px at 38% 100%, rgba(0, 0, 0, 0.4) 0%, transparent 52%),
+                radial-gradient(ellipse 620px 520px at 78% 100%, rgba(0, 0, 0, 0.5) 0%, transparent 50%);
             z-index: -1;
             animation: smokeRise 20s ease-in-out infinite;
             filter: blur(40px) contrast(1.5);
@@ -899,10 +899,29 @@
         footer {
             background: transparent;
             padding: 2rem;
-            margin-top: 4rem;
+            margin-top: 0;
             text-align: center;
             color: var(--secondary-color);
             border-top: none;
+        }
+        
+        @media (min-width: 769px) {
+            footer {
+                padding-top: 20rem;
+            }
+        }
+        
+        footer::before {
+            content: '';
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: url('/images/footer-background.jpg') center bottom / 100% auto no-repeat;
+            z-index: -2;
+            opacity: var(--footer-bg-opacity, 0);
+            transition: opacity 0.3s ease;
         }
         
         .footer-content {
@@ -910,11 +929,36 @@
             flex-direction: column;
             align-items: center;
             gap: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        @media (min-width: 769px) {
+            .footer-content {
+                transform: translateY(-300px);
+            }
         }
         
         .footer-copyright {
             margin: 0;
             font-size: 0.8rem;
+            line-height: 1.2;
+        }
+        
+        .footer-text-bg {
+            background: rgb(0, 0, 0);
+            padding: 0.25rem 0.5rem;
+            border-radius: 2px;
+            display: inline-block;
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer-divider {
+            width: 200px;
+            border: none;
+            border-top: 1px solid rgba(229, 229, 229, 0.2);
+            margin: 1rem auto;
+            opacity: 0.5;
         }
         
         .footer-license-link,
@@ -931,6 +975,15 @@
         .footer-license-link:hover,
         .footer-version-link:hover {
             border-bottom-color: var(--primary-color);
+        }
+        
+        .footer-logo {
+            max-width: 350px;
+            height: auto;
+            margin: 0 auto 0.75rem;
+            display: block;
+            opacity: var(--footer-logo-opacity, 0);
+            transition: opacity 0.3s ease;
         }
         
         .footer-social {
@@ -956,6 +1009,7 @@
             height: 40px;
             border-radius: 50%;
             border: 0.5px solid rgba(229, 229, 229, 0.3);
+            background: rgb(0, 0, 0);
             color: var(--secondary-color);
             text-decoration: none;
             transition: all 0.3s ease;
@@ -1231,7 +1285,7 @@
     color: var(--primary-color);
 }
 
-.gear-controls input {
+.gear-controls input:not([type="checkbox"]) {
     flex: 1;
     min-width: 200px;
     width: 100%;
@@ -1258,7 +1312,38 @@
     pointer-events: none;
 }
 
-.input-wrapper:has(input) {
+.input-wrapper:has(input[type="checkbox"]) {
+    border: none;
+    flex: 0 0 auto;
+    min-width: auto;
+    align-self: flex-start;
+}
+
+.input-wrapper:has(input[type="checkbox"])::before {
+    display: none;
+}
+
+.input-wrapper:has(input[type="checkbox"]) label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin-right: 1rem;
+}
+
+.gear-controls input[type="checkbox"] {
+    appearance: none;
+    width: 1rem;
+    height: 1rem;
+    background: rgba(229, 229, 229, 0.05);
+    border: 1px solid rgba(229, 229, 229, 0.3);
+    cursor: pointer;
+}
+
+.gear-controls input[type="checkbox"]:checked {
+    background: rgba(229, 229, 229, 0.3);
+}
+
+.input-wrapper:has(input:not([type="checkbox"])) {
     flex: 1;
     min-width: 200px;
 }
@@ -1277,7 +1362,7 @@
 .gear-item {
     break-inside: avoid;
     margin-bottom: 0.5rem;
-    background: rgba(229, 229, 229, 0.03);
+    background: #000;
     border: 1px solid rgba(229, 229, 229, 0.1);
     transition: all 0.2s ease;
     position: relative;
@@ -1295,10 +1380,6 @@
     pointer-events: none;
 }
 
-.gear-item:hover {
-    background: rgba(229, 229, 229, 0.05);
-    border-color: rgba(229, 229, 229, 0.2);
-}
 
 .gear-header {
     padding: 1rem;
@@ -1432,20 +1513,56 @@
     color: rgba(229, 229, 229, 0.5);
 }
 
-/* Archived gear styling */
-.gear-item.archived {
-    opacity: 0.5;
+.gear-stats {
+    margin-top: 2rem;
+    padding: 1rem;
+    font-family: 'Fira Mono', monospace;
+    font-size: 0.75rem;
+    color: rgba(229, 229, 229, 0.35);
+    line-height: 1.8;
+    text-align: center;
 }
 
-.gear-item.archived .gear-title {
+.gear-stats div {
+    background: #000;
+    display: inline-block;
+    padding: 0.15rem 0.5rem;
+    margin-bottom: 0.25rem;
+}
+
+.gear-stats div::after {
+    content: none;
+}
+
+.gear-stats a {
+    color: rgba(229, 229, 229, 0.35);
+    text-decoration: none;
+}
+
+.gear-stats a:hover {
+    color: rgba(229, 229, 229, 0.6);
+}
+
+/* Sold gear styling */
+.gear-item.sold {
+    opacity: 0.7;
+    border-left: 3px solid #ff4444;
+}
+
+.gear-item.sold .gear-title {
     font-style: italic;
-    color: #888;
+    color: #ff6666;
 }
 
-.gear-item.archived .gear-description,
-.gear-item.archived .gear-meta,
-.gear-item.archived .gear-settings {
-    color: #888;
+/* Want gear styling */
+.gear-item.want {
+    opacity: 0.7;
+    border-left: 3px solid #44ff44;
+}
+
+.gear-item.want .gear-title {
+    font-style: italic;
+    color: #66ff66;
 }
 
 @media (max-width: 768px) {
@@ -1457,8 +1574,15 @@
         flex-direction: column;
     }
     
-    .gear-controls input,
+    .gear-controls input:not([type="checkbox"]),
     .gear-controls select {
+        width: 100%;
+    }
+    
+    .input-wrapper:has(input[type="checkbox"]) {
+        display: inline-block;
+        margin-right: 1rem;
+        text-align: center;
         width: 100%;
     }
     

@@ -1,10 +1,12 @@
 <footer>
     <div class="footer-content">
+        <img src="/images/obscvrat-logo-footer.png" alt="{{ .Site.Title }}" class="footer-logo">
         <ul class="footer-social">
             {{ if .Site.Params.instagram }}<li><a href="{{ .Site.Params.instagram }}" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><img src="/icons/instagram.svg" alt="Instagram" width="20" height="20"></a></li>{{ end }}
             {{ if .Site.Params.bandcamp }}<li><a href="{{ .Site.Params.bandcamp }}" target="_blank" rel="noopener noreferrer" aria-label="Bandcamp"><img src="/icons/bandcamp.svg" alt="Bandcamp" width="20" height="20"></a></li>{{ end }}
             {{ if .Site.Params.youtube }}<li><a href="{{ .Site.Params.youtube }}" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><img src="/icons/youtube.svg" alt="YouTube" width="20" height="20"></a></li>{{ end }}
         </ul>
-        <p class="footer-copyright">&copy; {{ now.Year }} {{ .Site.Title }}. All rights reserved.<br><a href="/license/" class="footer-license-link">License: MIT &amp; CC BY-NC-SA 4.0</a><br><a href="https://github.com/tovrleaf/obscvratfi/releases/tag/v{{ partial "version.html" . }}" target="_blank" rel="noopener noreferrer" class="footer-version-link">Site v{{ partial "version.html" . }}</a></p>
+        <hr class="footer-divider">
+        <p class="footer-copyright"><span class="footer-text-bg">&copy; {{ now.Year }} {{ .Site.Title }}. All rights reserved.</span><br><span class="footer-text-bg"><a href="/license/" class="footer-license-link">License: MIT &amp; CC BY-NC-SA 4.0</a></span><br><span class="footer-text-bg"><a href="https://github.com/tovrleaf/obscvratfi/releases/tag/v{{ partial "version.html" . }}" target="_blank" rel="noopener noreferrer" class="footer-version-link">Site v{{ partial "version.html" . }}</a></span></p>
     </div>
 </footer>

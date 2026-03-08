@@ -5,6 +5,36 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.0] - 2026-03-08
+
+### Added
+- Footer logo with divider, background image, and scroll-based fade effect
+- Gradient fade effect on footer logo
+- Gear page: sold/want filtering with checkbox controls
+- Gear page: want list for wishlist gear (DOD FX86 Death Metal)
+- Gear page: dynamic stats footer (counts, categories, tech split, top manufacturers)
+- Gear page: JSON output (/gear/index.json) for API/AI consumption
+- Gear page: plain text output (/gear/index.txt) for quick viewing
+- TH/FX Noisedevices Vortex to gear inventory
+- Paska Alttari to record labels (Circuits group)
+- Puppeteer MCP server configuration
+- Communication style guidelines to AGENTS.md
+
+### Changed
+- Renamed archived gear to sold with red-themed styling
+- Added green-themed styling for want gear
+- Gear items now have black background
+- Removed hover effect from gear items
+- Removed ?archived URL parameter functionality
+- Moved Afvikling Kassetter from Circuits to Vectors
+- About page: black background on individual links and labels
+- Sold/want color styling limited to pedal name only
+
+### Fixed
+- Sold/want items now properly hide when checkboxes unchecked
+- Checkbox styling matches dark theme
+- Checkbox layout on mobile (no longer takes full width)
+
 ## [1.5.0] - 2026-02-27
 
 ### Added

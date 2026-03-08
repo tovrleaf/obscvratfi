@@ -1,0 +1,15 @@
+name: Vortex
+manufacturer: TH/FX Noisedevices
+category: Pedal
+technology: Analog
+types:
+  - Noise Generator
+  - Distortion
+controls:
+  - Blend
+  - Tone
+  - Distortion
+  - Shape
+  - Volume
+url: https://thfxnoisedevices.com/devices/vortex/
+description: Wall noise device that blends white noise and Geiger Counter sounds through tone and distortion sections with continuous shaping

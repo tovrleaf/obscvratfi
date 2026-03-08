@@ -1,0 +1,15 @@
+name: FX86 Death Metal
+manufacturer: DOD
+category: Pedal
+technology: Analog
+types:
+  - Distortion
+  - Metal
+controls:
+  - Level
+  - Low
+  - Mid
+  - High
+  - Distortion
+url: https://www.digitech.com/
+description: Extreme high-gain distortion pedal designed for heavy metal with active 3-band EQ for aggressive tone shaping.

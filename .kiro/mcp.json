@@ -7,6 +7,10 @@
       "env": {
         "GEAR_DATA_DIR": "${workspaceFolder}/website/data/gear"
       }
+    },
+    "puppeteer": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-puppeteer"]
     }
   }
 }

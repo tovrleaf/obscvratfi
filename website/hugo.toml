@@ -39,7 +39,7 @@ bandcamp = "https://obscvrat.bandcamp.com/"
 # Output settings
 [outputs]
 home = ["HTML", "JSON", "RSS", "sitemap"]
-section = ["HTML"]
+section = ["HTML", "JSON", "TXT"]
 taxonomy = ["HTML"]
 
 # Output format settings
@@ -58,6 +58,11 @@ isPlainText = false
 [outputFormats.JSON]
 mediatype = "application/json"
 baseName = "index"
+
+[outputFormats.TXT]
+mediatype = "text/plain"
+baseName = "index"
+isPlainText = true
 
 # Build settings
 [build]

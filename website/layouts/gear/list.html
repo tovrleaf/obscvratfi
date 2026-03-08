@@ -43,6 +43,17 @@
         </div>
         
         <div class="input-wrapper">
+            <label>
+                <input type="checkbox" id="show-sold" />
+                Sold
+            </label>
+            <label>
+                <input type="checkbox" id="show-want" />
+                Want
+            </label>
+        </div>
+        
+        <div class="input-wrapper">
             <button id="toggle-all" class="toggle-all-btn">
                 <span class="collapse-icon">▲</span>
                 <span class="expand-icon active">▼</span>
@@ -63,7 +74,8 @@
                      data-manufacturer="{{ $gear.manufacturer }}"
                      data-types="{{ delimit $gear.types "," }}"
                      data-technology="{{ $gear.technology }}"
-                     data-archived="false"
+                     data-sold="false"
+                     data-want="false"
                      data-search="{{ $gear.manufacturer }} {{ $gear.name }} {{ $gear.description }} {{ delimit $gear.types " " }}">
                     
                     <div class="gear-header" onclick="toggleGear(this)">
@@ -114,19 +126,86 @@
             {{ end }}
         {{ end }}
         
-        {{/* Archived gear - only if ?archived parameter present */}}
-        {{ $archivedDir := "data/gear/archived" }}
-        {{ if fileExists $archivedDir }}
-            {{ range $index, $file := (readDir $archivedDir) }}
+        {{/* Sold gear */}}
+        {{ $soldDir := "data/gear/sold" }}
+        {{ if fileExists $soldDir }}
+            {{ range $index, $file := (readDir $soldDir) }}
                 {{ if strings.HasSuffix $file.Name ".yaml" }}
-                    {{ $gear := index $.Site.Data.gear.archived (strings.TrimSuffix ".yaml" $file.Name) }}
+                    {{ $gear := index $.Site.Data.gear.sold (strings.TrimSuffix ".yaml" $file.Name) }}
                     {{ if $gear }}
-                    <div class="gear-item archived" 
+                    <div class="gear-item sold" 
                          data-category="{{ $gear.category }}"
                          data-manufacturer="{{ $gear.manufacturer }}"
                          data-types="{{ delimit $gear.types "," }}"
                          data-technology="{{ $gear.technology }}"
-                         data-archived="true"
+                         data-sold="true"
+                         data-want="false"
+                         data-search="{{ $gear.manufacturer }} {{ $gear.name }} {{ $gear.description }} {{ delimit $gear.types " " }}"
+                         style="display: none;">
+                        
+                        <div class="gear-header" onclick="toggleGear(this)">
+                            <span class="gear-title">{{ $gear.manufacturer }} - {{ $gear.name }}</span>
+                            <span class="gear-expand">▼</span>
+                        </div>
+                        
+                        <div class="gear-details">
+                            <div class="gear-meta">
+                                <span class="gear-category clickable-filter" onclick="event.stopPropagation(); addFilter('categories', '{{ $gear.category }}', '{{ $gear.category }}s')">{{ $gear.category }}</span>
+                                {{ if $gear.types }}
+                                    {{ range $gear.types }}
+                                        <span class="gear-types clickable-filter" onclick="event.stopPropagation(); addFilter('types', '{{ . }}', '{{ . }}')">{{ . }}</span>
+                                    {{ end }}
+                                {{ end }}
+                                <span class="gear-tech clickable-filter" onclick="event.stopPropagation(); addFilter('technology', '{{ $gear.technology }}', '{{ $gear.technology }}')">{{ $gear.technology }}</span>
+                            </div>
+                            
+                            {{ if $gear.description }}
+                            <p class="gear-description">{{ $gear.description }}</p>
+                            {{ end }}
+                            
+                            {{ if $gear.controls }}
+                            <div class="gear-settings">
+                                <strong>Controls:</strong>
+                                {{ if reflect.IsMap $gear.controls }}
+                                    {{/* Nested controls with sections */}}
+                                    {{ range $section, $controls := $gear.controls }}
+                                        <div class="settings-section">
+                                            <em>{{ $section }}:</em> {{ delimit $controls ", " }}
+                                        </div>
+                                    {{ end }}
+                                {{ else }}
+                                    {{/* Flat list of controls */}}
+                                    {{ delimit $gear.controls ", " }}
+                                {{ end }}
+                            </div>
+                            {{ end }}
+                            
+                            <div class="gear-links">
+                                {{ if $gear.url }}
+                                <a href="{{ $gear.url }}" target="_blank" rel="noopener">Product Page</a>
+                                {{ end }}
+                            </div>
+                        </div>
+                    </div>
+                    {{ end }}
+                {{ end }}
+            {{ end }}
+        {{ end }}
+        
+        {{/* Want gear */}}
+        {{ $wantDir := "data/gear/want" }}
+        {{ if fileExists $wantDir }}
+            {{ range $index, $file := (readDir $wantDir) }}
+                {{ if strings.HasSuffix $file.Name ".yaml" }}
+                    {{ $gear := index $.Site.Data.gear.want (strings.TrimSuffix ".yaml" $file.Name) }}
+                    {{ if $gear }}
+                    <div class="gear-item want" 
+                         data-category="{{ $gear.category }}"
+                         data-manufacturer="{{ $gear.manufacturer }}"
+                         data-types="{{ delimit $gear.types "," }}"
+                         data-technology="{{ $gear.technology }}"
+                         data-sold="false"
+                         data-want="true"
                          data-search="{{ $gear.manufacturer }} {{ $gear.name }} {{ $gear.description }} {{ delimit $gear.types " " }}"
                          style="display: none;">
                         
@@ -183,6 +262,8 @@
     <div id="no-results" style="display: none;">
         <p>No gear found matching filters.</p>
     </div>
+    
+    <div id="gear-stats" class="gear-stats"></div>
 </div>
 
 <script>
@@ -196,14 +277,6 @@ const activeFilters = {
 
 // Populate filter dropdowns
 document.addEventListener('DOMContentLoaded', function() {
-    // Show archived items if ?archived parameter present
-    const showArchived = new URLSearchParams(window.location.search).has('archived');
-    if (showArchived) {
-        document.querySelectorAll('[data-archived="true"]').forEach(el => {
-            el.style.display = 'block';
-        });
-    }
-    
     const items = document.querySelectorAll('.gear-item');
     const manufacturers = new Set();
     const types = new Set();
@@ -226,6 +299,27 @@ document.addEventListener('DOMContentLoaded', function() {
         opt.value = type;
         typeList.appendChild(opt);
     });
+    
+    // Show sold checkbox handler
+    document.getElementById('show-sold').addEventListener('change', function() {
+        const soldItems = document.querySelectorAll('[data-sold="true"]');
+        soldItems.forEach(item => {
+            item.style.display = this.checked ? 'block' : 'none';
+        });
+        filterGear();
+    });
+    
+    // Show want checkbox handler
+    document.getElementById('show-want').addEventListener('change', function() {
+        const wantItems = document.querySelectorAll('[data-want="true"]');
+        wantItems.forEach(item => {
+            item.style.display = this.checked ? 'block' : 'none';
+        });
+        filterGear();
+    });
+    
+    // Initial stats
+    updateStats();
     
     // Toggle all gear items
     const toggleBtn = document.getElementById('toggle-all');
@@ -337,11 +431,17 @@ function toggleGear(header) {
 // Filter gear
 function filterGear() {
     const search = document.getElementById('gear-search').value.toLowerCase();
+    const showSold = document.getElementById('show-sold').checked;
+    const showWant = document.getElementById('show-want').checked;
     const items = document.querySelectorAll('.gear-item');
     let visibleCount = 0;
     
     items.forEach(item => {
         let show = true;
+        
+        // Hide sold/want unless checkbox checked
+        if (item.dataset.sold === 'true' && !showSold) show = false;
+        if (item.dataset.want === 'true' && !showWant) show = false;
         
         // Search filter
         if (search && !item.dataset.search.toLowerCase().includes(search)) {
@@ -384,6 +484,38 @@ function filterGear() {
     
     // Show/hide no results message
     document.getElementById('no-results').style.display = visibleCount === 0 ? 'block' : 'none';
+    updateStats();
+}
+
+function updateStats() {
+    const visible = document.querySelectorAll('.gear-item[style="display: block"], .gear-item:not([style*="display: none"]):not([style])');
+    const cats = {};
+    const techs = {};
+    const mfrs = {};
+    const types = {};
+    
+    visible.forEach(item => {
+        if (item.style.display === 'none') return;
+        const cat = item.dataset.category;
+        const tech = item.dataset.technology;
+        const mfr = item.dataset.manufacturer;
+        cats[cat] = (cats[cat] || 0) + 1;
+        techs[tech] = (techs[tech] || 0) + 1;
+        mfrs[mfr] = (mfrs[mfr] || 0) + 1;
+        item.dataset.types.split(',').forEach(t => {
+            t = t.trim();
+            if (t) types[t] = (types[t] || 0) + 1;
+        });
+    });
+    
+    const total = Object.values(cats).reduce((a, b) => a + b, 0);
+    const catLine = Object.entries(cats).sort((a, b) => b[1] - a[1]).map(([k, v]) => `${v} ${k}s`).join(' · ');
+    const techLine = Object.entries(techs).sort((a, b) => b[1] - a[1]).map(([k, v]) => `${k} ${v}`).join(' · ');
+    const topMfrs = Object.entries(mfrs).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([k, v]) => `${k} (${v})`).join(' · ');
+    
+    document.getElementById('gear-stats').innerHTML =
+        `<div>${total} items · ${catLine} ◆ ${techLine}</div>` +
+        `<div>Top: ${topMfrs} ◆ <a href="/gear/index.json">JSON</a> · <a href="/gear/index.txt">TXT</a></div>`;
 }
 
 // Attach filter listeners

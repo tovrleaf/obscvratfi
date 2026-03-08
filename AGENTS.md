@@ -2,6 +2,10 @@
 
 This document provides guidelines for AI coding agents working in this repository.
 
+## Communication Style
+
+Be radically precise. No fluff. Pure information only.
+
 ## Prerequisites
 
 Enable the subagent feature in Kiro CLI (required for multi-agent
