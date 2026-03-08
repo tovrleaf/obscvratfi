@@ -1331,7 +1331,7 @@
 .gear-item {
     break-inside: avoid;
     margin-bottom: 0.5rem;
-    background: rgba(229, 229, 229, 0.03);
+    background: #000;
     border: 1px solid rgba(229, 229, 229, 0.1);
     transition: all 0.2s ease;
     position: relative;
@@ -1486,20 +1486,38 @@
     color: rgba(229, 229, 229, 0.5);
 }
 
-/* Archived gear styling */
-.gear-item.archived {
-    opacity: 0.5;
+/* Sold gear styling */
+.gear-item.sold {
+    opacity: 0.7;
+    border-left: 3px solid #ff4444;
 }
 
-.gear-item.archived .gear-title {
+.gear-item.sold .gear-title {
     font-style: italic;
-    color: #888;
+    color: #ff6666;
 }
 
-.gear-item.archived .gear-description,
-.gear-item.archived .gear-meta,
-.gear-item.archived .gear-settings {
-    color: #888;
+.gear-item.sold .gear-description,
+.gear-item.sold .gear-meta,
+.gear-item.sold .gear-settings {
+    color: #cc5555;
+}
+
+/* Want gear styling */
+.gear-item.want {
+    opacity: 0.7;
+    border-left: 3px solid #44ff44;
+}
+
+.gear-item.want .gear-title {
+    font-style: italic;
+    color: #66ff66;
+}
+
+.gear-item.want .gear-description,
+.gear-item.want .gear-meta,
+.gear-item.want .gear-settings {
+    color: #55cc55;
 }
 
 @media (max-width: 768px) {
