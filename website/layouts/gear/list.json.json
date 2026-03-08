@@ -1,0 +1,10 @@
+{{- $gear := slice -}}
+{{- range $file := (readDir "data/gear") -}}
+  {{- if strings.HasSuffix $file.Name ".yaml" -}}
+    {{- $item := index $.Site.Data.gear (strings.TrimSuffix ".yaml" $file.Name) -}}
+    {{- if $item -}}
+      {{- $gear = $gear | append $item -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- dict "gear" $gear | jsonify (dict "indent" "  ") -}}

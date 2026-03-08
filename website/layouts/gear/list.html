@@ -262,6 +262,8 @@
     <div id="no-results" style="display: none;">
         <p>No gear found matching filters.</p>
     </div>
+    
+    <div id="gear-stats" class="gear-stats"></div>
 </div>
 
 <script>
@@ -315,6 +317,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         filterGear();
     });
+    
+    // Initial stats
+    updateStats();
     
     // Toggle all gear items
     const toggleBtn = document.getElementById('toggle-all');
@@ -479,6 +484,38 @@ function filterGear() {
     
     // Show/hide no results message
     document.getElementById('no-results').style.display = visibleCount === 0 ? 'block' : 'none';
+    updateStats();
+}
+
+function updateStats() {
+    const visible = document.querySelectorAll('.gear-item[style="display: block"], .gear-item:not([style*="display: none"]):not([style])');
+    const cats = {};
+    const techs = {};
+    const mfrs = {};
+    const types = {};
+    
+    visible.forEach(item => {
+        if (item.style.display === 'none') return;
+        const cat = item.dataset.category;
+        const tech = item.dataset.technology;
+        const mfr = item.dataset.manufacturer;
+        cats[cat] = (cats[cat] || 0) + 1;
+        techs[tech] = (techs[tech] || 0) + 1;
+        mfrs[mfr] = (mfrs[mfr] || 0) + 1;
+        item.dataset.types.split(',').forEach(t => {
+            t = t.trim();
+            if (t) types[t] = (types[t] || 0) + 1;
+        });
+    });
+    
+    const total = Object.values(cats).reduce((a, b) => a + b, 0);
+    const catLine = Object.entries(cats).sort((a, b) => b[1] - a[1]).map(([k, v]) => `${v} ${k}s`).join(' · ');
+    const techLine = Object.entries(techs).sort((a, b) => b[1] - a[1]).map(([k, v]) => `${k} ${v}`).join(' · ');
+    const topMfrs = Object.entries(mfrs).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([k, v]) => `${k} (${v})`).join(' · ');
+    
+    document.getElementById('gear-stats').innerHTML =
+        `<div>${total} items · ${catLine} ◆ ${techLine}</div>` +
+        `<div>Top: ${topMfrs} ◆ <a href="/gear/index.json">JSON</a> · <a href="/gear/index.txt">TXT</a></div>`;
 }
 
 // Attach filter listeners
