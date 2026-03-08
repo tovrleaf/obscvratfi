@@ -1,0 +1,3 @@
+# Communication Style
+
+Be radically precise. No fluff. Pure information only.
