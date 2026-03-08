@@ -103,8 +103,8 @@ This is<br>
 
 <div class="nest-group-2">
 
-[Afvikling Kassetter](https://afviklingkassetter.bandcamp.com/)  
 [Kymijoenlevyt](https://kymijoenlevyt.org/)  
+[Paska Alttari](https://paskaalttari.bandcamp.com/)  
 [Rupu Tapes](https://ruputapes.wordpress.com/)  
 [Satatuhatta](https://satatuhatta.net/)  
 [Sudden Movements](https://suddenmovementings.blogspot.com/)
@@ -112,6 +112,8 @@ This is<br>
 </div>
 
 <div class="nest-group-3">
+
+[Afvikling Kassetter](https://afviklingkassetter.bandcamp.com/)
 
 </div>
 
