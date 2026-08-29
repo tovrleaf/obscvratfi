@@ -11,6 +11,8 @@
 # To build for staging (with CloudFront):
 #   hugo --baseURL="https://d1234.cloudfront.net" --minify
 
+buildFuture = true  # Include future-dated content (upcoming gigs)
+
 # Site metadata
 title = "Obscvrat"
 description = "Official noisework website for Obscvrat"
@@ -63,6 +65,7 @@ baseName = "index"
 mediatype = "text/plain"
 baseName = "index"
 isPlainText = true
+
 
 # Build settings
 [build]

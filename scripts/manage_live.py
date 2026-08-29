@@ -201,7 +201,7 @@ class LiveManager:
         poster = ""
         if poster_input:
             slug = self.create_slug(slug_base)
-            poster_dir = self.project_root / "website" / "assets" / "media" / "gigs" / f"{date}-{slug}"
+            poster_dir = self.project_root / "website" / "assets" / "media" / "live" / f"{date}-{slug}"
             poster_filename = f"obscvrat-{slug}-poster-{date.split('-')[0]}.jpg"
             poster_path = poster_dir / poster_filename
 
@@ -217,6 +217,7 @@ class LiveManager:
                     print(f"✓ Copied poster to {poster_path}")
                 else:
                     print(f"✗ Poster file not found: {poster_input}")
+
 
         try:
             event_url = input("Event link URL (or press Enter to skip): ").strip()
@@ -258,11 +259,12 @@ class LiveManager:
 
         # Write file
         self.live_dir.mkdir(parents=True, exist_ok=True)
+        if description:
+            data['description'] = description
+        else:
+            data['description'] = ''
         with open(filepath, 'w') as f:
-            f.write('---\n')
             yaml.dump(data, f, default_flow_style=False, allow_unicode=True)
-            f.write('---\n\n')
-            f.write(description)
 
         print(f"✓ Created live performance: {filename}")
 
@@ -300,17 +302,14 @@ class LiveManager:
             try:
                 with open(file_path, 'r') as f:
                     content = f.read()
-                    if content.startswith('---\n'):
-                        end_idx = content.find('\n---\n', 4)
-                        if end_idx != -1:
-                            data = yaml.safe_load(content[4:end_idx])
-                            title = data.get('title', 'Unknown')
-                            date_part = file_path.stem.split('-')[:3]
-                            date_str = '-'.join(date_part)
-                            location = data.get('location', 'Unknown')
-                            print(f"{i}) {date_str} - {title} ({location})")
-                            print(f"   File: {file_path.name}")
-                            print()
+                    data = yaml.safe_load(content)
+                    title = data.get('title', 'Unknown')
+                    date_part = file_path.stem.split('-')[:3]
+                    date_str = '-'.join(date_part)
+                    location = data.get('location', 'Unknown')
+                    print(f"{i}) {date_str} - {title} ({location})")
+                    print(f"   File: {file_path.name}")
+                    print()
             except Exception as e:
                 print(f"✗ Error reading {file_path.name}: {e}")
 
@@ -332,16 +331,9 @@ class LiveManager:
             try:
                 with open(file_path, 'r') as f:
                     content = f.read()
-                    if content.startswith('---\n'):
-                        end_idx = content.find('\n---\n', 4)
-                        if end_idx != -1:
-                            data = yaml.safe_load(content[4:end_idx])
-                            title = data.get('title', 'Unknown')
-                            options.append(f"{file_path.name} - {title}")
-                        else:
-                            options.append(f"{file_path.name}")
-                    else:
-                        options.append(f"{file_path.name}")
+                    data = yaml.safe_load(content)
+                    title = data.get('title', 'Unknown')
+                    options.append(f"{file_path.name} - {title}")
             except Exception:
                 options.append(f"{file_path.name} - (error reading)")
 
@@ -363,25 +355,19 @@ class LiveManager:
         with open(file_path, 'r') as f:
             content = f.read()
 
-        if not content.startswith('---\n'):
-            raise ValueError("Invalid YAML frontmatter")
-
-        end_idx = content.find('\n---\n', 4)
-        if end_idx == -1:
-            raise ValueError("Invalid YAML frontmatter")
-
-        frontmatter = yaml.safe_load(content[4:end_idx])
-        body = content[end_idx + 5:].strip()
-
-        return frontmatter, body
+        data = yaml.safe_load(content)
+        body = data.pop('description', '')
+        return data, body
 
     def write_live_file(self, file_path: Path, data: Dict, body: str) -> None:
         """Write live performance YAML file."""
+        data = dict(data)  # avoid mutating caller's dict
+        if body:
+            data['description'] = body
+        elif 'description' not in data:
+            data['description'] = ''
         with open(file_path, 'w') as f:
-            f.write('---\n')
             yaml.dump(data, f, default_flow_style=False, allow_unicode=True)
-            f.write('---\n\n')
-            f.write(body)
 
     def edit_live(self) -> None:
         """Edit existing live performance."""

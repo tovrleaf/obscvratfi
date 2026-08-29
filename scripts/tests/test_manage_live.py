@@ -121,15 +121,13 @@ class TestLiveManager:
 
     def test_parse_live_file(self, manager):
         """Test parsing live performance YAML file."""
-        test_content = """---
-title: "Test Event"
+        test_content = """title: "Test Event"
 date: "2025-01-01"
 venue: "Test Venue"
 location: "Test City"
 draft: false
----
-
-This is the event description."""
+description: "This is the event description."
+"""
 
         test_file = manager.live_dir / "test.yaml"
         test_file.write_text(test_content)
@@ -144,9 +142,9 @@ This is the event description."""
     def test_parse_live_file_invalid(self, manager):
         """Test parsing invalid YAML file."""
         test_file = manager.live_dir / "invalid.yaml"
-        test_file.write_text("Invalid content without frontmatter")
+        test_file.write_text(": invalid: yaml: content:")
 
-        with pytest.raises(ValueError, match="Invalid YAML frontmatter"):
+        with pytest.raises(Exception):
             manager.parse_live_file(test_file)
 
     def test_write_live_file(self, manager):
@@ -290,14 +288,12 @@ This is the event description."""
     def test_list_live_with_files(self, manager, capsys):
         """Test listing live performances with existing files."""
         # Create test file
-        test_content = """---
-title: "Test Event"
+        test_content = """title: "Test Event"
 date: 2025-01-01
 venue: "Test Venue"
 location: "Test City"
----
-
-Description"""
+description: "Description"
+"""
 
         test_file = manager.live_dir / "2025-01-01-test-event.yaml"
         test_file.write_text(test_content)

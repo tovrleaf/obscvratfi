@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.0] - 2026-08-29
+
+### Added
+- Gig: Kulttuuria kylillä x Ravals: Outojen asioiden ilta (2026-10-28, Ragvaldsin museoalue, Kirkkonummi)
+- Media page: Logos section with downloadable logo files (transparent PNG, white JPG, black JPG)
+- Hugo config: buildFuture enabled so upcoming gigs are visible on the site
+
+### Changed
+
+### Fixed
+- manage_live.py: poster images were saved to media/gigs/ instead of media/live/
+- manage_live.py: YAML files were written with --- frontmatter delimiters instead of plain YAML
+
 ## [1.6.1] - 2026-03-08
 
 ### Fixed

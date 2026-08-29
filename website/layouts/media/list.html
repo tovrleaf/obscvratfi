@@ -48,6 +48,10 @@
             Videos
             <span aria-hidden class="filter-btn__glitch">Videos</span>
         </button>
+        <button class="filter-btn" data-filter="logos">
+            Logos
+            <span aria-hidden class="filter-btn__glitch">Logos</span>
+        </button>
         <button class="filter-btn" data-filter="others">
             Others
             <span aria-hidden class="filter-btn__glitch">Others</span>
@@ -181,6 +185,38 @@
         </div>
     </section>
     
+    <!-- Logos Section -->
+    <section class="media-section logos-section" data-type="logos">
+        <h2>Logos</h2>
+        <div class="logos-grid">
+            {{ $logos := slice
+                (dict "file" "media/logos/obscvrat-logo-transparent.png" "name" "Logo — Transparent" "ext" "png")
+                (dict "file" "media/logos/obscvrat-logo-white.jpg" "name" "Logo — White" "ext" "jpg")
+                (dict "file" "media/logos/obscvrat-logo-black.jpg" "name" "Logo — Black" "ext" "jpg")
+            }}
+            {{ range $logos }}
+                {{ $resource := resources.Get .file }}
+                {{ if $resource }}
+                    {{ $thumb := $resource.Resize "400x q85" }}
+                    <div class="logo-item">
+                        <a href="{{ $resource.RelPermalink }}" download class="logo-link">
+                            <div class="logo-preview">
+                                <img src="{{ $thumb.RelPermalink }}" alt="Obscvrat {{ .name }}">
+                                <div class="logo-overlay">
+                                    <span class="logo-download-icon">↓</span>
+                                </div>
+                            </div>
+                        </a>
+                        <div class="logo-info">
+                            <span class="logo-name">{{ .name }}</span>
+                            <span class="logo-ext">{{ .ext | upper }}</span>
+                        </div>
+                    </div>
+                {{ end }}
+            {{ end }}
+        </div>
+    </section>
+
     <!-- Others Section -->
     <section class="media-section others-section" data-type="others">
         <h2>Others</h2>
@@ -776,6 +812,89 @@
     
     .media-date {
         margin-bottom: 0.1rem;
+    }
+}
+
+/* Logos Section */
+.logos-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-top: 2rem;
+    max-width: 900px;
+}
+
+.logo-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.logo-link {
+    display: block;
+    text-decoration: none;
+}
+
+.logo-preview {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    background: repeating-conic-gradient(#333 0% 25%, #1a1a1a 0% 50%) 0 0 / 20px 20px;
+}
+
+.logo-preview img {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: opacity 0.3s ease;
+}
+
+.logo-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.logo-link:hover .logo-overlay {
+    opacity: 1;
+}
+
+.logo-download-icon {
+    color: var(--primary-color);
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.logo-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo-name {
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    color: var(--primary-color);
+}
+
+.logo-ext {
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    color: var(--secondary-color);
+    letter-spacing: 0.1em;
+}
+
+@media (max-width: 600px) {
+    .logos-grid {
+        grid-template-columns: 1fr;
     }
 }
 </style>
