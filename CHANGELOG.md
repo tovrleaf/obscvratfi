@@ -10,13 +10,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Gig: Kulttuuria kylillä x Ravals: Outojen asioiden ilta (2026-10-28, Ragvaldsin museoalue, Kirkkonummi)
 - Media page: Logos section with downloadable logo files (transparent PNG, white JPG, black JPG)
+- Album: Vol 1. (Orchid Black, OB01, Cassette, 2026-03-05) with cover and insert artwork
 - Hugo config: buildFuture enabled so upcoming gigs are visible on the site
-
-### Changed
 
 ### Fixed
 - manage_live.py: poster images were saved to media/gigs/ instead of media/live/
 - manage_live.py: YAML files were written with --- frontmatter delimiters instead of plain YAML
+- Gallery images for world-rat-conspiracy and fridlyst-rauhoitettu moved to YAML source files so they survive markdown regeneration
 
 ## [1.6.1] - 2026-03-08
 
