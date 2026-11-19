@@ -64,7 +64,7 @@
                                     </div>
                                     <div class="gig-info">
                                         <h3 class="gig-title">{{ .Title }}</h3>
-                                        <p class="gig-venue">{{ .Params.venue }}, {{ .Params.location }}</p>
+                                        <p class="gig-venue">{{ with .Params.venue }}{{ . }}, {{ end }}{{ .Params.location }}</p>
                                         <p class="gig-date-text">{{ .Date.Format "January 2, 2006" }}</p>
                                     </div>
                                 {{ end }}

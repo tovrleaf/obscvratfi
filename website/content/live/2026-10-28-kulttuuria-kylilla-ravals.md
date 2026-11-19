@@ -8,6 +8,7 @@ event_link: "https://tapahtumat.kirkkonummi.fi/fi-FI/page/6a4cdf3e8a1fd40007b200
 draft: false
 other_performers:
   - name: "Raine Kokkinen"
+    url: "https://rainekokkinen1.bandcamp.com/"
 ---
 
 <p>Menneisyyden tarinat heräävät henkiin ja nykyajan kokeelliset kummallisuudet kohtaavat! Lokakuussa oudot valoilmiöt valtaavat museoalueen ja kirkkonummelaiset äänitaiteilijat Raine Kokkinen sekä OBSCVRAT herättävät henkiin kaikuja menneisyydestä museoesineiden välityksellä. Tapahtuma on maksuton.</p>
